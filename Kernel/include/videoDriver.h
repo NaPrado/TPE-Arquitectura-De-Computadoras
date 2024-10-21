@@ -11,4 +11,7 @@
  * @param y The y-coordinate of the pixel.
  */
 void putPixel(uint32_t hexColor, uint64_t x, uint64_t y);
+
+void drawchar(unsigned char c, int x, int y, int fgcolor, int bgcolor);
+
 #endif // VIDEODRIVER_H

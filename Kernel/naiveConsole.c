@@ -16,6 +16,7 @@ void ncPrint(const char * string)
 		ncPrintChar(string[i]);
 }
 
+
 void ncPrintChar(char character)
 {
 	*currentVideo = character;
