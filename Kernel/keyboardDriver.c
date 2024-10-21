@@ -34,10 +34,10 @@ char nextKey(){
     if (!hasNextKey()){
         return 0;
     }
+    charsAtBuffer--;
     char ret=charBuffer[getterIndex];
     getterIndex++;
     getterIndex=getterIndex%16;
-    charsAtBuffer--;
     return ret;
 }
 

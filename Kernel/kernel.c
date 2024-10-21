@@ -88,15 +88,12 @@ int main()
 
 	putPixel(0x00FF00, 100, 100);
 
-    for (int i = 0; i < 26; i++) {
-        drawchar(i, 0x100 + i*8, 0x100, 0xffffffff, 0x00);
-    }
 	int i=0;
 	while (1)
 	{
 		if (hasNextKey())
 		{
-			drawchar(keyToAscii(nextKey()), 0x100 + i*8, 0x100, 0xffffffff, 0x00);
+			drawchar(keyToAscii(nextKey())-('a'-'A'), 0x100 + i*8, 0x100, 0xffffffff, 0x00);
 			i++;
 		}
 		
