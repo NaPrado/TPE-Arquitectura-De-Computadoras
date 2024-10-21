@@ -1,2 +1,2 @@
 ./compile.sh
-sudo ./run.sh
+./run.sh
