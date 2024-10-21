@@ -13,9 +13,12 @@ GLOBAL _irq03Handler
 GLOBAL _irq04Handler
 GLOBAL _irq05Handler
 
+GLOBAL _int80Handler
+
 GLOBAL _exception0Handler
 
 EXTERN irqDispatcher
+EXTERN sysCallDispatcher
 EXTERN exceptionDispatcher
 
 SECTION .text
@@ -138,6 +141,20 @@ _irq04Handler:
 _irq05Handler:
 	irqHandlerMaster 5
 
+_int80Handler:
+	pushState
+
+	mov r9, r8
+	mov r8, r10
+	mov rcx, rdx
+	mov rdx, rsi
+	mov rsi, rdi 
+	mov rdi, rax
+	
+	call sysCallDispatcher
+
+	popState
+	iretq
 
 ;Zero Division Exception
 _exception0Handler:
