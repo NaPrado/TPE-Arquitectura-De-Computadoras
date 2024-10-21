@@ -29,6 +29,7 @@ static char alt=0;
 char hasNextKey(){
     return charsAtBuffer!=0;
 }
+
 char nextKey(){
     if (!hasNextKey()){
         return 0;

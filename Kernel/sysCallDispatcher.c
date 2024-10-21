@@ -29,11 +29,19 @@ size_t sys_write(FDS fd, const char *buf, size_t count){
             printChars(buf, count, 0xFF0000, 0x000000);
             break;
         default:
-            writeFiles(fd,buf, count);
+            //writeFiles(fd,buf, count);
             break;
     }
     return 1;
 }
+
+void readFiles(fd, buf, count){
+    //TODO
+}
+void readChars(const char *buf, size_t count){
+    //TODO
+}
+
 size_t sys_read(FDS fd, const char *buf, size_t count){
     switch(fd){
         case STDIN:
