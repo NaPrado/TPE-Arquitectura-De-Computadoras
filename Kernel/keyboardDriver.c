@@ -1,4 +1,5 @@
 #include <keyboardDriver.h>
+
 #define CAPSLOCK 0x3A
 #define LSHIFT 0x36
 #define RSHIFT 0x2A
@@ -26,16 +27,16 @@ static char ctrl=0;
 static char alt=0;
 
 char hasNextKey(){
-    return charsAtBuffer>0;
+    return charsAtBuffer!=0;
 }
 char nextKey(){
     if (!hasNextKey()){
         return 0;
     }
-    charsAtBuffer--;
     char ret=charBuffer[getterIndex];
     getterIndex++;
     getterIndex=getterIndex%16;
+    charsAtBuffer--;
     return ret;
 }
 
@@ -52,9 +53,9 @@ char getAltPressed(){
     return alt;
 }
 
-
 void keyboard_handler(){
     char key = getKey();
+    char aux=key;
     if(key==CAPSLOCK && !capslockRealized){
         capslock=!capslock;
         return;
@@ -79,7 +80,7 @@ void keyboard_handler(){
     }else if (key==LALT_RELEASE || key==RALT_RELEASE){
         alt=0;
         return;
-    }else if (key < 0x80){
+    }else if (!(aux>>7)){
         if (charsAtBuffer<=15){
             charBuffer[charBufferIndex]=key;
             charBufferIndex++;
@@ -88,6 +89,6 @@ void keyboard_handler(){
         }
         presedBuffer[key]=1;
     }else{
-        presedBuffer[key]=0;
+        presedBuffer[key-0x80]=0;
     }   
 }
