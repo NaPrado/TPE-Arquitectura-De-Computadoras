@@ -89,7 +89,7 @@ int main() {
 
     ((EntryPoint)userCodeModuleAddress)();
 
-    shell();
+    return 0;
 
 	int i=0;
 	char cursorY=0;
