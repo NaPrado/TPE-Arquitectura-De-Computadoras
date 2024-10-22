@@ -3,14 +3,14 @@
 extern uint64_t sys_call(uint64_t rax, uint64_t rdi, uint64_t rsi, uint64_t r10, uint64_t r8, uint64_t r9);
 
 void printf(const char * buf) {
-    sys_call(1, 0, buf, strlen(buf), 0, 0);
+    sys_call(1, 0, (uint64_t) buf, (uint64_t) strlen(buf), 0, 0);
 }
 
 void scanf(const char * buf, uint32_t count) {
-    sys_call(0, 0, buf, count, 0, 0);
+    sys_call(0, 0, (uint64_t) buf, (uint64_t) count, 0, 0);
 }
 
-void itoa(uint64_t value, char * buffer) {
+int itoa(uint64_t value, char * buffer) {
     char *p = buffer;
 	char *p1, *p2;
 	uint32_t digits = 0;
@@ -59,5 +59,5 @@ int strlen(const char * str) {
 }
 
 void setCursor(uint32_t x, uint32_t y) {
-    sys_call(5, x, y, 0, 0, 0);
+    sys_call((uint64_t) 5, (uint64_t) x, (uint64_t) y, 0, 0, 0);
 }

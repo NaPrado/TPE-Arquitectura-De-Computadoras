@@ -11,7 +11,7 @@ void printf(const char * buf);
 
 void scanf(const char * buf, uint32_t count);
 
-void itoa(uint64_t value, char * buffer);
+int itoa(uint64_t value, char * buffer);
 
 char getChar();
 
