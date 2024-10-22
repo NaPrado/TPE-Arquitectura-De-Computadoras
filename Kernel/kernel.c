@@ -5,6 +5,7 @@
 #include <naiveConsole.h>
 #include <videoDriver.h>
 #include <idtLoader.h>
+#include <keyboardDriver.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -86,17 +87,26 @@ int main()
 {	
 	load_idt();
 
-	putPixel(0x00FF00, 100, 100);
-
 	int i=0;
-	while (1)
-	{
-		if (hasNextKey())
-		{
-			drawchar(keyToAscii(nextKey())-('a'-'A'), 0x100 + i*8, 0x100, 0xffffffff, 0x00);
-			i++;
-		}
+	while (1){	
 		
+		if (hasNextKey()){	
+			char caps=(getShiftPressed()^getCapslock());
+			char key=nextKey();
+			char c=keyToAscii(key);
+			char isLowercase=(c>='a' && c<='z');
+			if (key==0x1C){// Enter
+				i=0;
+			}
+			if (key==0x0E){// Backspace
+					i--;
+					drawchar(' ', 0x100 + i*8, 0x100, 0xffffffff, 0x00);
+			}
+			else{
+			drawchar(caps&&isLowercase?c-('a'-'A'):c, 0x100 + i*8, 0x100, 0xffffffff, 0x00);
+			i++;
+			}
+		}
 		
 	}
 	

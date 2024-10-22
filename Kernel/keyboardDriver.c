@@ -21,7 +21,6 @@ static int charBufferIndex=0;
 static char getterIndex=0;
 static char presedBuffer[0x80]={0};
 static char capslock=0;
-static char capslockRealized=0;
 static char shift=0;
 static char ctrl=0;
 static char alt=0;
@@ -55,41 +54,29 @@ char getAltPressed(){
 }
 
 void keyboard_handler(){
-    char key = getKey();
-    char aux=key;
-    if(key==CAPSLOCK && !capslockRealized){
+    char keygetted = getKey();
+    char release=keygetted;
+    release=release>>7;
+    char key=keygetted&0x7F;
+    if(keygetted==CAPSLOCK){
         capslock=!capslock;
         return;
-    }else if (key==CAPSLOCK_RELEASE){
-        capslockRealized=0;
-        return;
-    }else if (key==LSHIFT || key==RSHIFT){
-        shift=1;
-        return;
-    }else if (key==LSHIFT_RELEASE || key==RSHIFT_RELEASE){
-        shift=0;
+    }else if ((key==LSHIFT || key==RSHIFT)){
+        shift=!release;
         return;
     }else if (key==LCTRL || key==RCTRL){
-        ctrl=1;
-        return;
-    }else if (key==LCTRL_RELEASE || key==RCTRL_RELEASE){
-        ctrl=0;
+        ctrl=!release;
         return;
     }else if (key==LALT || key==RALT){
-        alt=1;
+        alt=!release;
         return;
-    }else if (key==LALT_RELEASE || key==RALT_RELEASE){
-        alt=0;
-        return;
-    }else if (!(aux>>7)){
+    }else if (!(release)){
         if (charsAtBuffer<=15){
             charBuffer[charBufferIndex]=key;
             charBufferIndex++;
             charBufferIndex=charBufferIndex%16;
             charsAtBuffer++;
         }
-        presedBuffer[key]=1;
-    }else{
-        presedBuffer[key-0x80]=0;
-    }   
+    } 
+    presedBuffer[key]=!release;
 }
