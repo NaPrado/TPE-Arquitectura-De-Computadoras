@@ -6,7 +6,7 @@
 
 int main() {
 
-    setCursor(10, 10);
+    setCursor(0X100, 0X100);
 
     printf("Hello world!");
 	
