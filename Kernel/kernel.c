@@ -88,27 +88,41 @@ int main()
 	load_idt();
 
 	int i=0;
-	while (1){	
+	char cursorY=0;
+	char cursorx=0;
+	for (size_t j = 0; j < 256; j++)
+	{
 		
-		if (hasNextKey()){	
-			char caps=(getShiftPressed()^getCapslock());
-			char key=nextKey();
-			char c=keyToAscii(key);
-			char isLowercase=(c>='a' && c<='z');
-			if (key==0x1C){// Enter
-				i=0;
-			}
-			if (key==0x0E){// Backspace
-					i--;
-					drawchar(' ', 0x100 + i*8, 0x100, 0xffffffff, 0x00);
-			}
-			else{
-			drawchar(caps&&isLowercase?c-('a'-'A'):c, 0x100 + i*8, 0x100, 0xffffffff, 0x00);
-			i++;
-			}
+		drawchar(j, cursorx*8, cursorY, 0xffffffff, 0x00);
+		cursorx++;
+		if (j%115==0){
+			cursorY+=16;
+			cursorx=0;
 		}
-		
 	}
+	
+
+	// while (1){	
+		
+	// 	if (hasNextKey()){	
+	// 		char caps=(getShiftPressed()^getCapslock());
+	// 		char key=nextKey();
+	// 		char c=keyToAscii(key);
+	// 		char isLowercase=(c>='a' && c<='z');
+	// 		if (key==0x1C){// Enter
+	// 			i=0;
+	// 		}
+	// 		if (key==0x0E){// Backspace
+	// 				i--;
+	// 				drawchar(' ', 0x100 + i*8, 0x100, 0xffffffff, 0x00);
+	// 		}
+	// 		else{
+	// 		drawchar(caps&&isLowercase?c-('a'-'A'):c, 0x100 + i*8, 0x100, 0xffffffff, 0x00);
+	// 		i++;
+	// 		}
+	// 	}
+	//	
+	//}
 	
 
 	return 0;
