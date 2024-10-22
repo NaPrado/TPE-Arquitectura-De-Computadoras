@@ -34,9 +34,9 @@ char nextKey(){
         return 0;
     }
     charsAtBuffer--;
-    char ret=charBuffer[getterIndex];
+    char ret = charBuffer[getterIndex];
     getterIndex++;
-    getterIndex=getterIndex%16;
+    getterIndex = getterIndex % 16;
     return ret;
 }
 
@@ -56,8 +56,8 @@ char getAltPressed(){
 void keyboard_handler(){
     char keygetted = getKey();
     char release=keygetted;
-    release=release>>7;
-    char key=keygetted&0x7F;
+    release = release>>7;
+    char key = keygetted&0x7F;
     if(keygetted==CAPSLOCK){
         capslock=!capslock;
         return;

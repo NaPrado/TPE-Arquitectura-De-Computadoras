@@ -11,7 +11,7 @@ struct vbe_mode_info_structure {
 	uint32_t win_func_ptr;		// deprecated; used to switch banks from protected mode without returning to real mode
 	uint16_t pitch;			// number of bytes per horizontal line
 	uint16_t width;			// width in pixels
-	uint16_t height;			// height in pixels
+	uint16_t height;		// height in pixels
 	uint8_t w_char;			// unused...
 	uint8_t y_char;			// ...
 	uint8_t planes;
@@ -46,9 +46,27 @@ void putPixel(uint32_t hexColor, uint64_t x, uint64_t y) {
     uint8_t * framebuffer = (uint8_t *) VBE_mode_info->framebuffer;
     uint64_t offset = (x * ((VBE_mode_info->bpp)/8)) + (y * VBE_mode_info->pitch);
     framebuffer[offset]     =  (hexColor) & 0xFF;
-    framebuffer[offset+1]   =  (hexColor >> 8) & 0xFF; 
+    framebuffer[offset+1]   =  (hexColor >> 8) & 0xFF;
     framebuffer[offset+2]   =  (hexColor >> 16) & 0xFF;
 }
+
+void a() {
+
+    int a = (uint32_t) VBE_mode_info->height;
+
+    //int a = 123456789;
+
+    for (int i = 0; a > 0; a/=10, i++) {
+        drawchar(a%10 + '0', 0x80 + i * 8, 0x200, 0xffffffff, 0x00);
+    }
+
+}
+
+// DIM_X = 1024
+// DIM_Y = 768
+
+static uint8_t screen_char[48 * 128] = {0x00}; // CAMBIAR
+static uint8_t * screen_char_ptr = screen_char;
 
 static uint8_t font_bitmap[4096] = {
     // Relleno para las primeras letras (Espacio, símbolos, etc.)
@@ -1836,18 +1854,35 @@ static int printableAscii[] = {
     };
 
 char keyToAscii(int key) {
-    return printableAscii[key];    
+    return printableAscii[key];
+}
+
+void putchar(char c) {
+    *(screen_char_ptr++) = c;
+}
+
+void redrawScreen() {
+    for (uint16_t j = 0; j < 1024 / 8; j++) {
+        for (uint16_t i = 0; i < 768 / 16; i++) {
+            drawchar(screen_char[i*128 + j], j * 8, i * 16, 0xffffffff, 0x00);
+            // drawchar('A', i * 8, j * 16, 0xffffffff, 0x00);
+        }
+    }
 }
 
 
 void drawchar(unsigned char c, int x, int y, int fgcolor, int bgcolor) {
-	int cx,cy;
+    if (c < '!' || '~' < c) {
+        return;
+    }
+	int cx, cy;
 	int mask[8]={0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01};
 	unsigned char *glyph=font_bitmap+(int)c*16;
 
-	for(cy=0;cy<16;cy++){
-		for(cx=0;cx<8;cx++){
-			putPixel(glyph[cy] & mask[cx] ? fgcolor : bgcolor, x+cx, y+cy-12);
+	for (cy = 0; cy < 16; cy++) {
+		for (cx = 0; cx < 8; cx++) {
+			putPixel(glyph[cy] & mask[cx] ? fgcolor : bgcolor, x + cx, y+cy);
 		}
 	}
+
 }

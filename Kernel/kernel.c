@@ -90,39 +90,47 @@ int main()
 	int i=0;
 	char cursorY=0;
 	char cursorx=0;
-	for (size_t j = 0; j < 256; j++)
-	{
+	// for (size_t j = '!'; j < 256; j++) {
+
+    //     putchar(j);
+    //     redrawScreen();
 		
-		drawchar(j, cursorx*8, cursorY, 0xffffffff, 0x00);
-		cursorx++;
-		if (j%115==0){
-			cursorY+=16;
-			cursorx=0;
-		}
-	}
+	// 	// drawchar(j, cursorx*8, cursorY, 0xffffffff, 0x00);
+	// 	// cursorx++;
+	// 	// if (j%115==0){
+	// 	// 	cursorY+=16;
+	// 	// 	cursorx=0;
+	// 	// }
+	// }
+
+    
+
+    
 	
 
-	// while (1){	
+	while (1){	
 		
-	// 	if (hasNextKey()){	
-	// 		char caps=(getShiftPressed()^getCapslock());
-	// 		char key=nextKey();
-	// 		char c=keyToAscii(key);
-	// 		char isLowercase=(c>='a' && c<='z');
-	// 		if (key==0x1C){// Enter
-	// 			i=0;
-	// 		}
-	// 		if (key==0x0E){// Backspace
-	// 				i--;
-	// 				drawchar(' ', 0x100 + i*8, 0x100, 0xffffffff, 0x00);
-	// 		}
-	// 		else{
-	// 		drawchar(caps&&isLowercase?c-('a'-'A'):c, 0x100 + i*8, 0x100, 0xffffffff, 0x00);
-	// 		i++;
-	// 		}
-	// 	}
-	//	
-	//}
+		if (hasNextKey()){	
+			char caps=(getShiftPressed()^getCapslock());
+			char key=nextKey();
+			char c=keyToAscii(key);
+			char isLowercase=(c>='a' && c<='z');
+			if (key==0x1C){// Enter
+				i=0;
+			}
+			if (key==0x0E){// Backspace
+					i--;
+					drawchar(' ', 0x100 + i*8, 0x100, 0xffffffff, 0x00);
+			} else {
+                putchar(c - (caps&&isLowercase ? ('a'-'A'):0));
+			    //drawchar(caps&&isLowercase?c-('a'-'A'):c, 0x100 + i*8, 0x100, 0xffffffff, 0x00);
+			    i++;
+			}
+		}
+
+        redrawScreen();
+		
+	}
 	
 
 	return 0;
