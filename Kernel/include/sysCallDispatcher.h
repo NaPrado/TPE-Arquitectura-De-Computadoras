@@ -7,7 +7,7 @@
 typedef enum{
     STDIN = 0,
     STDOUT,
-    STDERR
+    STDERR,
 } FDS;
 
 

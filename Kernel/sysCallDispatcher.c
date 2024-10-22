@@ -1,29 +1,27 @@
 #include <sysCallDispatcher.h>
 #include <stdarg.h>
 #include <videoDriver.h>
+#include <time.h>
+#include <videoDriver.h>
+#include <keyboardDriver.h>
 
-struct cursor{
-    int x;
-    int y;
-};
-static struct cursor cursor = {0,0};
-
-static void printChars(const char *buf,size_t count, int fgcolor, int bgcolor){
-    for(size_t i = 0; i < count; i++){
-        drawchar(buf[i], cursor.x, cursor.y, fgcolor, bgcolor);
-        cursor.x=cursor.x+i*8;
-    }
-}
 
 static void writeFiles(FDS fd, const char *buf, size_t count){
     //TODO
 }
-
+static int cursorX=0, cursorY=0;
+size_t sys_setCursor(int x, int y){
+    cursorX = x;
+    cursorY = y;
+    return 1;
+}
 
 size_t sys_write(FDS fd, const char *buf, size_t count){
     switch(fd){
         case STDOUT:
-            printChars(buf,count,0xFFFFFF,0x000000);
+            for(int i = 0; i < count; i++){
+                drawchar(buf[i], cursorX+i*CHAR_WIDTH, cursorY*CHAR_HEIGHT, 0xFFFFFF, 0x000000);
+            }
             break;
         case STDERR:
             printChars(buf, count, 0xFF0000, 0x000000);
@@ -54,16 +52,71 @@ size_t sys_read(FDS fd, const char *buf, size_t count){
     return count;
 }
 
+void sys_sleep(int seconds){
+    sleep(seconds);
+}
+
+void sys_keyboard(char descriptor){
+    switch (descriptor)
+    {
+    case 0:
+        getKey();
+        break;
+    case 1:
+        hasNextKey();
+        break;
+    case 2:
+        nextKey();
+        break;
+    case 3:
+        getCapslock();
+        break;  
+    case 4:
+        getShiftPressed();
+        break;
+    case 5:
+        getCtrlPressed();
+        break;
+    case 6:
+        getAltPressed();
+        break;
+    default:
+        break;
+    }
+}
+sys_video(){
+    //TODO
+}
+
 void sysCallDispatcher(uint64_t rax, ...) {
     va_list args;
     va_start(args, rax);
     switch(rax){
-    case 1:;
-        FDS fd = va_arg(args, FDS);
-        const char* buf = va_arg(args, const char*);
-        size_t count = va_arg(args, size_t);
-        sys_write(fd, buf, count);
-        break;
+        case 0:;
+            FDS fd = va_arg(args, FDS);
+            const char* buf = va_arg(args, const char*);
+            size_t count = va_arg(args, size_t);
+            sys_read(fd, buf, count);
+            break;
+        case 1:;
+            FDS fd = va_arg(args, FDS);
+            const char* buf = va_arg(args, const char*);
+            size_t count = va_arg(args, size_t);
+            sys_write(fd, buf, count);
+            break;
+        case 4:;
+            char descriptor = va_arg(args, char);
+            sys_keyboard(descriptor);
+            break;
+        case 5:;
+            int x = va_arg(args, int);
+            int y = va_arg(args, int);
+            sys_setCursor(x, y);
+            break;
+        case 35:;
+            int seconds = va_arg(args, int);
+            sys_sleep(seconds);
+            break;
     }
     va_end(args);
     return;
