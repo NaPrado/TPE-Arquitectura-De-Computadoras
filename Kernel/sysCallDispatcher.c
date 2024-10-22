@@ -56,39 +56,32 @@ void sys_sleep(int seconds){
     sleep(seconds);
 }
 
-void sys_keyboard(char descriptor){
+char sys_keyboard(char descriptor){
     switch (descriptor)
     {
     case 0:
-        getKey();
-        break;
+        return getKey();
     case 1:
-        hasNextKey();
-        break;
+        return hasNextKey();
     case 2:
-        nextKey();
-        break;
+        return nextKey();
     case 3:
-        getCapslock();
-        break;  
+        return getCapslock(); 
     case 4:
-        getShiftPressed();
-        break;
+        return getShiftPressed();
     case 5:
-        getCtrlPressed();
-        break;
+        return getCtrlPressed();
     case 6:
-        getAltPressed();
-        break;
+        return getAltPressed();
     default:
-        break;
+        return -1;
     }
 }
-sys_video(){
-    //TODO
+void sys_putPixel(uint32_t hexColor,uint64_t x,uint64_t y){
+    putPixel(hexColor, x, y);
 }
 
-void sysCallDispatcher(uint64_t rax, ...) {
+char sysCallDispatcher(uint64_t rax, ...) {
     va_list args;
     va_start(args, rax);
     switch(rax){
@@ -96,27 +89,29 @@ void sysCallDispatcher(uint64_t rax, ...) {
             FDS fdr = va_arg(args, FDS);
             const char* bufr = va_arg(args, const char*);
             size_t countr = va_arg(args, size_t);
-            sys_read(fdr, bufr, countr);
-            break;
+            return sys_read(fdr, bufr, countr);
         case 1:;
             FDS fdw = va_arg(args, FDS);
             const char* bufw = va_arg(args, const char*);
             size_t countw = va_arg(args, size_t);
-            sys_write(fdr, bufw, countw);
-            break;
+            return sys_write(fdr, bufw, countw);
         case 4:;
             char descriptor = va_arg(args, char);
-            sys_keyboard(descriptor);
-            break;
+            return sys_keyboard(descriptor);
         case 5:;
             int x = va_arg(args, int);
             int y = va_arg(args, int);
-            sys_setCursor(x, y);
-            break;
+            return sys_setCursor(x, y);
+        case 6:;
+            uint32_t hexColor = va_arg(args, uint32_t);
+            uint64_t x = va_arg(args, uint64_t);
+            uint64_t y = va_arg(args, uint64_t);
+            sys_putPixel(hexColor, x, y);
+            return 1;
         case 35:;
             int seconds = va_arg(args, int);
             sys_sleep(seconds);
-            break;
+            return seconds;
     }
     va_end(args);
     return;
