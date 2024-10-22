@@ -24,7 +24,7 @@ size_t sys_write(FDS fd, const char *buf, size_t count){
             }
             break;
         case STDERR:
-            printChars(buf, count, 0xFF0000, 0x000000);
+            //printChars(buf, count, 0xFF0000, 0x000000);
             break;
         default:
             //writeFiles(fd,buf, count);
@@ -93,16 +93,16 @@ void sysCallDispatcher(uint64_t rax, ...) {
     va_start(args, rax);
     switch(rax){
         case 0:;
-            FDS fd = va_arg(args, FDS);
-            const char* buf = va_arg(args, const char*);
-            size_t count = va_arg(args, size_t);
-            sys_read(fd, buf, count);
+            FDS fdr = va_arg(args, FDS);
+            const char* bufr = va_arg(args, const char*);
+            size_t countr = va_arg(args, size_t);
+            sys_read(fdr, bufr, countr);
             break;
         case 1:;
-            FDS fd = va_arg(args, FDS);
-            const char* buf = va_arg(args, const char*);
-            size_t count = va_arg(args, size_t);
-            sys_write(fd, buf, count);
+            FDS fdw = va_arg(args, FDS);
+            const char* bufw = va_arg(args, const char*);
+            size_t countw = va_arg(args, size_t);
+            sys_write(fdr, bufw, countw);
             break;
         case 4:;
             char descriptor = va_arg(args, char);
