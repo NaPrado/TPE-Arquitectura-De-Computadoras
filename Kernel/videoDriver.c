@@ -62,8 +62,8 @@ void a() {
 
 }
 
-static uint8_t screen_char[(DIM_X/CHAR_WIDTH) * (DIM_Y/CHAR_HEIGHT)] = {0x00}; // CAMBIAR
-static uint8_t * screen_char_ptr = screen_char;
+// static uint8_t screen_char[(DIM_X/CHAR_WIDTH) * (DIM_Y/CHAR_HEIGHT)] = {0x00}; // CAMBIAR
+// static uint8_t * screen_char_ptr = screen_char;
 
 static uint8_t font_bitmap[256 * CHAR_HEIGHT] = {
     // Relleno para las primeras letras (Espacio, símbolos, etc.)
@@ -1855,20 +1855,21 @@ char keyToAscii(int key) {
 }
 
 void putchar(char c, int x, int y) {
-    screen_char_ptr[y*(DIM_X/CHAR_WIDTH) + x] = c;
-    redrawScreen();
+    drawchar(c, x * CHAR_WIDTH, y * CHAR_HEIGHT, 0xffffffff, 0x00);
+    // screen_char_ptr[y*(DIM_X/CHAR_WIDTH) + x] = c;
+    // redrawScreen();
 }
 
 
-void redrawScreen() {
-    for (uint16_t j = 0; j < DIM_X / CHAR_WIDTH; j++) {
-        for (uint16_t i = 0; i < DIM_Y / CHAR_HEIGHT; i++) {
-            if ('!' <= screen_char[i*(DIM_X/CHAR_WIDTH) + j] && screen_char[i*(DIM_X/CHAR_WIDTH) + j] <= '~') {
-                drawchar(screen_char[i*(DIM_X/CHAR_WIDTH) + j], j * CHAR_WIDTH, i * CHAR_HEIGHT, 0xffffffff, 0x00);
-            }
-        }
-    }
-}
+// static void redrawScreen() {
+//     for (uint16_t j = 0; j < DIM_X / CHAR_WIDTH; j++) {
+//         for (uint16_t i = 0; i < DIM_Y / CHAR_HEIGHT; i++) {
+//             if ('!' <= screen_char[i*(DIM_X/CHAR_WIDTH) + j] && screen_char[i*(DIM_X/CHAR_WIDTH) + j] <= '~') {
+//                 drawchar(screen_char[i*(DIM_X/CHAR_WIDTH) + j], j * CHAR_WIDTH, i * CHAR_HEIGHT, 0xffffffff, 0x00);
+//             }
+//         }
+//     }
+// }
 
 void drawchar(unsigned char c, int x, int y, int fgcolor, int bgcolor) {
 	int cx, cy;
