@@ -57,3 +57,7 @@ int strlen(const char * str) {
     }
     return len;
 }
+
+void setCursor(uint32_t x, uint32_t y) {
+    sys_call(5, x, y, 0, 0, 0);
+}

@@ -19,5 +19,7 @@ void putChar(char c);
 
 int strlen(const char * str);
 
+void setCursor(uint32_t x, uint32_t y);
+
 
 #endif
