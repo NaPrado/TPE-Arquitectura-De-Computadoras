@@ -17,8 +17,8 @@ extern uint8_t endOfKernel;
 
 static const uint64_t PageSize = 0x1000;
 
-static void * const sampleCodeModuleAddress = (void*)0x400000;
-static void * const sampleDataModuleAddress = (void*)0x500000;
+static void * const userCodeModuleAddress = (void*)0x400000;
+static void * const userDataModuleAddress = (void*)0x500000;
 
 typedef int (*EntryPoint)();
 
@@ -51,8 +51,8 @@ void * initializeKernelBinary()
 	ncPrint("[Loading modules]");
 	ncNewline();
 	void * moduleAddresses[] = {
-		sampleCodeModuleAddress,
-		sampleDataModuleAddress
+		userCodeModuleAddress,
+		userDataModuleAddress
 	};
 
 	loadModules(&endOfKernelBinary, moduleAddresses);
@@ -86,6 +86,8 @@ void * initializeKernelBinary()
 
 int main() {	
 	load_idt();
+
+    ((EntryPoint)userCodeModuleAddress)();
 
     shell();
 
