@@ -71,10 +71,10 @@ void keyboard_handler(){
         alt=!release;
         return;
     }else if (!(release)){
-        if (charsAtBuffer<=15){
+        if (charsAtBuffer <= 15){
             charBuffer[charBufferIndex]=key;
             charBufferIndex++;
-            charBufferIndex=charBufferIndex%16;
+            charBufferIndex = charBufferIndex%16;
             charsAtBuffer++;
         }
     } 

@@ -3,6 +3,12 @@
 #include <stdint.h>
 // Function declarations and macros for the video driver
 
+#define DIM_X 1024
+#define DIM_Y 768
+
+#define CHAR_WIDTH 8
+#define CHAR_HEIGHT 16
+
 /**
  * @brief Draws a pixel on the screen at the specified coordinates with the given color.
  *
@@ -14,7 +20,7 @@ void putPixel(uint32_t hexColor, uint64_t x, uint64_t y);
 
 void drawchar(unsigned char c, int x, int y, int fgcolor, int bgcolor);
 
-void putchar(char c);
+void putchar(char c, int x, int y);
 
 void redrawScreen();
 

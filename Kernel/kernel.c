@@ -6,6 +6,7 @@
 #include <videoDriver.h>
 #include <idtLoader.h>
 #include <keyboardDriver.h>
+#include <shell.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -83,9 +84,10 @@ void * initializeKernelBinary()
 	return getStackBase();
 }
 
-int main()
-{	
+int main() {	
 	load_idt();
+
+    shell();
 
 	int i=0;
 	char cursorY=0;
@@ -122,7 +124,7 @@ int main()
 					i--;
 					drawchar(' ', 0x100 + i*8, 0x100, 0xffffffff, 0x00);
 			} else {
-                putchar(c - (caps&&isLowercase ? ('a'-'A'):0));
+                putchar(c - (caps&&isLowercase ? ('a'-'A'):0), 0, 0);
 			    //drawchar(caps&&isLowercase?c-('a'-'A'):c, 0x100 + i*8, 0x100, 0xffffffff, 0x00);
 			    i++;
 			}

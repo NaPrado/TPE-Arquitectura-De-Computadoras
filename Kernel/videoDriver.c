@@ -62,13 +62,10 @@ void a() {
 
 }
 
-// DIM_X = 1024
-// DIM_Y = 768
-
-static uint8_t screen_char[48 * 128] = {0x00}; // CAMBIAR
+static uint8_t screen_char[(DIM_X/CHAR_WIDTH) * (DIM_Y/CHAR_HEIGHT)] = {0x00}; // CAMBIAR
 static uint8_t * screen_char_ptr = screen_char;
 
-static uint8_t font_bitmap[4096] = {
+static uint8_t font_bitmap[256 * CHAR_HEIGHT] = {
     // Relleno para las primeras letras (Espacio, símbolos, etc.)
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
@@ -1857,30 +1854,29 @@ char keyToAscii(int key) {
     return printableAscii[key];
 }
 
-void putchar(char c) {
-    *(screen_char_ptr++) = c;
+void putchar(char c, int x, int y) {
+    screen_char_ptr[y*(DIM_X/CHAR_WIDTH) + x] = c;
+    redrawScreen();
 }
 
+
 void redrawScreen() {
-    for (uint16_t j = 0; j < 1024 / 8; j++) {
-        for (uint16_t i = 0; i < 768 / 16; i++) {
-            drawchar(screen_char[i*128 + j], j * 8, i * 16, 0xffffffff, 0x00);
-            // drawchar('A', i * 8, j * 16, 0xffffffff, 0x00);
+    for (uint16_t j = 0; j < DIM_X / CHAR_WIDTH; j++) {
+        for (uint16_t i = 0; i < DIM_Y / CHAR_HEIGHT; i++) {
+            if ('!' <= screen_char[i*(DIM_X/CHAR_WIDTH) + j] && screen_char[i*(DIM_X/CHAR_WIDTH) + j] <= '~') {
+                drawchar(screen_char[i*(DIM_X/CHAR_WIDTH) + j], j * CHAR_WIDTH, i * CHAR_HEIGHT, 0xffffffff, 0x00);
+            }
         }
     }
 }
 
-
 void drawchar(unsigned char c, int x, int y, int fgcolor, int bgcolor) {
-    if (c < '!' || '~' < c) {
-        return;
-    }
 	int cx, cy;
 	int mask[8]={0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01};
 	unsigned char *glyph=font_bitmap+(int)c*16;
 
-	for (cy = 0; cy < 16; cy++) {
-		for (cx = 0; cx < 8; cx++) {
+	for (cy = 0; cy < CHAR_HEIGHT; cy++) {
+		for (cx = 0; cx < CHAR_WIDTH; cx++) {
 			putPixel(glyph[cy] & mask[cx] ? fgcolor : bgcolor, x + cx, y+cy);
 		}
 	}
