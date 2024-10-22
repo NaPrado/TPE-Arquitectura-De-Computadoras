@@ -104,9 +104,9 @@ char sysCallDispatcher(uint64_t rax, ...) {
             char descriptor = va_arg(args, char);
             return sys_keyboard(descriptor);
         case 5:;
-            int x = va_arg(args, int);
-            int y = va_arg(args, int);
-            return sys_setCursor(x, y);
+            int xdot = va_arg(args, int);
+            int ydot = va_arg(args, int);
+            return sys_setCursor(xdot, ydot);
         case 6:;
             uint32_t hexColor = va_arg(args, uint32_t);
             uint64_t xPos = va_arg(args, uint64_t);
