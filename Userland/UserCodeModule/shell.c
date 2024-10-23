@@ -1,7 +1,7 @@
 #include "./include/shell.h"
 #include <stdint.h>
 
-static void inicializeShell();
+// static void inicializeShell();
 
 #define COMMAND_X 4
 #define COMMAND_Y ((DIM_Y/CHAR_HEIGHT)-4)

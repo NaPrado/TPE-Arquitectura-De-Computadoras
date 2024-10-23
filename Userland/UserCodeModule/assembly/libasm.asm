@@ -14,6 +14,12 @@ random:
 
 sys_call:
 
+    mov rax, rdi
+    mov rdi, rsi
+    mov rsi, rdx
+    mov rdx, rcx
+    mov r8, r10
+
     int 80h
 
     ret

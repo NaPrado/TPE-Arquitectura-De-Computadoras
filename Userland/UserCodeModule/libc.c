@@ -1,6 +1,6 @@
 #include <libc.h>
 
-// extern uint64_t sys_call(uint64_t rax, uint64_t rdi, uint64_t rsi, uint64_t r10, uint64_t r8);
+extern uint64_t sys_call(uint64_t rax, uint64_t rdi, uint64_t rsi, uint64_t r10, uint64_t r8);
 extern void sys_Write();
 
 void print(char * buf) {
