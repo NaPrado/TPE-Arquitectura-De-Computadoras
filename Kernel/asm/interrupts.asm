@@ -142,8 +142,7 @@ _irq05Handler:
 	irqHandlerMaster 5
 
 _int80Handler:
-	pushState
-
+	
 	mov r9, r8
 	mov r8, r10
 	mov rcx, rdx
@@ -153,7 +152,6 @@ _int80Handler:
 	
 	call sysCallDispatcher
 
-	popState
 	iretq
 
 ;Zero Division Exception

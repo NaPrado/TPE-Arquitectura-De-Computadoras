@@ -6,9 +6,9 @@
 
 int main() {
 
-    setCursor(0X100, 0X100);
+    // setCursor(0X100, 0X100);
 
-    printf("Hello world!");
+    // printf("Hello world!");
 	
     shell();
 

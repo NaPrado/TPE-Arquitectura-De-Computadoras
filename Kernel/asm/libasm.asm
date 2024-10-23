@@ -1,4 +1,5 @@
 GLOBAL cpuVendor
+GLOBAL testSysCall
 
 section .text
 	
@@ -25,3 +26,37 @@ cpuVendor:
 	mov rsp, rbp
 	pop rbp
 	ret
+testSysCall:
+	; mov rax, 5
+	; mov rdi, 20
+	; mov rsi, 20 
+	; int 80h
+
+	; mov rax, 35
+	; mov rdi, 1
+	; int 80h
+
+	mov rax, 1
+	mov rdi, 1
+	mov rsi, msg
+	mov rdx, 13
+	int 80h
+	
+	mov rax, 1
+	mov rdi, 2
+	mov rsi, msg
+	mov rdx, 13
+	int 80h
+
+	mov rax, 5
+	mov rdi, 20
+	mov rsi, 30 
+	int 80h
+
+	mov rax, 1
+	mov rdi, 1
+	mov rsi, msg
+	mov rdx, 13
+	int 80h
+	ret
+msg db "Hello, World!", 0

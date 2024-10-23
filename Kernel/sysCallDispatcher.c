@@ -16,26 +16,15 @@ size_t sys_setCursor(int x, int y){
     return 1;
 }
 
-size_t sys_write(FDS fd, const char *buf, size_t count){
-    switch(fd){
-        int i = 0;
-        case STDOUT:
-            for(; i < count; i++){
-                drawchar(buf[i], cursorX+i*CHAR_WIDTH, cursorY*CHAR_HEIGHT, 0xFFFFFF, 0x000000);
-            }
-            cursorX += i*CHAR_WIDTH;
-            break;
-        case STDERR:
-            for(; i < count; i++){
-            drawchar(buf[i], cursorX+i*CHAR_WIDTH, cursorY*CHAR_HEIGHT, 0xFF0000, 0x000000);
-            }
-            cursorX += i*CHAR_WIDTH;
-            break;
-        default:
-            //writeFiles(fd,buf, count);
-            break;
+void sys_write(FDS fd, const char *buf, size_t count){
+    if(fd==STDOUT || fd==STDERR){
+        int i=0;
+        for(; i < count; i++){
+            drawchar(buf[i], (cursorX+i)*CHAR_WIDTH, cursorY*CHAR_HEIGHT,(fd==STDOUT)?0xFFFFFF:0xFF0000, 0x000000);
+        }
+        cursorX+=i;
     }
-    return 1;
+    return;
 }
 
 void readFiles(fd, buf, count){
@@ -86,37 +75,36 @@ void sys_putPixel(uint32_t hexColor,uint64_t x,uint64_t y){
     putPixel(hexColor, x, y);
 }
 
-char sysCallDispatcher(uint64_t rax, ...) {
+void sysCallDispatcher(uint64_t rax, ...) {
     va_list args;
     va_start(args, rax);
-    switch(rax){
-        case 0:;
-            FDS fdr = va_arg(args, FDS);
-            const char* bufr = va_arg(args, const char*);
-            size_t countr = va_arg(args, size_t);
-            return sys_read(fdr, bufr, countr);
-        case 1:;
-            FDS fdw = va_arg(args, FDS);
-            const char* bufw = va_arg(args, const char*);
-            size_t countw = va_arg(args, size_t);
-            return sys_write(fdw, bufw, countw);
-        case 4:;
-            char descriptor = va_arg(args, char);
-            return sys_keyboard(descriptor);
-        case 5:;
-            int xdot = va_arg(args, int);
-            int ydot = va_arg(args, int);
-            return sys_setCursor(xdot, ydot);
-        case 6:;
-            uint32_t hexColor = va_arg(args, uint32_t);
-            uint64_t xPos = va_arg(args, uint64_t);
-            uint64_t yPos = va_arg(args, uint64_t);
-            sys_putPixel(hexColor, xPos, yPos);
-            return 1;
-        case 35:;
-            int seconds = va_arg(args, int);
-            sys_sleep(seconds);
-            return seconds;
+    uint64_t ret;
+    if (rax==0){
+        FDS fd = va_arg(args, FDS);
+        const char* buf = va_arg(args, const char*);
+        size_t count = va_arg(args, size_t);
+        ret= sys_read(fd, buf, count);
+    }else if (rax==1){
+        FDS fd = va_arg(args, FDS);
+        const char* buf = va_arg(args, const char*);
+        size_t count = va_arg(args, size_t);
+        sys_write(fd, buf, count);
+        ret=0;
+    }else if (rax==4){
+        char descriptor = va_arg(args, char);
+        sys_keyboard(descriptor);
+    }else if (rax==5){
+        int x = (int)va_arg(args, uint64_t);
+        int y = (int)va_arg(args, uint64_t);
+        sys_setCursor(x, y);
+    }else if (rax==6){
+        uint32_t hexColor = va_arg(args, uint32_t);
+        uint64_t x = va_arg(args, uint64_t);
+        uint64_t y = va_arg(args, uint64_t);
+        sys_putPixel(hexColor, x, y);
+    }else if (rax==35){
+        int seconds = va_arg(args, int);
+        sys_sleep(seconds);    
     }
     va_end(args);
     return;

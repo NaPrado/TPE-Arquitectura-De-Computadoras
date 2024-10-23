@@ -1872,12 +1872,11 @@ void putchar(char c, int x, int y) {
 // }
 
 void drawchar(unsigned char c, int x, int y, int fgcolor, int bgcolor) {
-	int cx, cy;
 	int mask[8]={0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01};
 	unsigned char *glyph=font_bitmap+(int)c*16;
 
-	for (cy = 0; cy < CHAR_HEIGHT; cy++) {
-		for (cx = 0; cx < CHAR_WIDTH; cx++) {
+	for (int cy = 0; cy < CHAR_HEIGHT; cy++) {
+		for (int cx = 0; cx < CHAR_WIDTH; cx++) {
 			putPixel(glyph[cy] & mask[cx] ? fgcolor : bgcolor, x + cx, y+cy);
 		}
 	}
