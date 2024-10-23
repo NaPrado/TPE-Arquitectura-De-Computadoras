@@ -1,5 +1,17 @@
 GLOBAL sys_call
 
+GLOBAL random
+
+random:
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, msg
+    mov rdx, 11
+
+    int 80h
+
+    ret
+
 sys_call:
     push rdi
     push rsi
@@ -9,21 +21,23 @@ sys_call:
     push r9
     push r10
 
-	mov rax, rdi
-	mov rdi, rsi
-	mov rsi, rdx
-	mov rdx, rcx
+	mov rax, rdi    ; 1er param -> rax
+	mov rdi, rsi    ; 2er param -> rdi
+	mov rsi, rdx    ; 3er param -> rsi
+	mov rdx, rcx    ; 4er param -> rdx
     mov r10, r8
     mov r8, r9
 
     int 80h
 
-    pop rdi
-    pop rsi
-    pop rcx
-    pop rdx
-    pop r8
-    pop r9
     pop r10
-
+    pop r9
+    pop r8
+    pop rdx
+    pop rcx
+    pop rsi
+    pop rdi
     ret
+
+section .rodata
+msg db "Hello world", 0

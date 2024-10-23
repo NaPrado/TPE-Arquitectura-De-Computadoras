@@ -6,11 +6,7 @@
 
 int main() {
 
-    // setCursor(0X100, 0X100);
-
-    // printf("Hello world!");
-	
-    shell();
+    printf("Hello World!");
 
     return 0;
 }
