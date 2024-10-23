@@ -1,4 +1,5 @@
 #include "./include/shell.h"
+#include <stdint.h>
 
 static void inicializeShell();
 
@@ -9,7 +10,7 @@ char exit = 0;
 char * current_comand[128 * 2] = {0x00};
 
 
-void shell() {}
+// void shell() {}
 //     inicializeShell();
 
 //     uint32_t pos_x = COMMAND_X;

@@ -7,11 +7,11 @@
 #ifndef _LIBC_H_
 #define _LIBC_H_
 
-void printf(const char * buf);
+void print(char * buf);
 
-void scanf(const char * buf, uint32_t count);
+void scan(const char * buf, uint32_t count);
 
-int itoa(uint64_t value, char * buffer);
+int itos(uint64_t value, char * buffer, int base);
 
 char getChar();
 

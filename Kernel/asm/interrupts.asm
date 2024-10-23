@@ -144,12 +144,6 @@ _irq05Handler:
 
 _int80Handler:
 	
-	mov r9, r8
-	mov r8, r10
-	mov rcx, rdx
-	mov rdx, rsi
-	mov rsi, rdi 
-	mov rdi, rax
 	
 	call sysCallDispatcher
 
