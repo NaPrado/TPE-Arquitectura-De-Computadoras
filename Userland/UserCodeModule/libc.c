@@ -1,9 +1,11 @@
 #include "include/libc.h"
 
 extern uint64_t sys_call(uint64_t rax, uint64_t rdi, uint64_t rsi, uint64_t r10, uint64_t r8);
+extern void sys_Write();
 
 void printf(const char * buf) {
-    sys_call(1, 1, (uint64_t) buf, strlen(buf), 0);
+	sys_Write();
+    //sys_call(1, 1, (uint64_t) buf, /*strlen(buf)*/10, 0);
 }
 
 void scanf(const char * buf, uint32_t count) {

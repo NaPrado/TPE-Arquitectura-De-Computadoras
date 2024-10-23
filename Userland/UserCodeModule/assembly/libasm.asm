@@ -1,6 +1,7 @@
 GLOBAL sys_call
 
 GLOBAL random
+GLOBAL sys_Write
 
 random:
     mov rax, 1
@@ -37,6 +38,13 @@ sys_call:
     pop rcx
     pop rsi
     pop rdi
+    ret
+sys_Write:
+	mov rax, 1
+	mov rdi, 1
+	mov rsi, msg
+	mov rdx, 13
+	int 80h
     ret
 
 section .rodata
