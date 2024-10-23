@@ -16,8 +16,10 @@ int seconds_elapsed() {
 }
 
 void sleep(int seconds) {
-    unsigned long start = ticks;
-    while (ticks - start < seconds * 18);
+    unsigned long start = seconds_elapsed();
+    while (seconds_elapsed() - start < seconds){
+        _hlt();
+    };
 }
 
 char* getTime(){

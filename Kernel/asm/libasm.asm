@@ -27,19 +27,31 @@ cpuVendor:
 	pop rbp
 	ret
 testSysCall:
-	; mov rax, 5
-	; mov rdi, 20
-	; mov rsi, 20 
-	; int 80h
+	mov rax,6
+	mov rdi, 0xFF0000
+	mov rsi, 70
+	mov rdx,70
+	int 80h
+	mov rax,6
+	mov rdi, 0x00FF00
+	mov rsi, 80
+	mov rdx,70
+	int 80h
+	
 
-	; mov rax, 35
-	; mov rdi, 1
-	; int 80h
+	mov rax, 35
+	mov rdi, 3
+	int 80h
 
 	mov rax, 1
 	mov rdi, 1
 	mov rsi, msg
 	mov rdx, 13
+	int 80h
+
+	mov rax, 5
+	mov rdi, 20
+	mov rsi, 20 
 	int 80h
 	
 	mov rax, 1

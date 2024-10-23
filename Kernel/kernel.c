@@ -85,8 +85,9 @@ void * initializeKernelBinary()
 
 int main() {	
 	load_idt();
-	// sys_write(2, "Hola", 4);
-	// sys_write(1, "Hola", 4);
+	sys_write(2, "Hola", 4);
+	//sys_sleep(5);
+	sys_write(1, "Hola", 4);
 	testSysCall();
     ((EntryPoint)userCodeModuleAddress)();
 

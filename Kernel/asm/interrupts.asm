@@ -86,16 +86,17 @@ SECTION .text
 %endmacro
 
 
+;espera a que ocurra una interrupcion 
 _hlt:
 	sti
 	hlt
 	ret
-
+;desabilita interrupciones de Hardware
 _cli:
 	cli
 	ret
 
-
+;habilita interrupciones de Hardware
 _sti:
 	sti
 	ret
