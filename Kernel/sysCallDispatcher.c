@@ -104,10 +104,6 @@ void sysCallDispatcher(uint64_t rax, ...) {
         sys_putPixel(hexColor, x, y);
     }else if (rax==35){
         int seconds = va_arg(args, int);
-        char* buf="0";
-        buf[0]+=seconds;
-        sys_write(1,buf,1);
-
         sys_sleep(seconds);    
     }
     va_end(args);
