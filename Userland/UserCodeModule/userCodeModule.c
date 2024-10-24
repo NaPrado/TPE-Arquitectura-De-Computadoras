@@ -1,15 +1,10 @@
 /* userCodeModule.c */
 
 #include <libc.h>
+#include <shell.h>
 
 int main() {
 
-    print("Hello");
-    sleep(15);
-    print("World");
-    char* buf="------";
-    scan(buf,7);
-    putChar(" ");
-    print(buf);
+    shell();
     return 0;
 }

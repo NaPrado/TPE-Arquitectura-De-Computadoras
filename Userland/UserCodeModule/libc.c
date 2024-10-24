@@ -9,7 +9,7 @@ void print(char * buf) {
 
 }
 
-void scan(const char * buf, uint32_t count) {
+void scan(char * buf, uint32_t count) {
     sys_call(0, 0, (uint64_t) buf, count, 0);
 }
 
@@ -70,4 +70,10 @@ void setCursor(uint32_t x, uint32_t y) {
 
 void sleep(uint64_t seconds){
 	sys_call(35, seconds, 0, 0, 0);
+}
+
+void strCpy(char * s, char * t) {
+    while ((*(t++) = *(s++)) != '\0') {
+        ;
+    }
 }

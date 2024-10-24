@@ -9,7 +9,7 @@
 
 void print(char * buf);
 
-void scan(const char * buf, uint32_t count);
+void scan(char * buf, uint32_t count);
 
 int itos(uint64_t value, char * buffer, int base);
 
@@ -22,6 +22,8 @@ int strlen(const char * str);
 void setCursor(uint32_t x, uint32_t y);
 
 void sleep(uint64_t seconds);
+
+void strCpy(char * s, char * t);
 
 
 #endif
