@@ -9,6 +9,10 @@
 #define INTERRUPS_H_
 
 #include <idtLoader.h>
+#define PIC_MASTER_MASK_NULL 0xFF
+#define PIC_MASTER_MASK_ONLY_TIMER 0xFE
+#define PIC_MASTER_MASK_ONLY_KEYBOARD 0xFD
+#define PIC_MASTER_MASK_ALL 0xFC
 
 void _irq00Handler(void);
 void _irq01Handler(void);

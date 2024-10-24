@@ -34,33 +34,5 @@ char hasNextKey();
  */
 char nextKey();
 
-/**
- * @brief Checks if Caps Lock is active.
- * 
- * @return char 1 if Caps Lock is active, 0 otherwise.
- */
-char getCapslock();
-
-/**
- * @brief Checks if Shift is pressed.
- * 
- * @return char 1 if Shift is pressed, 0 otherwise.
- */
-char getShiftPressed();
-
-/**
- * @brief Checks if Ctrl is pressed.
- * 
- * @return char 1 if Ctrl is pressed, 0 otherwise.
- */
-char getCtrlPressed();
-
-/**
- * @brief Checks if Alt is pressed.
- * 
- * @return char 1 if Alt is pressed, 0 otherwise.
- */
-char getAltPressed();
-
 
 #endif // KEYBOARD_DRIVER_H

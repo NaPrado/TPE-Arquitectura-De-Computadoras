@@ -27,21 +27,28 @@ void sys_write(FDS fd, const char *buf, size_t count){
     return;
 }
 
-void readFiles(fd, buf, count){
-    //TODO
-}
-void readChars(const char *buf, size_t count){
-    //TODO
+void readFiles(fd, buf, count){}
+
+void readChars(char *buf, size_t count){
+    for (size_t i = 0; i < count; i++){
+        char c=nextKey();
+        if (c==-1)
+        {
+            i--;
+        }else if (c=='\b'){
+            i--;
+            buf[i]=0;
+        }else{
+            buf[i]=c;
+        }
+    }
 }
 
 size_t sys_read(FDS fd, const char *buf, size_t count){
-    switch(fd){
-        case STDIN:
-            readChars(buf, count);
-            break;
-        default:
-            readFiles(fd, buf, count);
-            break;
+    if (fd==STDIN){
+        readChars(buf, count);
+    }else{
+        readFiles(fd, buf, count);
     }
     return count;
 }
@@ -51,25 +58,25 @@ void sys_sleep(int seconds){
 }
 
 char sys_keyboard(char descriptor){
-    switch (descriptor)
-    {
-    case 0:
-        return getKey();
-    case 1:
-        return hasNextKey();
-    case 2:
-        return nextKey();
-    case 3:
-        return getCapslock(); 
-    case 4:
-        return getShiftPressed();
-    case 5:
-        return getCtrlPressed();
-    case 6:
-        return getAltPressed();
-    default:
-        return -1;
-    }
+    // switch (descriptor)
+    // {
+    // case 0:
+    //     return getKey();
+    // case 1:
+    //     return hasNextKey();
+    // case 2:
+    //     return nextKey();
+    // case 3:
+    //     return getCapslock(); 
+    // case 4:
+    //     return getShiftPressed();
+    // case 5:
+    //     return getCtrlPressed();
+    // case 6:
+    //     return getAltPressed();
+    // default:
+    //     return -1;
+    // }
 }
 void sys_putPixel(uint32_t hexColor,uint64_t x,uint64_t y){
     putPixel(hexColor, x, y);

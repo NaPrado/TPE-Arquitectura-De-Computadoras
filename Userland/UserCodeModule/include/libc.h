@@ -21,5 +21,7 @@ int strlen(const char * str);
 
 void setCursor(uint32_t x, uint32_t y);
 
+void sleep(uint64_t seconds);
+
 
 #endif
