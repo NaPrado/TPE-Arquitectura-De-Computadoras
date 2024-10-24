@@ -77,3 +77,11 @@ void strCpy(char * s, char * t) {
         ;
     }
 }
+
+int strCmp(char * s1, char * s2) {
+    int cmp = 0;
+    while (*(s1) != '\0' || *(s2) != '\0') {
+        cmp = *(s1) - *(s2);
+    }
+    return cmp;
+}

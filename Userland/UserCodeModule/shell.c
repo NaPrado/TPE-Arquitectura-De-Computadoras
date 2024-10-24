@@ -11,11 +11,10 @@
 #define DIM_CHAR_Y (DIM_Y/CHAR_HEIGHT)
 #define DIM_CHAR_X (DIM_X/CHAR_WIDTH)
 
-// static void inicializeShell();
-
 #define COMMAND_X 4
 #define COMMAND_Y (DIM_CHAR_Y-4)
 
+static void inicializeShell();
 static void getCommand();
 static void doCommand();
 static void cleanCommand();
@@ -36,10 +35,7 @@ static uint32_t pos_y = COMMAND_Y;
 
 
 void shell() {
-    // inicializeShell();
-
-    setCursor(pos_x-2, pos_y);
-    print("> ");
+    inicializeShell();
 
     while (!exit) {
         cleanCommand();
@@ -95,6 +91,7 @@ void printCommands() {
 }
     
 
-// void inicializeShell() {
-//     putchar('>', 2, (DIM_Y/CHAR_HEIGHT) - 4);
-// }
+void inicializeShell() {
+    setCursor(COMMAND_X-2, COMMAND_Y);
+    print("> ");
+}

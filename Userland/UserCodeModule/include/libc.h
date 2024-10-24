@@ -25,5 +25,7 @@ void sleep(uint64_t seconds);
 
 void strCpy(char * s, char * t);
 
+int strCmp(char * s1, char * s2);
+
 
 #endif
