@@ -11,7 +11,7 @@
 #define ESC 0x01
 #define CHAR_BUFFER_DIM 64
 
-static char charBuffer[CHAR_BUFFER_DIM]={0};
+static char charBuffer[CHAR_BUFFER_DIM] = {0};
 static char charsAtBuffer=0;
 static int charBufferIndex=0;
 static char getterIndex=0;
@@ -280,21 +280,21 @@ static int shiftedAscii[] = {
         [0x7F] = -1     // (keypad) . no es imprimible
     };
 
-char hasNextKey(){
-    return charsAtBuffer>0;
+char hasNextKey() {
+    return charsAtBuffer > 0;
 }
 
-waitKey(){
-    while (!hasNextKey()){
+waitKey() {
+    while (!hasNextKey()) {
         picMasterMask(PIC_MASTER_MASK_ONLY_KEYBOARD);
         _hlt();
         picMasterMask(PIC_MASTER_MASK_ALL); 
     }
 }
 
-char nextKey(){
+char nextKey() {
     char ret;
-    if (!hasNextKey()){
+    if (!hasNextKey()) {
         waitKey();
     }
     charsAtBuffer--;
@@ -304,7 +304,7 @@ char nextKey(){
     return ret;
 }
 
-char isSpecialKey(char scancode){
+char isSpecialKey(char scancode) {
     return 
     (scancode == LSHIFT)    || (scancode == RSHIFT)     || 
     (scancode == LCTRL)     || (scancode == RCTRL)      || 
@@ -314,27 +314,27 @@ char isSpecialKey(char scancode){
     ((scancode >= 0x3B) && (scancode <= 0x44));
 }
 
-void keyboard_handler(){
+void keyboard_handler() {
     char scancode = getKey();
-    char release=scancode;
-    release = release>>7;
-    char key = scancode&0x7F;
-    if(scancode==CAPSLOCK){
-        capslock=!capslock;
+    char release = scancode;
+    release = release >> 7;
+    char key = scancode & 0x7F;
+    if(scancode == CAPSLOCK) {
+        capslock =! capslock;
         return;
-    }else if ((key==LSHIFT || key==RSHIFT)){
-        shift=!release;
+    }else if ((key == LSHIFT || key == RSHIFT)) {
+        shift =! release;
         return;
-    }else if (key==LCTRL || key==RCTRL){
+    }else if (key == LCTRL || key == RCTRL){
         ctrl=!release;
         return;
-    }else if (key==LALT || key==RALT){
-        alt=!release;
+    }else if (key == LALT || key == RALT) {
+        alt =! release;
         return;
     }else{
         if (charsAtBuffer <= CHAR_BUFFER_DIM && !isSpecialKey(scancode) && !release){
-            charBuffer[charBufferIndex++]=(shift^capslock)?shiftedAscii[key]:notShiftedAscii[key];
-            charBufferIndex = charBufferIndex%CHAR_BUFFER_DIM;
+            charBuffer[charBufferIndex++] = (shift^capslock) ? shiftedAscii[key] : notShiftedAscii[key];
+            charBufferIndex = charBufferIndex % CHAR_BUFFER_DIM;
             charsAtBuffer++;
         }
     }
