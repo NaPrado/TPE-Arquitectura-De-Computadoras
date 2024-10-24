@@ -5,7 +5,7 @@
 int main() {
 
     print("Hello");
-    //sleep(5);
+    sleep(15);
     print("World");
     char* buf="------";
     scan(buf,7);

@@ -15,9 +15,9 @@ int seconds_elapsed() {
 	return ticks / 18;
 }
 
-void sleep(int seconds) {
-    unsigned long start = seconds_elapsed();
-    while (seconds_elapsed() - start < seconds){
+void sleep(int ticksToWait) {
+    unsigned long start = ticks;
+    while (ticks - start < ticksToWait){
         _hlt();
     };
 }

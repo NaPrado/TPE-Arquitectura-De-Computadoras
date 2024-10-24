@@ -35,7 +35,7 @@ int seconds_elapsed();
  * @param seconds The number of seconds for which the thread should sleep.
  */
 
-void sleep(int seconds);
+void sleep(int ticks);
 
 /**
  * @brief Retrieves the current system time as a string.

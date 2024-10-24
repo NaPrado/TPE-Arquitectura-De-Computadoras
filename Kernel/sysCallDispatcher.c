@@ -57,27 +57,6 @@ void sys_sleep(int seconds){
     sleep(seconds);
 }
 
-char sys_keyboard(char descriptor){
-    // switch (descriptor)
-    // {
-    // case 0:
-    //     return getKey();
-    // case 1:
-    //     return hasNextKey();
-    // case 2:
-    //     return nextKey();
-    // case 3:
-    //     return getCapslock(); 
-    // case 4:
-    //     return getShiftPressed();
-    // case 5:
-    //     return getCtrlPressed();
-    // case 6:
-    //     return getAltPressed();
-    // default:
-    //     return -1;
-    // }
-}
 void sys_putPixel(uint32_t hexColor,uint64_t x,uint64_t y){
     putPixel(hexColor, x, y);
 }
@@ -97,9 +76,6 @@ void sysCallDispatcher(uint64_t rax, ...) {
         size_t count = va_arg(args, size_t);
         sys_write(fd, buf, count);
         ret=0;
-    }else if (rax==4){
-        char descriptor = va_arg(args, char);
-        sys_keyboard(descriptor);
     }else if (rax==5){
         int x = (int)va_arg(args, uint64_t);
         int y = (int)va_arg(args, uint64_t);
