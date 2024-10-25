@@ -50,18 +50,6 @@ void putPixel(uint32_t hexColor, uint64_t x, uint64_t y) {
     framebuffer[offset+2]   =  (hexColor >> 16) & 0xFF;
 }
 
-void a() {
-
-    int a = (uint32_t) VBE_mode_info->height;
-
-    //int a = 123456789;
-
-    for (int i = 0; a > 0; a/=10, i++) {
-        drawchar(a%10 + '0', 0x80 + i * 8, 0x200, 0xffffffff, 0x00);
-    }
-
-}
-
 // static uint8_t screen_char[(DIM_X/CHAR_WIDTH) * (DIM_Y/CHAR_HEIGHT)] = {0x00}; // CAMBIAR
 // static uint8_t * screen_char_ptr = screen_char;
 
@@ -1789,7 +1777,7 @@ static uint8_t font_bitmap[256 * CHAR_HEIGHT] = {
 
 
 void putchar(char c, int x, int y) {
-    drawchar(c, x * CHAR_WIDTH, y * CHAR_HEIGHT, 0xffffffff, 0x00);
+    drawchar(c, x * CHAR_WIDTH, y * CHAR_HEIGHT, 0xffffffff, 0x00, 1);
     // screen_char_ptr[y*(DIM_X/CHAR_WIDTH) + x] = c;
     // redrawScreen();
 }
@@ -1805,13 +1793,13 @@ void putchar(char c, int x, int y) {
 //     }
 // }
 
-void drawchar(unsigned char c, int x, int y, int fgcolor, int bgcolor) {
+void drawchar(unsigned char c, int x, int y, int fgcolor, int bgcolor, int mult) {
 	int mask[8]={0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01};
 	unsigned char *glyph=font_bitmap+(int)c*16;
 
-	for (int cy = 0; cy < CHAR_HEIGHT; cy++) {
-		for (int cx = 0; cx < CHAR_WIDTH; cx++) {
-			putPixel(glyph[cy] & mask[cx] ? fgcolor : bgcolor, x + cx, y+cy);
+	for (int cy = 0; cy < CHAR_HEIGHT*mult; cy++) {
+		for (int cx = 0; cx < CHAR_WIDTH*mult; cx++) {
+			putPixel(glyph[cy/mult] & mask[cx/mult] ? fgcolor : bgcolor, x + cx, y + cy);
 		}
 	}
 

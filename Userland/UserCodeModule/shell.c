@@ -34,6 +34,8 @@ static char buffer_command[2][DIM_CHAR_X*2];
 static uint32_t pos_x = COMMAND_LINE_X;
 static uint32_t pos_y = COMMAND_LINE_Y;
 
+static zoom = 1;
+
 
 void shell() {
     inicializeShell();
@@ -90,6 +92,20 @@ void doCommand() {
             strCpy(time, buffer_command[1]);
         } else if (strCmp(command, "help")==0) {
             strCpy("Help", buffer_command[1]);
+        } else if (strCaseCmp(command, "zoom in") == 0) {
+            if (zoom <= 3) { 
+                strCpy("Zoomed in", buffer_command[1]);
+                setZoom(++zoom);
+            } else {
+                strCpy("Max zoom possible", buffer_command[1]);
+            }
+        } else if (strCaseCmp(command, "zoom out") == 0) {
+            if (zoom > 1) { 
+                strCpy("Zoomed out", buffer_command[1]);
+                setZoom(--zoom);
+            } else {
+                strCpy("Min zoom possible", buffer_command[1]);
+            }
         } else if (strCmp(command, "exit")==0) {
             strCpy("Exit", buffer_command[1]);
             cleanScreen();
