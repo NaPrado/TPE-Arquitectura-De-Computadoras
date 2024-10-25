@@ -55,6 +55,8 @@ void getCommand() {
     } while (c != '\n' && command_size < command_dim-1);
     command[command_size-1] = ' ';
 }
+static uint32_t color[] = { blue, green, red, yellow, purple, cyan, orange, pink, brown, lightGrey, lightBlue, lightGreen, lightRed, lightPink, lightBrown, darkBlue, darkGreen, darkRed, darkYellow, darkPurple,white};
+static int color_index = 0;
 
 void doCommand() {
     if (command[0] != ' ' && command[0] != '\n') {
@@ -62,7 +64,14 @@ void doCommand() {
             buffer_command_size = 0;
             buffer_command_start++;
         }
-        strCpy(command, buffer_command[buffer_command_size++]);   
+        strCpy(command, buffer_command[buffer_command_size++]);
+        if (strCmp(command, "color ") == 0) {
+            setFontColor(color[color_index]);
+            color_index = (color_index+1)%26;
+        }else if (strCmp(command, "date ")==0){
+            char * time = getTime();
+            strCpy(time, buffer_command[buffer_command_size++]);
+        }
     }
 }
 
@@ -81,12 +90,14 @@ void printCommands() {
     for ( ; i < buffer_command_size; i++) {
         setCursor(COMMAND_X, COMMAND_Y - (buffer_command_size-i)*2);
         print(buffer_command[i]);
+        char clean[]="                                                                                                                                                                                                                                                       ";
+        printByLenght(clean,20);//limpia la linea, hacerlo mejor
     }
-    int j = 0;
-    for ( ; j < i; j++) {
-        setCursor(COMMAND_X, COMMAND_Y - (i-j)*2);
-        print(buffer_command[j]);
-    }
+    //int j = 0;
+    // for ( ; j < i; j++) {
+    //     setCursor(COMMAND_X, COMMAND_Y - (i-j)*2);
+    //     print(buffer_command[j]);
+    // }
     
 }
     
