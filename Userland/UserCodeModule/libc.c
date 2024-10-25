@@ -3,11 +3,11 @@
 extern uint64_t sys_call(uint64_t rax, uint64_t rdi, uint64_t rsi, uint64_t r10, uint64_t r8);
 extern void sys_Write();
 
-setFontColor(uint32_t hexColor) {
+void setFontColor(uint32_t hexColor) {
 	sys_call(7, hexColor, 0, 0, 0);
 }
 
-printByLenght(char * buf, uint64_t lenght) {
+void nprint(char * buf, uint64_t lenght) {
 	sys_call(1, 1, (uint64_t) buf, lenght, 0);
 }
 
@@ -88,6 +88,12 @@ void sleep(uint64_t seconds){
 void strCpy(char * source, char * dest) {
     while ((*(dest++) = *(source++)) != '\0') {
         ;
+    }
+}
+
+void strNCpy(char * source, char * dest, int n) {
+    while (n-- > 0) {
+        (*(dest++) = *(source++));
     }
 }
 

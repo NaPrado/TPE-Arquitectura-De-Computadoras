@@ -7,7 +7,11 @@
 #ifndef _LIBC_H_
 #define _LIBC_H_
 
+void setFontColor(uint32_t hexColor);
+
 void print(char * buf);
+
+void nprint(char * buf, uint64_t lenght);
 
 void scan(char * buf, uint32_t count);
 
@@ -24,6 +28,8 @@ void setCursor(uint32_t x, uint32_t y);
 void sleep(uint64_t seconds);
 
 void strCpy(char * source, char * dest);
+
+void strNCpy(char * source, char * dest, int n);
 
 int strCmp(const char * s1,const char * s2);
 

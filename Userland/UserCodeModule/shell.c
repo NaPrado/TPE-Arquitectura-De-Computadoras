@@ -27,7 +27,7 @@ static char command[(DIM_CHAR_X-4)*2];
 
 static int buffer_command_start = 0;
 static int buffer_command_size = 0;
-static char buffer_command[(DIM_CHAR_X-4)*2][(DIM_CHAR_Y-4)/2];
+static char buffer_command[2][DIM_CHAR_X*2];
 
 
 static uint32_t pos_x = COMMAND_LINE_X;
@@ -56,7 +56,7 @@ void getCommand() {
             command_size -= command_size>0 ? 1 : 0;  // le resto solo si es mayor a 0
             command[command_size] = ' ';
         }
-            setCursor(COMMAND_LINE_X, COMMAND_LINE_Y);
+        setCursor(COMMAND_LINE_X, COMMAND_LINE_Y);
         print(command);
     } while (c != '\n' && command_size < command_dim-1);
     command[command_size-1] = 0;
@@ -69,16 +69,17 @@ static int fullLines = 0;
 
 void doCommand() {
     if (command[0] != 0 && command[0] != '\n') {
-        if (buffer_command_size == 21){//(DIM_CHAR_Y-4)/2) {
-            fullLines=1;
-            buffer_command_size = 0;
-            buffer_command_start++;
-        }
+        // if (buffer_command_size == (DIM_CHAR_Y-4)/2){
+        //     fullLines=1;
+        //     buffer_command_size = 0;
+        //     buffer_command_start++;
+        // }
         // strCpy(command, buffer_command[buffer_command_size++]);
-        strCpy(command, buffer_command[0]);
+
+        strNCpy(command, buffer_command[0], command_dim);
         if (strCaseCmp(command, "color") == 0) {
             setFontColor(color[color_index]);
-            color_index = (color_index+1)%26;
+            color_index = (color_index+1)%21;
             strCpy("New color setted", buffer_command[1]);
         }else if (strCmp(command, "date")==0){
             char * time = getTime();
@@ -93,12 +94,11 @@ void doCommand() {
 
 void cleanCommand() {
     for (int i = 0; i < command_size; i++) {
-        command[i] = ' ';
+        command[i] = '\0';
     }
-    command[command_size-1] = '\0';
     command_size = 0;
     setCursor(COMMAND_LINE_X, COMMAND_LINE_Y);
-    print(command);
+    nprint(command, command_dim);
 }
 
 void printCommands() {
@@ -113,11 +113,12 @@ void printCommands() {
     // }
     
     setCursor(0, COMMAND_LINE_Y-4);
-    char clean[DIM_CHAR_X*4]={0};
-    printByLenght(clean, DIM_CHAR_X*4); //limpia la linea, usar defines
+    char clean[DIM_CHAR_X*4]={0x00};
+    nprint(clean, DIM_CHAR_X*4); //limpia la linea, usar defines
     
     setCursor(COMMAND_LINE_X, COMMAND_LINE_Y-4);
     print(buffer_command[0]);
+
     setCursor(COMMAND_LINE_X, COMMAND_LINE_Y-2);
     print(buffer_command[1]);
 
