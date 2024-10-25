@@ -25,9 +25,9 @@ void sys_write(FDS fd, const char *buf, size_t count) {
     if(fd == STDOUT || fd == STDERR) {
         int i = 0;
         for( ; i < count; i++) {
-            drawchar(buf[i], ((cursorX+i)*CHAR_WIDTH)%(DIM_X), cursorY*CHAR_HEIGHT + (((cursorX+i)*CHAR_WIDTH) >= (DIM_X))*CHAR_HEIGHT,(fd==STDOUT)?color:0xFF0000, 0x000000);
+            drawchar(buf[i], ((cursorX+i)*CHAR_WIDTH)%(DIM_X), (cursorY + ((cursorX+i)*CHAR_WIDTH)/DIM_X) * CHAR_HEIGHT, (fd==STDOUT)?color:0xFF0000, 0x000000);
         }
-        cursorX += i;
+        cursorX += i%(DIM_X/CHAR_WIDTH);
     }
     return;
 }
@@ -39,9 +39,6 @@ void readChars(char *buf, size_t count) {
         char c=nextKey();
         if (c == -1) {
             i--;
-        // } else if (c == '\b'){
-        //     i--;
-        //     buf[i] = 0;
         } else {
             buf[i] = c;
         }
