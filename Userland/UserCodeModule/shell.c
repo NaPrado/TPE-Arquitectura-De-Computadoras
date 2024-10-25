@@ -11,8 +11,8 @@
 #define DIM_CHAR_Y (DIM_Y/CHAR_HEIGHT)
 #define DIM_CHAR_X (DIM_X/CHAR_WIDTH)
 
-#define COMMAND_X 4
-#define COMMAND_Y (DIM_CHAR_Y-4)
+#define COMMAND_LINE_X 4                        // Pos de x de la linea de comandos
+#define COMMAND_LINE_Y (DIM_CHAR_Y-4)           // Pos de y de la linea de comandos
 
 static void inicializeShell();
 static void getCommand();
@@ -30,8 +30,8 @@ static int buffer_command_size = 0;
 static char buffer_command[(DIM_CHAR_X-4)*2][(DIM_CHAR_Y-4)/2];
 
 
-static uint32_t pos_x = COMMAND_X;
-static uint32_t pos_y = COMMAND_Y;
+static uint32_t pos_x = COMMAND_LINE_X;
+static uint32_t pos_y = COMMAND_LINE_Y;
 
 
 void shell() {
@@ -56,7 +56,7 @@ void getCommand() {
             command_size -= command_size>0 ? 1 : 0;  // le resto solo si es mayor a 0
             command[command_size] = ' ';
         }
-            setCursor(COMMAND_X, COMMAND_Y);
+            setCursor(COMMAND_LINE_X, COMMAND_LINE_Y);
         print(command);
     } while (c != '\n' && command_size < command_dim-1);
     command[command_size-1] = 0;
@@ -74,15 +74,19 @@ void doCommand() {
             buffer_command_size = 0;
             buffer_command_start++;
         }
-        //strCpy(command, buffer_command[buffer_command_size++]);
-        if (strCmp(command, "color") == 0) {
+        // strCpy(command, buffer_command[buffer_command_size++]);
+        strCpy(command, buffer_command[0]);
+        if (strCaseCmp(command, "color") == 0) {
             setFontColor(color[color_index]);
             color_index = (color_index+1)%26;
+            strCpy("New color setted", buffer_command[1]);
         }else if (strCmp(command, "date")==0){
             char * time = getTime();
-            strCpy(time, buffer_command[buffer_command_size++]);
+            // strCpy(time, buffer_command[buffer_command_size++]);
+            strCpy(time, buffer_command[1]);
         }else{
-            strCpy("Command not found", buffer_command[buffer_command_size++]);
+            // strCpy("Command not found", buffer_command[buffer_command_size++]);
+            strCpy("Command not found", buffer_command[1]);
         }
     }
 }
@@ -93,31 +97,35 @@ void cleanCommand() {
     }
     command[command_size-1] = '\0';
     command_size = 0;
-    setCursor(COMMAND_X, COMMAND_Y);
+    setCursor(COMMAND_LINE_X, COMMAND_LINE_Y);
     print(command);
 }
 
 void printCommands() {
-    int i = buffer_command_start;
-    int count = 0;
-    int toPrint = fullLines?21:buffer_command_size;
-    for ( ; i < buffer_command_start+1; i++) {
-        setCursor(COMMAND_X, COMMAND_Y - (toPrint-i)*2);
-        print(buffer_command[i]);
-        char clean[120]={0};
-        printByLenght(clean,120-strlen(buffer_command[i])); //limpia la linea, usar defines
-    }
-    //int j = 0;
-    // for ( ; j < i; j++) {
-    //     setCursor(COMMAND_X, COMMAND_Y - (i-j)*2);
-    //     print(buffer_command[j]);
+    // int i = buffer_command_start;
+    // int count = 0;
+    // int toPrint = fullLines?21:buffer_command_size;
+    // for ( ; i < toPrint; i++) {
+    //     setCursor(COMMAND_LINE_X, COMMAND_LINE_Y - (toPrint-i)*2);
+    //     print(buffer_command[i]);
+    //     char clean[120]={0};
+    //     printByLenght(clean,120-strlen(buffer_command[i])); //limpia la linea, usar defines
     // }
-    /*QUE HACE ESTO WTF*/
+    
+    setCursor(0, COMMAND_LINE_Y-4);
+    char clean[DIM_CHAR_X*4]={0};
+    printByLenght(clean, DIM_CHAR_X*4); //limpia la linea, usar defines
+    
+    setCursor(COMMAND_LINE_X, COMMAND_LINE_Y-4);
+    print(buffer_command[0]);
+    setCursor(COMMAND_LINE_X, COMMAND_LINE_Y-2);
+    print(buffer_command[1]);
+
 }
 
 
 void inicializeShell() {
-    setCursor(COMMAND_X-2, COMMAND_Y);
+    setCursor(COMMAND_LINE_X-2, COMMAND_LINE_Y);
     setFontColor(white);
     print("> ");
 }
