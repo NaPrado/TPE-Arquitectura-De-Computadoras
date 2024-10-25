@@ -101,15 +101,33 @@ int strCmp(const char * s1, const char * s2) {
     return cmp;
 }
 
-// strCmpCaseInsensitive(const char * s1, const char * s2) {
-// 	char s1Lower[strlen(s1)];
-// 	char s2Lower[strlen(s2)];
-// 	strCpy(s1Lower, s1);
-// 	strCpy(s2Lower, s2);
-// 	toLower(s1Lower);
-// 	toLower(s2Lower);
-// 	return strCmp(s1Lower, s2Lower);
-// }
+int isalpha(int c) {
+    return ('A' <= c && c <= 'Z') || ('a' <= c && c <= 'z');
+}
+
+int toupper(int c) {
+    if (isalpha(c) && c >= 'a') {
+        c -= ('a'-'A');
+    }
+    return c;
+}
+
+int tolower(int c) {
+    if (isalpha(c) && c <= 'Z') {
+        c += ('a'-'A');
+    }
+    return c;
+}
+
+int strCaseCmp(const char * s1, const char * s2) {
+	int cmp = 0;
+    while ((*(s1) != '\0' || *(s2) != '\0') && cmp == 0) {
+        cmp = toupper(*(s1)) - toupper(*(s2));
+		s1++;
+		s2++;
+    }
+    return cmp;
+}
 
 // int strStartsWith(const char * str, const char * start) {
 // 	int length=strlen(start);

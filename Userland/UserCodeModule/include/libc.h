@@ -27,7 +27,15 @@ void strCpy(char * source, char * dest);
 
 int strCmp(const char * s1,const char * s2);
 
-int strStartsWith(const char * str, const char * start);
+int strCaseCmp(const char * s1, const char * s2);
+
+int isalpha(int c);
+
+int toupper(int c);
+
+int tolower(int c);
+
+// int strStartsWith(const char * str, const char * start);
 
 enum colors{
     black = 0x000000,
