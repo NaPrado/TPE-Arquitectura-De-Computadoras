@@ -7,6 +7,14 @@
 #ifndef _LIBC_H_
 #define _LIBC_H_
 
+
+typedef struct {
+	int x;
+	int y;
+}Point;
+
+void drawRectangle(Point topLeft, Point downRigth, uint32_t color) ;
+
 void setFontColor(uint32_t hexColor);
 
 void print(char * buf);

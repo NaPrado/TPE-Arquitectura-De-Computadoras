@@ -8,6 +8,15 @@
 static void writeFiles(FDS fd, const char *buf, size_t count) {
     //TODO
 }
+
+static drawRectangle(Point* topLeft, Point* downRigth, uint32_t c) {
+    for (int i = topLeft->x; i < downRigth->x; i++) {
+        for (int j = topLeft->y; j < downRigth->y; j++) {
+            putPixel(c, i, j);
+        }
+    }
+}
+
 static int cursorX=0, cursorY=0;
 size_t sys_setCursor(int x, int y) {
     cursorX = x;
@@ -91,6 +100,12 @@ uint64_t sysCallDispatcher(uint64_t rax, ...) {
     }else if (rax == 7) {
         uint32_t hexColor = va_arg(args, uint32_t);
         setFontColor(hexColor);
+    }else if (rax == 8) {
+        Point* p1 = va_arg(args, Point*);
+        Point* p2 = va_arg(args, Point*);
+        uint32_t c = va_arg(args, uint32_t);
+        drawRectangle(p1,p2,c);
+        ret = 0;
     }else if (rax == 35) {
         int seconds = va_arg(args, int);
         sys_sleep(seconds);    

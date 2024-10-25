@@ -85,6 +85,11 @@ void doCommand() {
             char * time = getTime();
             // strCpy(time, buffer_command[buffer_command_size++]);
             strCpy(time, buffer_command[1]);
+        }else if (strCmp(command, "rec")==0){
+            Point p1 = {100, 100};
+            Point p2 = {200, 200};
+            drawRectangle(p1, p2, 0x00FF00);
+            strCpy("Rectangle drawn", buffer_command[1]);
         }else{
             // strCpy("Command not found", buffer_command[buffer_command_size++]);
             strCpy("Command not found", buffer_command[1]);
