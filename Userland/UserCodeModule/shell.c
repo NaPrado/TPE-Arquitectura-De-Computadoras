@@ -21,7 +21,7 @@ static void cleanCommand();
 static void printCommands();
 
 static char exit = 0;
-static const int command_dim = 120;//DIM_CHAR_X*2;
+static const int command_dim = DIM_CHAR_X*2;
 static int command_size = 0;
 static char command[(DIM_CHAR_X-4)*2];
 
@@ -43,18 +43,25 @@ void shell() {
         doCommand();
         printCommands();
 	}
+
 }
 
 void getCommand() {
     char c;
     do {
         c = getChar();
-        command[command_size++] = c;
-        setCursor(COMMAND_X, COMMAND_Y);
+        if (c != '\b') {
+            command[command_size++] = c;
+        } else {
+            command_size -= command_size>0 ? 1 : 0;  // le resto solo si es mayor a 0
+            command[command_size] = ' ';
+        }
+            setCursor(COMMAND_X, COMMAND_Y);
         print(command);
     } while (c != '\n' && command_size < command_dim-1);
     command[command_size-1] = 0;
 }
+
 static uint32_t color[] = { blue, green, red, yellow, purple, cyan, orange, pink, brown, lightGrey, lightBlue, lightGreen, lightRed, lightPink, lightBrown, darkBlue, darkGreen, darkRed, darkYellow, darkPurple,white};
 static int color_index = 0;
 
@@ -67,7 +74,7 @@ void doCommand() {
             buffer_command_size = 0;
             buffer_command_start++;
         }
-        strCpy(command, buffer_command[buffer_command_size++]);
+        //strCpy(command, buffer_command[buffer_command_size++]);
         if (strCmp(command, "color") == 0) {
             setFontColor(color[color_index]);
             color_index = (color_index+1)%26;
@@ -78,7 +85,6 @@ void doCommand() {
             strCpy("Command not found", buffer_command[buffer_command_size++]);
         }
     }
-    
 }
 
 void cleanCommand() {
@@ -95,11 +101,11 @@ void printCommands() {
     int i = buffer_command_start;
     int count = 0;
     int toPrint = fullLines?21:buffer_command_size;
-    for ( ; i < toPrint; i++) {
+    for ( ; i < buffer_command_start+1; i++) {
         setCursor(COMMAND_X, COMMAND_Y - (toPrint-i)*2);
         print(buffer_command[i]);
         char clean[120]={0};
-        printByLenght(clean,120-strlen(buffer_command[i]));//limpia la linea, usar defines
+        printByLenght(clean,120-strlen(buffer_command[i])); //limpia la linea, usar defines
     }
     //int j = 0;
     // for ( ; j < i; j++) {
@@ -108,7 +114,7 @@ void printCommands() {
     // }
     /*QUE HACE ESTO WTF*/
 }
-    
+
 
 void inicializeShell() {
     setCursor(COMMAND_X-2, COMMAND_Y);
