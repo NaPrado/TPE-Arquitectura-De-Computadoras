@@ -19,6 +19,7 @@ static void getCommand();
 static void doCommand();
 static void cleanCommand();
 static void printCommands();
+static void cleanScreen();
 
 static char exit = 0;
 static const int command_dim = DIM_CHAR_X*2;
@@ -38,12 +39,14 @@ void shell() {
     inicializeShell();
 
     while (!exit) {
+        printCommands();
         cleanCommand();
         getCommand();
         doCommand();
-        printCommands();
 	}
-
+    cleanScreen();
+    setCursor(COMMAND_LINE_X, COMMAND_LINE_Y);
+    print("exited");
 }
 
 void getCommand() {
@@ -81,11 +84,17 @@ void doCommand() {
             setFontColor(color[color_index]);
             color_index = (color_index+1)%21;
             strCpy("New color setted", buffer_command[1]);
-        }else if (strCmp(command, "date")==0){
+        } else if (strCmp(command, "date")==0) {
             char * time = getTime();
             // strCpy(time, buffer_command[buffer_command_size++]);
             strCpy(time, buffer_command[1]);
-        }else{
+        } else if (strCmp(command, "help")==0) {
+            strCpy("Help", buffer_command[1]);
+        } else if (strCmp(command, "exit")==0) {
+            strCpy("Exit", buffer_command[1]);
+            cleanScreen();
+            exit = 1;
+        } else {
             // strCpy("Command not found", buffer_command[buffer_command_size++]);
             strCpy("Command not found", buffer_command[1]);
         }
@@ -129,4 +138,10 @@ void inicializeShell() {
     setCursor(COMMAND_LINE_X-2, COMMAND_LINE_Y);
     setFontColor(white);
     print("> ");
+}
+
+void cleanScreen() {
+    char cleanScreen[DIM_CHAR_X*DIM_CHAR_Y] = {0x00};
+    setCursor(0,0);
+    nprint(cleanScreen, DIM_CHAR_X*DIM_CHAR_Y);
 }
