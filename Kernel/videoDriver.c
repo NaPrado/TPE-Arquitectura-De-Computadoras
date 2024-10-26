@@ -1809,9 +1809,9 @@ void drawchar(unsigned char c, int x, int y, int fgcolor, int bgcolor, int mult)
     putPixel(0xffffff, a%DIM_X, a/DIM_X);
     a++;
 
-	for (int cy = 0; cy < CHAR_HEIGHT; cy++) {
+	for (int cy = 0; cy < CHAR_HEIGHT*mult; cy+=mult) {
 		for (int cx = 0; cx < CHAR_WIDTH; cx++) {
-			putMultPixel(glyph[cy] & mask[cx] ? fgcolor : bgcolor, (x + cx)*mult, (y + cy), mult);
+			putMultPixel(glyph[cy/mult] & mask[cx] ? fgcolor : bgcolor, (x + cx)*mult, (y + cy), mult);
 		}
 	}
 }
