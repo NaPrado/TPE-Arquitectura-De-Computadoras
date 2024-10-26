@@ -41,7 +41,7 @@ static int zoom = 1;
 void shell() {
 
     while (!exit) {
-        inicializeShell();
+        //inicializeShell();
         printCommands();
         cleanCommand();
         getCommand();
@@ -72,6 +72,7 @@ static uint32_t color[] = { blue, green, red, yellow, purple, cyan, orange, pink
 static int color_index = 0;
 
 static int fullLines = 0;
+static int actual_Color=white;
 
 void doCommand() {
     if (command[0] != 0 && command[0] != '\n') {
@@ -84,7 +85,8 @@ void doCommand() {
 
         strNCpy(command, buffer_command[0], command_dim);
         if (strCaseCmp(command, "color") == 0) {
-            setFontColor(color[color_index]);
+            actual_Color=color[color_index];
+            setFontColor(actual_Color);
             color_index = (color_index+1)%21;
             strCpy("New color setted", buffer_command[1]);
         } else if (strCaseCmp(command, "date")==0) {
@@ -130,8 +132,13 @@ void cleanCommand() {
         command[i] = '\0';
     }
     command_size = 0;
-    setCursor(COMMAND_LINE_X, COMMAND_LINE_Y);
-    nprint(command, command_dim);
+    // setCursor(COMMAND_LINE_X, COMMAND_LINE_Y);
+    // nprint(command, command_dim);
+    setCursor(COMMAND_LINE_X-2, COMMAND_LINE_Y);
+    setFontColor(white);
+    print("> ");
+    sleep(10);
+    setFontColor(actual_Color);
 }
 
 void printCommands() {
@@ -145,12 +152,13 @@ void printCommands() {
     //     printByLenght(clean,120-strlen(buffer_command[i])); //limpia la linea, usar defines
     // }
 
-    char clean[DIM_CHAR_X*4]={0x00};        //limpia la linea, usar defines
-    for (int i = 1; i <= zoom; i++) {
-        setCursor(0, COMMAND_LINE_Y-4*i);
-        nprint(clean, DIM_CHAR_X*4); 
-    }
+    // char clean[DIM_CHAR_X*4]={0x00};       
+    // for (int i = 1; i <= zoom; i++) {
+    //     setCursor(0, COMMAND_LINE_Y-4*i);
+    //     nprint(clean, DIM_CHAR_X*4); 
+    // }
 
+    drawRectangle((Point){0, CHAR_HEIGHT*4*zoom}, (Point){DIM_X, DIM_Y}, 0x000000);
     
     setCursor(COMMAND_LINE_X, COMMAND_LINE_Y-4*zoom);
     print(buffer_command[0]);
@@ -161,11 +169,11 @@ void printCommands() {
 }
 
 
-void inicializeShell() {
-    setCursor(COMMAND_LINE_X-2, COMMAND_LINE_Y);
-    setFontColor(white);
-    print("> ");
-}
+// void inicializeShell() {
+//     setCursor(COMMAND_LINE_X-2, COMMAND_LINE_Y);
+//     setFontColor(white);
+//     print("> ");
+// }
 
 void cleanScreen() {
     char cleanScreen[DIM_CHAR_X*DIM_CHAR_Y] = {0x00};

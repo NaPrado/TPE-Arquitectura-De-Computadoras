@@ -46,7 +46,6 @@ static void setFontColor(uint32_t hexColor) {
 
 static void sys_setZoom(int new_zoom) {
     zoom = new_zoom;
-    putPixel(0xf0f000, 50, 50);
 }
 
 static void sys_write(FDS fd, const char *buf, size_t count) {

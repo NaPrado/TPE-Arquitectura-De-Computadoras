@@ -1805,10 +1805,6 @@ void drawchar(unsigned char c, int x, int y, int fgcolor, int bgcolor, int mult)
 	int mask[8]={0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01};
 	unsigned char * glyph=font_bitmap+(int)c*16;
 
-    static int a = 0;
-    putPixel(0xffffff, a%DIM_X, a/DIM_X);
-    a++;
-
 	for (int cy = 0; cy < CHAR_HEIGHT*mult; cy+=mult) {
 		for (int cx = 0; cx < CHAR_WIDTH; cx++) {
 			putMultPixel(glyph[cy/mult] & mask[cx] ? fgcolor : bgcolor, (x + cx)*mult, (y + cy), mult);
