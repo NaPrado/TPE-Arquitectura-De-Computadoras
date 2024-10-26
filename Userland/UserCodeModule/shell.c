@@ -137,7 +137,6 @@ void cleanCommand() {
     setCursor(COMMAND_LINE_X-2, COMMAND_LINE_Y);
     setFontColor(white);
     print("> ");
-    sleep(10);
     setFontColor(actual_Color);
 }
 
