@@ -52,8 +52,10 @@ static void sys_setZoom(int new_zoom) {
 static void sys_write(FDS fd, const char *buf, size_t count) {
     if(fd == STDOUT || fd == STDERR) {
         int i = 0;
+        char increase[] = {0, 1, 3};
         for( ; i < count; i++) {
-            drawchar(buf[i], ((cursorX+i)*CHAR_WIDTH)%(DIM_X), (cursorY + ((cursorX+i)*CHAR_WIDTH)/DIM_X) * CHAR_HEIGHT * zoom, (fd==STDOUT)?color:0xFF0000, 0x000000, zoom);
+
+            drawchar(buf[i], ((cursorX+i)*CHAR_WIDTH)%(DIM_X), (cursorY + ((cursorX+i)*CHAR_WIDTH*zoom)/DIM_X * zoom ) * CHAR_HEIGHT, (fd==STDOUT)?color:0xFF0000, 0x000000, zoom);
         }
         cursorX += i%(DIM_X/(CHAR_WIDTH*zoom));
     }
