@@ -1796,7 +1796,7 @@ void putchar(char c, int x, int y) {
 static void putMultPixel(uint32_t hexColor, uint64_t x, uint64_t y, int mult) {
     for (int i = 0; i < mult; i++) {
         for (int j = 0; j < mult; j++) {
-			putPixel(hexColor, x+i, y+i);
+			putPixel(hexColor, x+i, y+j);
         }
     }
 }

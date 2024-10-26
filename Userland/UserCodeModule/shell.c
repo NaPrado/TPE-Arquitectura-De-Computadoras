@@ -38,9 +38,9 @@ static int zoom = 1;
 
 
 void shell() {
-    inicializeShell();
 
     while (!exit) {
+        inicializeShell();
         printCommands();
         cleanCommand();
         getCommand();
@@ -142,7 +142,7 @@ void printCommands() {
     //     printByLenght(clean,120-strlen(buffer_command[i])); //limpia la linea, usar defines
     // }
 
-    char clean[DIM_CHAR_X*4]={0x00};    //limpia la linea, usar defines
+    char clean[DIM_CHAR_X*4]={0x00};        //limpia la linea, usar defines
     for (int i = 1; i <= zoom; i++) {
         setCursor(0, COMMAND_LINE_Y-4*i);
         nprint(clean, DIM_CHAR_X*4); 
