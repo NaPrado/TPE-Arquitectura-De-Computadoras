@@ -19,6 +19,7 @@ static void getCommand();
 static void doCommand();
 static void cleanCommand();
 static void printCommands();
+static void cleanScreen();
 
 static char exit = 0;
 static const int command_dim = DIM_CHAR_X*2;
@@ -33,17 +34,21 @@ static char buffer_command[2][DIM_CHAR_X*2];
 static uint32_t pos_x = COMMAND_LINE_X;
 static uint32_t pos_y = COMMAND_LINE_Y;
 
+static zoom = 1;
+
 
 void shell() {
     inicializeShell();
 
     while (!exit) {
+        printCommands();
         cleanCommand();
         getCommand();
         doCommand();
-        printCommands();
 	}
-
+    cleanScreen();
+    setCursor(COMMAND_LINE_X, COMMAND_LINE_Y);
+    print("exited");
 }
 
 void getCommand() {
@@ -81,7 +86,7 @@ void doCommand() {
             setFontColor(color[color_index]);
             color_index = (color_index+1)%21;
             strCpy("New color setted", buffer_command[1]);
-        }else if (strCmp(command, "date")==0){
+        } else if (strCmp(command, "date")==0) {
             char * time = getTime();
             // strCpy(time, buffer_command[buffer_command_size++]);
             strCpy(time, buffer_command[1]);
@@ -90,7 +95,27 @@ void doCommand() {
             Point p2 = {200, 200};
             drawRectangle(p1, p2, 0x00FF00);
             strCpy("Rectangle drawn", buffer_command[1]);
-        }else{
+        } else if (strCmp(command, "help")==0) {
+            strCpy("Help", buffer_command[1]);
+        } else if (strCaseCmp(command, "zoom in") == 0) {
+            if (zoom <= 3) { 
+                strCpy("Zoomed in", buffer_command[1]);
+                setZoom(++zoom);
+            } else {
+                strCpy("Max zoom possible", buffer_command[1]);
+            }
+        } else if (strCaseCmp(command, "zoom out") == 0) {
+            if (zoom > 1) { 
+                strCpy("Zoomed out", buffer_command[1]);
+                setZoom(--zoom);
+            } else {
+                strCpy("Min zoom possible", buffer_command[1]);
+            }
+        } else if (strCmp(command, "exit")==0) {
+            strCpy("Exit", buffer_command[1]);
+            cleanScreen();
+            exit = 1;
+        } else {
             // strCpy("Command not found", buffer_command[buffer_command_size++]);
             strCpy("Command not found", buffer_command[1]);
         }
@@ -134,4 +159,10 @@ void inicializeShell() {
     setCursor(COMMAND_LINE_X-2, COMMAND_LINE_Y);
     setFontColor(white);
     print("> ");
+}
+
+void cleanScreen() {
+    char cleanScreen[DIM_CHAR_X*DIM_CHAR_Y] = {0x00};
+    setCursor(0,0);
+    nprint(cleanScreen, DIM_CHAR_X*DIM_CHAR_Y);
 }

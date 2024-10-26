@@ -49,6 +49,8 @@ int toupper(int c);
 
 int tolower(int c);
 
+void setZoom(char zoom);
+
 // int strStartsWith(const char * str, const char * start);
 
 enum colors{
