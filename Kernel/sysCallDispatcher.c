@@ -34,8 +34,6 @@ static drawRectangle(Point* topLeft, Point* downRigth, uint32_t c) {
     }
 }
 
-static int cursorX=0, cursorY=0;
-
 static size_t sys_setCursor(int x, int y) {
     cursorX = x;
     cursorY = y;

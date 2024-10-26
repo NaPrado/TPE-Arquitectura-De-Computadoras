@@ -86,16 +86,16 @@ void doCommand() {
             setFontColor(color[color_index]);
             color_index = (color_index+1)%21;
             strCpy("New color setted", buffer_command[1]);
-        } else if (strCmp(command, "date")==0) {
+        } else if (strCaseCmp(command, "date")==0) {
             char * time = getTime();
             // strCpy(time, buffer_command[buffer_command_size++]);
             strCpy(time, buffer_command[1]);
-        }else if (strCmp(command, "rec")==0){
+        }else if (strCaseCmp(command, "rec")==0){
             Point p1 = {100, 100};
             Point p2 = {200, 200};
             drawRectangle(p1, p2, 0x00FF00);
             strCpy("Rectangle drawn", buffer_command[1]);
-        } else if (strCmp(command, "help")==0) {
+        } else if (strCaseCmp(command, "help")==0) {
             strCpy("Help", buffer_command[1]);
         } else if (strCaseCmp(command, "zoom in") == 0) {
             if (zoom <= 3) { 
@@ -111,7 +111,7 @@ void doCommand() {
             } else {
                 strCpy("Min zoom possible", buffer_command[1]);
             }
-        } else if (strCmp(command, "exit")==0) {
+        } else if (strCaseCmp(command, "exit")==0) {
             strCpy("Exit", buffer_command[1]);
             cleanScreen();
             exit = 1;
