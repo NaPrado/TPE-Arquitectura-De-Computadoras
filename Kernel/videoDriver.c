@@ -1793,14 +1793,25 @@ void putchar(char c, int x, int y) {
 //     }
 // }
 
+static void putMultPixel(uint32_t hexColor, uint64_t x, uint64_t y, int mult) {
+    for (int i = 0; i < mult; i++) {
+        for (int j = 0; j < mult; j++) {
+			putPixel(hexColor, x+i, y+i);
+        }
+    }
+}
+
 void drawchar(unsigned char c, int x, int y, int fgcolor, int bgcolor, int mult) {
 	int mask[8]={0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01};
-	unsigned char *glyph=font_bitmap+(int)c*16;
+	unsigned char * glyph=font_bitmap+(int)c*16;
 
-	for (int cy = 0; cy < CHAR_HEIGHT*mult; cy++) {
-		for (int cx = 0; cx < CHAR_WIDTH*mult; cx++) {
-			putPixel(glyph[cy/mult] & mask[cx/mult] ? fgcolor : bgcolor, x + cx, y + cy);
+    static int a = 0;
+    putPixel(0xffffff, a%DIM_X, a/DIM_X);
+    a++;
+
+	for (int cy = 0; cy < CHAR_HEIGHT; cy++) {
+		for (int cx = 0; cx < CHAR_WIDTH; cx++) {
+			putMultPixel(glyph[cy] & mask[cx] ? fgcolor : bgcolor, (x + cx)*mult, (y + cy), mult);
 		}
 	}
-
 }

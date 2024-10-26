@@ -34,7 +34,7 @@ static char buffer_command[2][DIM_CHAR_X*2];
 static uint32_t pos_x = COMMAND_LINE_X;
 static uint32_t pos_y = COMMAND_LINE_Y;
 
-static zoom = 1;
+static int zoom = 1;
 
 
 void shell() {
@@ -141,15 +141,18 @@ void printCommands() {
     //     char clean[120]={0};
     //     printByLenght(clean,120-strlen(buffer_command[i])); //limpia la linea, usar defines
     // }
+
+    char clean[DIM_CHAR_X*4]={0x00};    //limpia la linea, usar defines
+    for (int i = 1; i <= zoom; i++) {
+        setCursor(0, COMMAND_LINE_Y-4*i);
+        nprint(clean, DIM_CHAR_X*4); 
+    }
+
     
-    setCursor(0, COMMAND_LINE_Y-4);
-    char clean[DIM_CHAR_X*4]={0x00};
-    nprint(clean, DIM_CHAR_X*4); //limpia la linea, usar defines
-    
-    setCursor(COMMAND_LINE_X, COMMAND_LINE_Y-4);
+    setCursor(COMMAND_LINE_X, COMMAND_LINE_Y-4*zoom);
     print(buffer_command[0]);
 
-    setCursor(COMMAND_LINE_X, COMMAND_LINE_Y-2);
+    setCursor(COMMAND_LINE_X, COMMAND_LINE_Y-2*zoom);
     print(buffer_command[1]);
 
 }
