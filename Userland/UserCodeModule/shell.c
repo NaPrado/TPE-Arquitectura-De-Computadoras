@@ -1,6 +1,7 @@
 #include <shell.h>
 #include <libc.h>
 #include <stdint.h>
+#include <snake.h>
 
 #define DIM_X 1024
 #define DIM_Y 768
@@ -111,6 +112,8 @@ void doCommand() {
             } else {
                 strCpy("Min zoom possible", buffer_command[1]);
             }
+        } else if (strCaseCmp(command, "snake")==0) {
+            snake();
         } else if (strCaseCmp(command, "exit")==0) {
             strCpy("Exit", buffer_command[1]);
             cleanScreen();
