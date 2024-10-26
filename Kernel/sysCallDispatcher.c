@@ -46,6 +46,7 @@ static void setFontColor(uint32_t hexColor) {
 
 static void sys_setZoom(int new_zoom) {
     zoom = new_zoom;
+    putPixel(0xf0f000, 50, 50);
 }
 
 static void sys_write(FDS fd, const char *buf, size_t count) {
@@ -121,7 +122,7 @@ uint64_t sysCallDispatcher(uint64_t rax, ...) {
         uint32_t hexColor = va_arg(args, uint32_t);
         setFontColor(hexColor);
     } else if (rax == 8) {
-        char new_zoom = va_arg(args, char);
+        uint64_t new_zoom = va_arg(args, uint64_t);
         sys_setZoom(new_zoom);
     }else if (rax == 9) {
         Point* p1 = va_arg(args, Point*);

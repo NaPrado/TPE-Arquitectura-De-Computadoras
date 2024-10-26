@@ -139,7 +139,7 @@ int strCaseCmp(const char * s1, const char * s2) {
 }
 
 void setZoom(char zoom) {
-    sys_call(8, zoom, 0, 0, 0);
+    sys_call(8, (uint64_t)zoom, 0, 0, 0);
 }
 
 // int strStartsWith(const char * str, const char * start) {
