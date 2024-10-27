@@ -27,20 +27,20 @@ static int zoom = 1;
 static char exit = 0;
 static const int command_dim = DIM_CHAR_X*2 - 8;  // maximo tamaño de comando, sacando margenes 
 static int command_size = 0;
-static char command[(DIM_CHAR_X-4)*2];
-
-static int buffer_command_start = 0;
-static int buffer_command_size = 0;
-static char buffer_command[2][DIM_CHAR_X*2];
+static char command[(DIM_CHAR_X-4)*2];              // buffer de commando escrito
+static char response[DIM_CHAR_X*2];                 // buffer de respuesta de commando
+static char commandDone = 0;                        // flag para checkear si un comando se realizo (no prints de mas)
 
 void shell() {
 
     while (!exit) {
-        //inicializeShell();
-        printCommands();
-        cleanCommand();
+        inicializeShell();
         getCommand();
         doCommand();
+        if (commandDone) {
+            printCommands();
+        }
+        cleanCommand();
 	}
     cleanScreen();
     setCursor(COMMAND_LINE_X, COMMAND_LINE_Y);
@@ -60,7 +60,7 @@ void getCommand() {
         setCursor(COMMAND_LINE_X, COMMAND_LINE_Y);
         print(command);
     } while (c != '\n' && command_size < (command_dim-1)/zoom - 1);
-    command[command_size-1] = 0;
+    command[command_size-1] = '\0';
 }
 
 static uint32_t color[] = { blue, green, red, yellow, purple, cyan, orange, pink, brown, lightGrey, lightBlue, lightGreen, lightRed, lightPink, lightBrown, darkBlue, darkGreen, darkRed, darkYellow, darkPurple,white};
@@ -70,60 +70,54 @@ static int fullLines = 0;
 static int actual_Color=white;
 
 void doCommand() {
-    if (command[0] != 0 && command[0] != '\n') {
-        // if (buffer_command_size == (DIM_CHAR_Y-4)/2){
-        //     fullLines=1;
-        //     buffer_command_size = 0;
-        //     buffer_command_start++;
-        // }
-        // strCpy(command, buffer_command[buffer_command_size++]);
-
-        strNCpy(command, buffer_command[0], command_dim);
+    if (command[0] != '\0' && command[0] != '\n') {
+        commandDone = 1;
         if (strCaseCmp(command, "color") == 0) {
             actual_Color=color[color_index];
             setFontColor(actual_Color);
             color_index = (color_index+1)%21;
-            strCpy("New color setted", buffer_command[1]);
+            strCpy("New color setted", response);
         } else if (strCaseCmp(command, "date")==0) {
             char * time = getTime();
-            // strCpy(time, buffer_command[buffer_command_size++]);
-            strCpy(time, buffer_command[1]);
+            strCpy(time, response);
         }else if (strCaseCmp(command, "rec")==0){
             Point p1 = {100, 100};
             Point p2 = {200, 200};
             drawRectangle(p1, p2, 0x00FF00);
-            strCpy("Rectangle drawn", buffer_command[1]);
+            strCpy("Rectangle drawn", response);
         } else if (strCaseCmp(command, "help")==0) {
-            strCpy("Help", buffer_command[1]);
+            strCpy("Help", response);
         } else if (strCaseCmp(command, "zoom in") == 0) {
             if (zoom <= 3) { 
-                strCpy("Zoomed in", buffer_command[1]);
+                cleanScreen();
+                strCpy("Zoomed in", response);
                 setZoom(++zoom);
             } else {
-                strCpy("Max zoom possible", buffer_command[1]);
+                strCpy("Max zoom possible", response);
             }
         } else if (strCaseCmp(command, "zoom out") == 0) {
             if (zoom > 1) { 
-                strCpy("Zoomed out", buffer_command[1]);
+                cleanScreen();
+                strCpy("Zoomed out", response);
                 setZoom(--zoom);
             } else {
-                strCpy("Min zoom possible", buffer_command[1]);
+                strCpy("Min zoom possible", response);
             }
         } else if (strCaseCmp(command, "snake")==0) {
             snake();
             setZoom(zoom);
             setBackGroundColor(black);
             setFontColor(actual_Color);
-            strCpy("Snake exited", buffer_command[1]);
+            strCpy("Snake exited", response);
             cleanScreen();
         } else if (strCaseCmp(command, "exit")==0) {
-            strCpy("Exit", buffer_command[1]);
-            cleanScreen();
+            strCpy("Exit", response);
             exit = 1;
         } else {
-            // strCpy("Command not found", buffer_command[buffer_command_size++]);
-            strCpy("Command not found", buffer_command[1]);
+            strCpy("Command not found", response);
         }
+    } else {
+        commandDone = 0;
     }
 }
 
@@ -132,50 +126,28 @@ void cleanCommand() {
         command[i] = '\0';
     }
     command_size = 0;
-    // setCursor(COMMAND_LINE_X, COMMAND_LINE_Y);
-    // nprint(command, command_dim);
     setCursor(COMMAND_LINE_X-2, COMMAND_LINE_Y);
-    setFontColor(white);
-    print("> ");
-    setFontColor(actual_Color);
 }
 
 void printCommands() {
-    // int i = buffer_command_start;
-    // int count = 0;
-    // int toPrint = fullLines?21:buffer_command_size;
-    // for ( ; i < toPrint; i++) {
-    //     setCursor(COMMAND_LINE_X, COMMAND_LINE_Y - (toPrint-i)*2);
-    //     print(buffer_command[i]);
-    //     char clean[120]={0};
-    //     printByLenght(clean,120-strlen(buffer_command[i])); //limpia la linea, usar defines
-    // }
 
-    // char clean[DIM_CHAR_X*4]={0x00};       
-    // for (int i = 1; i <= zoom; i++) {
-    //     setCursor(0, COMMAND_LINE_Y-4*i);
-    //     nprint(clean, DIM_CHAR_X*4); 
-    // }
-
-    drawRectangle((Point){0, CHAR_HEIGHT*4*zoom}, (Point){DIM_X, DIM_Y}, 0x000000);
+    drawRectangle((Point){1, (COMMAND_LINE_Y-4*zoom)*CHAR_HEIGHT}, (Point){DIM_X, DIM_Y-2*zoom*CHAR_HEIGHT}, 0x000000);
     
     setCursor(COMMAND_LINE_X, COMMAND_LINE_Y-4*zoom);
-    print(buffer_command[0]);
+    print(command);
 
     setCursor(COMMAND_LINE_X, COMMAND_LINE_Y-2*zoom);
-    print(buffer_command[1]);
+    print(response);
 
 }
 
 
-// void inicializeShell() {
-//     setCursor(COMMAND_LINE_X-2, COMMAND_LINE_Y);
-//     setFontColor(white);
-//     print("> ");
-// }
+void inicializeShell() {
+    setCursor(COMMAND_LINE_X-2, COMMAND_LINE_Y);
+    setFontColor(white);
+    print("> ");
+}
 
 void cleanScreen() {
-    char cleanScreen[DIM_CHAR_X*DIM_CHAR_Y] = {0x00};
-    setCursor(0,0);
-    nprint(cleanScreen, DIM_CHAR_X*DIM_CHAR_Y);
+    drawRectangle((Point){1, (COMMAND_LINE_Y-4*zoom)*CHAR_HEIGHT}, (Point){DIM_X, DIM_X}, 0x000000);
 }
