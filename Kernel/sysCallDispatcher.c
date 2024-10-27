@@ -52,7 +52,7 @@ static void sys_write(FDS fd, const char *buf, size_t count) {
         char increase[] = {0, 1, 3};
         for( ; i < count; i++) {
 
-            drawchar(buf[i], ((cursorX+i)*CHAR_WIDTH)%(DIM_X), (cursorY + ((cursorX+i)*CHAR_WIDTH*zoom)/DIM_X * zoom ) * CHAR_HEIGHT, (fd==STDOUT)?color:0xFF0000, backgroundColor, zoom);
+            drawchar(buf[i], ((cursorX+i)*CHAR_WIDTH)%(DIM_X/zoom-CHAR_WIDTH), (cursorY + ((cursorX+i+1)*CHAR_WIDTH*zoom)/DIM_X * zoom ) * CHAR_HEIGHT, (fd==STDOUT)?color:0xFF0000, backgroundColor, zoom);
         }
         cursorX += i%(DIM_X/(CHAR_WIDTH*zoom));
     }

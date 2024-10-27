@@ -12,8 +12,8 @@
 #define DIM_CHAR_Y (DIM_Y/CHAR_HEIGHT)
 #define DIM_CHAR_X (DIM_X/CHAR_WIDTH)
 
-#define COMMAND_LINE_X 4                        // Pos de x de la linea de comandos
-#define COMMAND_LINE_Y (DIM_CHAR_Y-4)           // Pos de y de la linea de comandos
+#define COMMAND_LINE_X (4-(zoom/3))                 // Pos de x de la linea de comandos en base al zoom
+#define COMMAND_LINE_Y (DIM_CHAR_Y-(4*zoom))        // Pos de y de la linea de comandos en base al zoom
 
 static void inicializeShell();
 static void getCommand();
@@ -22,21 +22,16 @@ static void cleanCommand();
 static void printCommands();
 static void cleanScreen();
 
+static int zoom = 1;
+
 static char exit = 0;
-static const int command_dim = DIM_CHAR_X*2;
+static const int command_dim = DIM_CHAR_X*2 - 8;  // maximo tamaño de comando, sacando margenes 
 static int command_size = 0;
 static char command[(DIM_CHAR_X-4)*2];
 
 static int buffer_command_start = 0;
 static int buffer_command_size = 0;
 static char buffer_command[2][DIM_CHAR_X*2];
-
-
-static uint32_t pos_x = COMMAND_LINE_X;
-static uint32_t pos_y = COMMAND_LINE_Y;
-
-static int zoom = 1;
-
 
 void shell() {
 
@@ -64,7 +59,7 @@ void getCommand() {
         }
         setCursor(COMMAND_LINE_X, COMMAND_LINE_Y);
         print(command);
-    } while (c != '\n' && command_size < command_dim-1);
+    } while (c != '\n' && command_size < (command_dim-1)/zoom - 1);
     command[command_size-1] = 0;
 }
 

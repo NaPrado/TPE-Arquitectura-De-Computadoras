@@ -319,19 +319,19 @@ void keyboard_handler() {
     char release = scancode;
     release = release >> 7;
     char key = scancode & 0x7F;
-    if(scancode == CAPSLOCK) {
+    if (scancode == CAPSLOCK) {
         capslock =! capslock;
         return;
-    }else if ((key == LSHIFT || key == RSHIFT)) {
+    } else if ((key == LSHIFT || key == RSHIFT)) {
         shift =! release;
         return;
-    }else if (key == LCTRL || key == RCTRL){
+    } else if (key == LCTRL || key == RCTRL) {
         ctrl=!release;
         return;
-    }else if (key == LALT || key == RALT) {
+    } else if (key == LALT || key == RALT) {
         alt =! release;
         return;
-    }else{
+    } else {
         if (charsAtBuffer <= CHAR_BUFFER_DIM && !isSpecialKey(scancode) && !release){
             charBuffer[charBufferIndex++] = (shift^capslock) ? shiftedAscii[key] : notShiftedAscii[key];
             charBufferIndex = charBufferIndex % CHAR_BUFFER_DIM;
