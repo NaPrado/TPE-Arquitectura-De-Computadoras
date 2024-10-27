@@ -19,6 +19,7 @@ uint64_t sysCallDispatcher(uint64_t rax, ...);
 
 
 static uint32_t color = 0xFFFFFF;
+static uint32_t backgroundColor = 0x000000;
 static int cursorX=0, cursorY=0;
 static uint8_t zoom = 1;
 
@@ -26,13 +27,7 @@ static void writeFiles(FDS fd, const char *buf, size_t count) {
     // TODO
 }
 
-static drawRectangle(Point* topLeft, Point* downRigth, uint32_t c) {
-    for (int i = topLeft->x; i < downRigth->x; i++) {
-        for (int j = topLeft->y; j < downRigth->y; j++) {
-            putPixel(c, i, j);
-        }
-    }
-}
+
 
 static size_t sys_setCursor(int x, int y) {
     cursorX = x;
@@ -47,6 +42,9 @@ static void setFontColor(uint32_t hexColor) {
 static void sys_setZoom(int new_zoom) {
     zoom = new_zoom;
 }
+static changeBackgroundColor(uint32_t hexColor) {
+    backgroundColor = hexColor;
+}
 
 static void sys_write(FDS fd, const char *buf, size_t count) {
     if(fd == STDOUT || fd == STDERR) {
@@ -54,7 +52,7 @@ static void sys_write(FDS fd, const char *buf, size_t count) {
         char increase[] = {0, 1, 3};
         for( ; i < count; i++) {
 
-            drawchar(buf[i], ((cursorX+i)*CHAR_WIDTH)%(DIM_X), (cursorY + ((cursorX+i)*CHAR_WIDTH*zoom)/DIM_X * zoom ) * CHAR_HEIGHT, (fd==STDOUT)?color:0xFF0000, 0x000000, zoom);
+            drawchar(buf[i], ((cursorX+i)*CHAR_WIDTH)%(DIM_X), (cursorY + ((cursorX+i)*CHAR_WIDTH*zoom)/DIM_X * zoom ) * CHAR_HEIGHT, (fd==STDOUT)?color:0xFF0000, backgroundColor, zoom);
         }
         cursorX += i%(DIM_X/(CHAR_WIDTH*zoom));
     }
@@ -131,6 +129,9 @@ uint64_t sysCallDispatcher(uint64_t rax, ...) {
         uint32_t c = va_arg(args, uint32_t);
         drawRectangle(p1,p2,c);
         ret = 0;
+    }else if (rax == 10) {
+        uint32_t hexColor = va_arg(args, uint32_t);
+        changeBackgroundColor(hexColor);
     } else if (rax == 35) {
         int seconds = va_arg(args, int);
         sys_sleep(seconds);    

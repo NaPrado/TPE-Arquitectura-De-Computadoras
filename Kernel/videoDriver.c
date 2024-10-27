@@ -1793,6 +1793,7 @@ void putchar(char c, int x, int y) {
 //     }
 // }
 
+
 static void putMultPixel(uint32_t hexColor, uint64_t x, uint64_t y, int mult) {
     for (int i = 0; i < mult; i++) {
         for (int j = 0; j < mult; j++) {
@@ -1810,4 +1811,43 @@ void drawchar(unsigned char c, int x, int y, int fgcolor, int bgcolor, int mult)
 			putMultPixel(glyph[cy/mult] & mask[cx] ? fgcolor : bgcolor, (x + cx)*mult, (y + cy), mult);
 		}
 	}
+}
+int itoa(uint64_t value, char * buffer, int base) {
+    char *p = buffer;
+	char *p1, *p2;
+	uint32_t digits = 0;
+
+	//Calculate characters for each digit
+	do
+	{
+		uint32_t remainder = value % base;
+		*p++ = (remainder < 10) ? remainder + '0' : remainder + 'A' - 10;
+		digits++;
+	}
+	while (value /= base);
+
+	// Terminate string in buffer.
+	*p = 0;
+
+	//Reverse string in buffer.
+	p1 = buffer;
+	p2 = p - 1;
+	while (p1 < p2)
+	{
+		char tmp = *p1;
+		*p1 = *p2;
+		*p2 = tmp;
+		p1++;
+		p2--;
+	}
+
+	return digits;
+}
+
+void drawRectangle(Point* topLeft, Point* downRigth, uint32_t c) {
+    for (int i = topLeft->x; i < downRigth->x; i++) {
+        for (int j = topLeft->y; j < downRigth->y; j++) {
+            putPixel(c, i, j);
+        }
+    }
 }

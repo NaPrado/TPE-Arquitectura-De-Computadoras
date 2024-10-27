@@ -17,6 +17,8 @@ typedef struct {
     Direction dir;    // Current direction of the snake
 } Snake;
 
+#define CHAR_WIDTH 8
+#define CHAR_HEIGHT 16
 
 // // Function prototypes
 // void init_snake(Snake *snake, int initial_length, Point start_position);

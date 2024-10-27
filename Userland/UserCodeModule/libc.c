@@ -9,6 +9,9 @@ void drawRectangle(Point topLeft, Point downRigth, uint32_t color) {
 void setFontColor(uint32_t hexColor) {
 	sys_call(7, hexColor, 0, 0, 0);
 }
+void setBackGroundColor(uint32_t hexColor) {
+    sys_call(10, hexColor, 0, 0, 0);
+}
 
 void nprint(char * buf, uint64_t lenght) {
 	sys_call(1, 1, (uint64_t) buf, lenght, 0);

@@ -13,6 +13,8 @@ typedef struct {
 	int y;
 }Point;
 
+void setBackGroundColor(uint32_t hexColor);
+
 void drawRectangle(Point topLeft, Point downRigth, uint32_t color) ;
 
 void setFontColor(uint32_t hexColor);

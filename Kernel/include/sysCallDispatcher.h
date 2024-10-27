@@ -10,10 +10,7 @@ typedef enum{
     STDERR,
 } FDS;
 
-typedef struct {
-	int x;
-	int y;
-}Point;
+
 
 
 void syscallDispatcher(uint64_t rax, ...);
