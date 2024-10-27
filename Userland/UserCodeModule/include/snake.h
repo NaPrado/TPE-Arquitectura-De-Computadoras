@@ -12,7 +12,9 @@ typedef enum {
 
 // Structure to represent the snake
 typedef struct {
-    Point body[400];  // Array of blocks representing the snake's body
+    int body[400];  // Array of blocks representing the snake's body
+    int head;        // Index of the head of the snake in the body array
+    int tail;        // Index of the tail of the snake in the body array
     int length;       // Current length of the snake
     Direction dir;    // Current direction of the snake
 } Snake;

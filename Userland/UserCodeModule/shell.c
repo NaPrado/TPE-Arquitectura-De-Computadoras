@@ -116,6 +116,11 @@ void doCommand() {
             }
         } else if (strCaseCmp(command, "snake")==0) {
             snake();
+            setZoom(zoom);
+            setBackGroundColor(black);
+            setFontColor(actual_Color);
+            strCpy("Snake exited", buffer_command[1]);
+            cleanScreen();
         } else if (strCaseCmp(command, "exit")==0) {
             strCpy("Exit", buffer_command[1]);
             cleanScreen();

@@ -81,7 +81,14 @@ printOptions(){
     setCursor(2,8);
     print("2P");
     setCursor(2,11);
-    print("EXIT");
+    print("EXIT");    
+}
+
+void cleanScreen(){
+    drawRectangle((Point){0,0},(Point){DIM_X,DIM_Y},0x000000);
+}
+
+selector(){
     /*
 
     Player 1 controlers
@@ -93,10 +100,10 @@ printOptions(){
     J K L
 
     */
-    char c=getChar();
     drawselection();
-    while (c!='\n'){
-        
+    char c=0;
+    do
+    {
         if ((c == 'W' || c == 'w' || c == 'I' || c == 'i')&& option>1){
             option--;
             drawselection();
@@ -104,16 +111,20 @@ printOptions(){
             option++;
             drawselection();
         }
+        c=getChar();
         //doSound(c);
-    } 
-    
+    } while (c!='\n');
+    if (option==3){
+        cleanScreen();
+    }
     
 }
+
 
 int chooseOptions(){
     drawRectangle((Point){MENU_LEFT_MARGIN,MENU_TOP_MARGIN},(Point){MENU_RIGHT_MARGIN,MENU_BOTTOM_MARGIN},0xD0B000);
     printOptions();
-    //Selector();
+    selector();
 }
 
 snakeInit(){
@@ -121,15 +132,29 @@ snakeInit(){
     fondo();
     chooseOptions();
 }
+snakeUpdate(){
+    //move_snake();
+    //check_collision();
+    //grow_snake();
+    //redrawScreen();
+}
+
+
 
 snake(){
     snakeInit();
-    chooseOptions();
-    while (1)
-    {
-
-        sleep(36);
-    }
-    
-    
+    Snake p1={
+        .body={},
+        .head=0,
+        .tail=0,
+        .length=0,
+        .dir=RIGHT
+    };
+    Snake p2={
+        .body={},
+        .head=0,
+        .tail=0,
+        .length=0,
+        .dir=LEFT
+    };
 }
