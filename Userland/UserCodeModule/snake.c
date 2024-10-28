@@ -23,6 +23,7 @@
 #define CHAR_HEIGHT 16
 #define CHAR_WIDTH 8
 
+
 void margen(){
     drawRectangle((Point){0,0},(Point){DIM_LEFT_MARGIN,DIM_Y},black);
     drawRectangle((Point){DIM_RIGHT_MARGIN,0},(Point){DIM_X,DIM_Y},black);
@@ -39,15 +40,11 @@ void fondo(){
     int color=0;
     int fills=0;
     for (int i = 0; i < BLOCKS_DIM*BLOCKS_DIM; i++,color++){
-        // if (i%BLOCKS_DIM==0 && i!=0){
-        //     color++;
-        // }
         int y=i?(i/BLOCKS_DIM):0;
         drawRectangle(
             (Point){DIM_LEFT_MARGIN+(i%BLOCKS_DIM)*PIXEL_PER_BLOCK,DIM_TOP_MARGIN+y*PIXEL_PER_BLOCK},
             (Point){DIM_LEFT_MARGIN+((i%BLOCKS_DIM)+1)*PIXEL_PER_BLOCK,DIM_TOP_MARGIN+(y+1)*PIXEL_PER_BLOCK},
             getColorBlock(i)
-            // color%2?COLOR1:COLOR2
             );
     }
 }
@@ -71,6 +68,19 @@ void drawselection(){
     lastOption=option;
 }
 
+typedef struct {
+    int x;
+    int y;
+}Block;
+
+
+Block getBlockPosition(int blockNumber){
+    int x=blockNumber%BLOCKS_DIM;
+    int y=blockNumber/BLOCKS_DIM;
+    return (Block){x,y};
+}
+
+
 
 printOptions(){
     setZoom(2);
@@ -88,7 +98,94 @@ void cleanScreen(){
     drawRectangle((Point){0,0},(Point){DIM_X,DIM_Y},0x000000);
 }
 
-selector(){
+cleanOptions(){
+    drawRectangle((Point){MENU_LEFT_MARGIN,MENU_TOP_MARGIN},(Point){MENU_RIGHT_MARGIN,MENU_BOTTOM_MARGIN},0x000000);
+}
+
+startCount(){
+    setZoom(2);
+    setFontColor(0xFF0000);
+    setBackGroundColor(0x000000);
+    char c='3';
+    for (int i = 3; 0 < i; i--)
+    {
+        setCursor(31,1);
+        putChar(c);
+        sleep(18);
+        c--;
+        //doSound(a);
+    }
+    setCursor(30,1);
+    print("GO!");
+    sleep(9);
+    setCursor(30,1);
+    print("   ");
+}
+
+setDefaults(){
+    option=1;
+    lastOption=0;
+}
+drawSnake(Snake snake){
+    for (int i = 0; i < snake.length; i++)
+    {
+        Block block=getBlockPosition(snake.body[i]);
+        drawRectangle(
+            (Point){DIM_LEFT_MARGIN+block.x*PIXEL_PER_BLOCK,DIM_TOP_MARGIN+block.y*PIXEL_PER_BLOCK},
+            (Point){DIM_LEFT_MARGIN+(block.x+1)*PIXEL_PER_BLOCK,DIM_TOP_MARGIN+(block.y+1)*PIXEL_PER_BLOCK},
+            snake.color
+        );
+    }
+}
+colisions(Snake snake,char map[BLOCKS_DIM][BLOCKS_DIM]){
+    Block head=getBlockPosition(snake.body[snake.head]);
+    if (head.x<0 || head.x>=BLOCKS_DIM || head.y<0 || head.y>=BLOCKS_DIM)
+    {
+        return 1;
+    }
+    if (map[head.y][head.x])
+    {
+        return 1;
+    }
+    map[head.y][head.x]=1;
+    return 0;
+
+}
+
+void startGame(char map[BLOCKS_DIM][BLOCKS_DIM]){
+    Snake p1={
+        .body={},
+        .head=0,
+        .tail=0,
+        .length=0,
+        .dir=RIGHT,
+        .color=0x00FF50
+    };
+    Snake p2={
+        .body={},
+        .head=0,
+        .tail=0,
+        .length=0,
+        .dir=LEFT,
+        .color=0xFF5050
+    };
+    //TODO: set the initial position of the snake/s
+    char noColisions=1;
+    do
+    {
+        //faltan cosas
+        colisions(p1,map);
+        if (option==2){
+            colisions(p2,map);
+        }
+        //faltan controles
+        drawSnake(p1);
+        drawSnake(p2);
+    } while (noColisions);
+    
+}
+
+selector(char map[BLOCKS_DIM][BLOCKS_DIM]){
     /*
 
     Player 1 controlers
@@ -112,49 +209,43 @@ selector(){
             drawselection();
         }
         c=getChar();
-        //doSound(c);
+        //doSound(a);
     } while (c!='\n');
-    if (option==3){
+    if (option==1 || option==2){
+        startCount();   
+        cleanOptions();
+        startGame(map);
+        setDefaults();
+    }else if (option==3){
         cleanScreen();
     }
-    
 }
 
 
-int chooseOptions(){
+int chooseOptions(char map[BLOCKS_DIM][BLOCKS_DIM]){
     drawRectangle((Point){MENU_LEFT_MARGIN,MENU_TOP_MARGIN},(Point){MENU_RIGHT_MARGIN,MENU_BOTTOM_MARGIN},0xD0B000);
     printOptions();
-    selector();
+    selector(map);
 }
 
 snakeInit(){
     margen();
     fondo();
-    chooseOptions();
+    char map[BLOCKS_DIM][BLOCKS_DIM]={0};
+    while (option!=3){
+        char map[BLOCKS_DIM][BLOCKS_DIM]={0};
+        chooseOptions(map);
+    }
 }
-snakeUpdate(){
-    //move_snake();
-    //check_collision();
-    //grow_snake();
-    //redrawScreen();
-}
+// snakeUpdate(){
+//     //move_snake();
+//     //check_collision();
+//     //grow_snake();
+//     //redrawScreen();
+// }
 
 
 
 snake(){
     snakeInit();
-    Snake p1={
-        .body={},
-        .head=0,
-        .tail=0,
-        .length=0,
-        .dir=RIGHT
-    };
-    Snake p2={
-        .body={},
-        .head=0,
-        .tail=0,
-        .length=0,
-        .dir=LEFT
-    };
 }

@@ -17,6 +17,7 @@ typedef struct {
     int tail;        // Index of the tail of the snake in the body array
     int length;       // Current length of the snake
     Direction dir;    // Current direction of the snake
+    uint32_t color;
 } Snake;
 
 #define CHAR_WIDTH 8
