@@ -23,6 +23,13 @@
 #define CHAR_HEIGHT 16
 #define CHAR_WIDTH 8
 
+typedef struct {
+    int x;
+    int y;
+}Block;
+
+static int option=1;
+static int lastOption=0;
 
 void margen(){
     drawRectangle((Point){0,0},(Point){DIM_LEFT_MARGIN,DIM_Y},black);
@@ -56,8 +63,10 @@ drawVoidRectangle(Point topLeft,Point bottomRigth,uint32_t hexcolor,int width){
     drawRectangle((Point){bottomRigth.x-width,topLeft.y+width},(Point){bottomRigth.x,bottomRigth.y-width},hexcolor);
 }
 
-static int option=1;
-static int lastOption=0;
+setDefaults(){
+    option=1;
+    lastOption=0;
+}
 
 void drawselection(){
     drawVoidRectangle((Point){MENU_LEFT_MARGIN,MENU_TOP_MARGIN+(option-1)*3*CHAR_HEIGHT},(Point){MENU_RIGHT_MARGIN,MENU_TOP_MARGIN+option*3*CHAR_HEIGHT},0xFF0000,3);
@@ -67,20 +76,12 @@ void drawselection(){
     }    
     lastOption=option;
 }
-
-typedef struct {
-    int x;
-    int y;
-}Block;
-
-
+//testear
 Block getBlockPosition(int blockNumber){
     int x=blockNumber%BLOCKS_DIM;
     int y=blockNumber/BLOCKS_DIM;
     return (Block){x,y};
 }
-
-
 
 printOptions(){
     setZoom(2);
@@ -122,21 +123,18 @@ startCount(){
     print("   ");
 }
 
-setDefaults(){
-    option=1;
-    lastOption=0;
-}
-drawSnake(Snake snake){
-    for (int i = 0; i < snake.length; i++)
-    {
-        Block block=getBlockPosition(snake.body[i]);
-        drawRectangle(
-            (Point){DIM_LEFT_MARGIN+block.x*PIXEL_PER_BLOCK,DIM_TOP_MARGIN+block.y*PIXEL_PER_BLOCK},
-            (Point){DIM_LEFT_MARGIN+(block.x+1)*PIXEL_PER_BLOCK,DIM_TOP_MARGIN+(block.y+1)*PIXEL_PER_BLOCK},
-            snake.color
-        );
-    }
-}
+// drawSnake(Snake snake){
+//     for (int i = 0; i < snake.length; i++)
+//     {
+//         Block block=getBlockPosition(snake.body[i]);
+//         drawRectangle(
+//             (Point){DIM_LEFT_MARGIN+block.x*PIXEL_PER_BLOCK,DIM_TOP_MARGIN+block.y*PIXEL_PER_BLOCK},
+//             (Point){DIM_LEFT_MARGIN+(block.x+1)*PIXEL_PER_BLOCK,DIM_TOP_MARGIN+(block.y+1)*PIXEL_PER_BLOCK},
+//             snake.color
+//         );
+//     }
+// }
+//testear
 colisions(Snake snake,char map[BLOCKS_DIM][BLOCKS_DIM]){
     Block head=getBlockPosition(snake.body[snake.head]);
     if (head.x<0 || head.x>=BLOCKS_DIM || head.y<0 || head.y>=BLOCKS_DIM)
@@ -149,7 +147,6 @@ colisions(Snake snake,char map[BLOCKS_DIM][BLOCKS_DIM]){
     }
     map[head.y][head.x]=1;
     return 0;
-
 }
 
 void startGame(char map[BLOCKS_DIM][BLOCKS_DIM]){
@@ -170,6 +167,7 @@ void startGame(char map[BLOCKS_DIM][BLOCKS_DIM]){
         .color=0xFF5050
     };
     //TODO: set the initial position of the snake/s
+
     char noColisions=1;
     do
     {
@@ -179,24 +177,13 @@ void startGame(char map[BLOCKS_DIM][BLOCKS_DIM]){
             colisions(p2,map);
         }
         //faltan controles
-        drawSnake(p1);
-        drawSnake(p2);
-    } while (noColisions);
+        //drawSnake(p1);
+        //drawSnake(p2);
+    } while (/*noColisions*/0);
     
 }
 
 selector(char map[BLOCKS_DIM][BLOCKS_DIM]){
-    /*
-
-    Player 1 controlers
-      W
-    A S D
-
-    Player 2 controlers
-      I
-    J K L
-
-    */
     drawselection();
     char c=0;
     do
@@ -212,40 +199,39 @@ selector(char map[BLOCKS_DIM][BLOCKS_DIM]){
         //doSound(a);
     } while (c!='\n');
     if (option==1 || option==2){
-        startCount();   
-        cleanOptions();
-        startGame(map);
-        setDefaults();
+        cleanOptions(); //limpia el menu
+        startCount();//contador de inicio para la partida
+        startGame(map);//inicia la partida
     }else if (option==3){
-        cleanScreen();
+        cleanScreen();//en caso de seleccionar EXIT limpia la pantalla
     }
 }
 
 
 int chooseOptions(char map[BLOCKS_DIM][BLOCKS_DIM]){
-    drawRectangle((Point){MENU_LEFT_MARGIN,MENU_TOP_MARGIN},(Point){MENU_RIGHT_MARGIN,MENU_BOTTOM_MARGIN},0xD0B000);
-    printOptions();
+    setDefaults();//reinicio de variables
+    drawRectangle((Point){MENU_LEFT_MARGIN,MENU_TOP_MARGIN},(Point){MENU_RIGHT_MARGIN,MENU_BOTTOM_MARGIN},0xD0B000);//dibuja el marco del menu
+    printOptions();//imprime las opciones P1|P2|EXIT
     selector(map);
 }
 
-snakeInit(){
-    margen();
-    fondo();
-    char map[BLOCKS_DIM][BLOCKS_DIM]={0};
-    while (option!=3){
-        char map[BLOCKS_DIM][BLOCKS_DIM]={0};
-        chooseOptions(map);
-    }
-}
-// snakeUpdate(){
-//     //move_snake();
-//     //check_collision();
-//     //grow_snake();
-//     //redrawScreen();
-// }
-
-
-
 snake(){
-    snakeInit();
+    margen();//dibuja un marco negro para limpiar la pantalla
+    fondo();//dibuja el mantel
+    while (option!=3){//reinicia las partidas
+        char map[BLOCKS_DIM][BLOCKS_DIM]={0};//inicializa el mapa para las colisiones, esta dentro del bucle para reiniciar las partidas
+        chooseOptions(map);//selector de opciones P1|P2|EXIT
+    }
+    cleanScreen();
 }
+    /*
+
+    Player 1 controlers
+      W
+    A S D
+
+    Player 2 controlers
+      I
+    J K L
+
+    */
