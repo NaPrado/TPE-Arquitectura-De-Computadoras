@@ -31,6 +31,20 @@ static char command[(DIM_CHAR_X-4)*2];              // buffer de commando escrit
 static char response[DIM_CHAR_X*2];                 // buffer de respuesta de commando
 static char commandDone = 0;                        // flag para checkear si un comando se realizo (no prints de mas)
 
+static uint32_t color[] = { blue, green, red, yellow, purple, cyan, orange, pink, brown, lightGrey, lightBlue, lightGreen, lightRed, lightPink, lightBrown, darkBlue, darkGreen, darkRed, darkYellow, darkPurple,white};
+static int colorIndex = 0;
+static int actualColor=white;
+static int actualBackgroundFont=black;
+
+static int fullLines = 0;
+
+
+void getContextBack(){
+    setZoom(zoom);
+    setBackGroundColor(actualBackgroundFont);
+    setFontColor(actualColor);
+}
+
 void shell() {
 
     while (!exit) {
@@ -63,28 +77,22 @@ void getCommand() {
     command[command_size-1] = '\0';
 }
 
-static uint32_t color[] = { blue, green, red, yellow, purple, cyan, orange, pink, brown, lightGrey, lightBlue, lightGreen, lightRed, lightPink, lightBrown, darkBlue, darkGreen, darkRed, darkYellow, darkPurple,white};
-static int color_index = 0;
-
-static int fullLines = 0;
-static int actual_Color=white;
-
 void doCommand() {
     if (command[0] != '\0' && command[0] != '\n') {
         commandDone = 1;
         if (strCaseCmp(command, "color") == 0) {
-            actual_Color=color[color_index];
-            setFontColor(actual_Color);
-            color_index = (color_index+1)%21;
+            actualColor=color[colorIndex];
+            setFontColor(actualColor);
+            colorIndex = (colorIndex+1)%21;
             strCpy("New color setted", response);
         } else if (strCaseCmp(command, "date")==0) {
             //time * t = getTime();
             //programTime();
+            getContextBack();
             strCpy(getTime(), response);
         }else if (strCaseCmp(command, "rec")==0){
-            Point p1 = {100, 100};
-            Point p2 = {200, 200};
-            drawRectangle(p1, p2, 0x00FF00);
+            programRectangle(actualColor);
+            getContextBack();
             strCpy("Rectangle drawn", response);
         } else if (strCaseCmp(command, "help")==0) {
             strCpy("Help", response);
@@ -93,6 +101,7 @@ void doCommand() {
                 cleanScreen();
                 strCpy("Zoomed in", response);
                 setZoom(++zoom);
+                getContextBack();
             } else {
                 strCpy("Max zoom possible", response);
             }
@@ -101,14 +110,13 @@ void doCommand() {
                 cleanScreen();
                 strCpy("Zoomed out", response);
                 setZoom(--zoom);
+                getContextBack();
             } else {
                 strCpy("Min zoom possible", response);
             }
         } else if (strCaseCmp(command, "snake")==0) {
             snake();
-            setZoom(zoom);
-            setBackGroundColor(black);
-            setFontColor(actual_Color);
+            getContextBack();
             strCpy("Snake exited", response);
             cleanScreen();
         } else if (strCaseCmp(command, "exit")==0) {

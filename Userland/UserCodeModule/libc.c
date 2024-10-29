@@ -57,6 +57,28 @@ char * getTime(){
 //     }
 // }
 
+programRectangle(uint32_t color){
+    cleanScreen();
+    Point p1 = {100, 100};
+    Point p2 = {900, 600};
+    drawRectangle(p1, p2, color);
+    setZoom(2);
+    setCursor(22,40);
+    print("Rectangle drawn");
+    setZoom(1);
+    setCursor(46,42);
+    print("Press any key to continue");
+    getChar();
+    drawRectangle(p1,p2,0x000000);
+    setZoom(2);
+    setCursor(22,40);
+    setFontColor(0x000000);
+    print("Rectangle drawn");
+    setZoom(1);
+    setCursor(46,42);
+    print("Press any key to continue");
+}
+
 char getKey(){
     sys_call(READ, 0, 0, 0, 0);
 }
