@@ -51,26 +51,32 @@ void programTime(char * buf){
     strNCpy(aux, buf+15, 2);
 }
 
+
 programRectangle(uint32_t color){
+    static const Point rec_msg_point1 = {392, 712};
+    static const Point rec_msg_point2 = {412, 744};
+    static const char * rec_msg1 = "Rectangle drawn";
+    static const char * rec_msg2 = "Press any key to continue";
+
     cleanScreen();
-    Point p1 = {100, 100};
-    Point p2 = {900, 600};
+    Point p1 = {64, 64};
+    Point p2 = {960, 704};
     drawRectangle(p1, p2, color);
     setZoom(2);
-    setCursor(22,40);
-    print("Rectangle drawn");
+    setCursor(rec_msg_point1.x, rec_msg_point1.y);
+    print(rec_msg1);
     setZoom(1);
-    setCursor(46,42);
-    print("Press any key to continue");
+    setCursor(rec_msg_point2.x, rec_msg_point2.y);
+    print(rec_msg2);
     getChar();
     drawRectangle(p1,p2,0x000000);
     setZoom(2);
-    setCursor(22,40);
+    setCursor(rec_msg_point1.x, rec_msg_point1.y);
     setFontColor(0x000000);
-    print("Rectangle drawn");
+    print(rec_msg1);
     setZoom(1);
-    setCursor(46,42);
-    print("Press any key to continue");
+    setCursor(rec_msg_point2.x, rec_msg_point2.y);
+    print(rec_msg2);
 }
 
 char getKey(){

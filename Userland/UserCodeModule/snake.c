@@ -20,8 +20,6 @@
 #define SECOND_PLAYER 2
 #define EXIT 3
 
-#define CHAR_HEIGHT 16
-#define CHAR_WIDTH 8
 #define TOTAL_OF_BLOCKS (BLOCKS_DIM*BLOCKS_DIM)
 
 typedef struct {
