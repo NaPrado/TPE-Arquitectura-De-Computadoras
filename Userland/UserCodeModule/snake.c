@@ -236,7 +236,7 @@ void startGame(){
         drawFullSnakeAtFirst(&p2);
     }
     do{
-        sleep(10);
+        sleep(9);
         actualizeSnakeAndCheckColisions(&p1);
         if (option==2){
             actualizeSnakeAndCheckColisions(&p2);
@@ -257,19 +257,13 @@ void setWinner(){
     }else if (!noColisionsP2){
         print("Player 1 wins!");
     }
-    sleep(9);
-    setCursor(25,1);
-    print("            ");
 }
-gameOver(){
+void gameOver(){
     setZoom(2);
     setFontColor(0xFF0000);
     setBackGroundColor(0x000000);
     setCursor(25,1);
     print("Game Over!");
-    sleep(9);
-    setCursor(25,1);
-    print("          ");
 }
 
 void selector(){
@@ -296,7 +290,13 @@ void selector(){
         }else if (option==1){
             gameOver();
         }
-        
+        setCursor(18,45);
+        print ("Press any key to continue");
+        getChar();
+        setCursor(18,45);
+        print ("                         ");
+        setCursor(25,1);
+        print("            ");
         fondo();
     }else if (option==3){
         cleanScreen();//en caso de seleccionar EXIT limpia la pantalla
