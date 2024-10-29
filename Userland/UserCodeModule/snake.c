@@ -109,10 +109,6 @@ void printOptions(){
     print("EXIT");    
 }
 
-void cleanScreen(){
-    drawRectangle((Point){0,0},(Point){DIM_X,DIM_Y},0x000000);
-}
-
 void cleanOptions(){
     drawRectangle((Point){MENU_LEFT_MARGIN,MENU_TOP_MARGIN},(Point){MENU_RIGHT_MARGIN,MENU_BOTTOM_MARGIN},0x000000);
 }
