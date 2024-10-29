@@ -2,12 +2,12 @@
   libc.h
 ****************************************************/
 
-#include <stdint.h>
 
 #ifndef _LIBC_H_
 #define _LIBC_H_
-#include<libasm.h>
-#include <random.h>
+#include <stdint.h>
+// #include <libasm.h>
+// #include <random.h>
 
 #define DIM_X 1024          // Ancho de pantalla [EN PIXELES]
 #define DIM_Y 768           // Alto de pantalla [EN PIXELES]
@@ -17,21 +17,6 @@
 
 #define BASE_DIM_CHAR_Y (DIM_Y/BASE_CHAR_HEIGHT)      // Ancho de pantalla [EN CHARS BASE]
 #define BASE_DIM_CHAR_X (DIM_X/BASE_CHAR_WIDTH)       // Alto de pantalla [EN CHARS BASE]
-
-static int zoom = 1;
-static const int min_zoom = 1;
-static const int max_zoom = 4;
-
-#define CHAR_WIDTH (BASE_CHAR_WIDTH*zoom)       // Ancho de un char actual [EN PIXELES]
-#define CHAR_HEIGHT (BASE_CHAR_HEIGHT*zoom)     // Alto de un char actual [EN PIXELES]
-
-#define DIM_CHAR_Y (DIM_Y/CHAR_HEIGHT)      // Ancho de pantalla [EN CHARS ACTUALES]
-#define DIM_CHAR_X (DIM_X/CHAR_WIDTH)       // Alto de pantalla [EN CHARS ACTUALES]
-
-#define COMMAND_LINE_X (2*BASE_CHAR_WIDTH)            // Pos de x de la linea de comandos [EN PIXELES]
-#define COMMAND_LINE_Y (DIM_Y-(2*CHAR_HEIGHT))        // Pos de y de la linea de comandos [EN PIXELES]
-
-#define COMMAND_DIM ((BASE_DIM_CHAR_X-4)*2)  // maximo tamaño de comando, sacando margenes [EN CHARS BASE]
 
 typedef struct {
 	int x;
@@ -100,8 +85,6 @@ void programRectangle(uint32_t color);
 
 void programHelp();
 
-void cleanScreen();
-
 void cleanFullScreen();
 
 // int strStartsWith(const char * str, const char * start);
@@ -134,6 +117,5 @@ enum colors{
     darkPink = 0xFF1493,
     darkBrown = 0x654321
 };
-
 
 #endif

@@ -57,7 +57,6 @@ void programRectangle(uint32_t color) {
     static const char * rec_msg1 = "Rectangle drawn";
     static const char * rec_msg2 = "Press any key to continue";
 
-    cleanScreen();
     Point p1 = {64, 64};
     Point p2 = {960, 704};
     drawRectangle(p1, p2, color);
@@ -79,12 +78,12 @@ void programRectangle(uint32_t color) {
 }
 
 void programHelp() {
-    cleanScreen();
-    setCursor(COMMAND_LINE_X, BASE_CHAR_HEIGHT*4);
+    setCursor(BASE_CHAR_WIDTH*4, BASE_CHAR_HEIGHT*2);
     print("Commands:\n\t1-color\n\t2-date\n\t3-rec\n\t4-zoom in\n\t5-zoom out\n\t6-snake");
-    while (getKey() == '\0') {
+    while (getChar() == 0) {
         _hlt();
     }
+    cleanFullScreen();
 }
 
 char getKey(){
@@ -224,10 +223,6 @@ int strCaseCmp(const char * s1, const char * s2) {
 
 void setZoom(char zoom) {
     sys_call(SET_ZOOM, (uint64_t)zoom, 0, 0, 0);
-}
-
-void cleanScreen() {
-    drawRectangle((Point){1, (COMMAND_LINE_Y-4*zoom)*CHAR_HEIGHT}, (Point){DIM_X, DIM_Y}, 0x000000);
 }
 
 void cleanFullScreen() {

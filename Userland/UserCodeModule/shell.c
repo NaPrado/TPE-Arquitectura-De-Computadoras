@@ -3,12 +3,27 @@
 #include <stdint.h>
 #include <snake.h>
 
+int zoom_user = 1;
+const int min_zoom = 1;
+const int max_zoom = 4;
+
+#define CHAR_WIDTH (BASE_CHAR_WIDTH*zoom_user)       // Ancho de un char actual [EN PIXELES]
+#define CHAR_HEIGHT (BASE_CHAR_HEIGHT*zoom_user)     // Alto de un char actual [EN PIXELES]
+
+#define DIM_CHAR_Y (DIM_Y/CHAR_HEIGHT)      // Ancho de pantalla [EN CHARS ACTUALES]
+#define DIM_CHAR_X (DIM_X/CHAR_WIDTH)       // Alto de pantalla [EN CHARS ACTUALES]
+
+#define COMMAND_LINE_X (2*BASE_CHAR_WIDTH)            // Pos de x de la linea de comandos [EN PIXELES]
+#define COMMAND_LINE_Y (DIM_Y-(2*CHAR_HEIGHT))        // Pos de y de la linea de comandos [EN PIXELES]
+
+#define COMMAND_DIM ((BASE_DIM_CHAR_X-4)*2)  // maximo tamaño de comando, sacando margenes [EN CHARS BASE]
+
 static void inicializeShell();
 static void getCommand();
 static void doCommand();
 static void cleanCommand();
 static void printCommands();
-
+static void cleanScreen();
 
 static char exit = 0;
 static int command_size = 0;
@@ -27,7 +42,7 @@ static Point command_cursor;
 static Point response_cursor;
 
 void getContextBack(){
-    setZoom(zoom);
+    setZoom(zoom_user);
     setBackGroundColor(actualBackgroundFont);
     setFontColor(actualColor);
 }
@@ -63,7 +78,7 @@ void getCommand() {
             setCursor(COMMAND_LINE_X+2*CHAR_WIDTH, COMMAND_LINE_Y);
             print(command);
         }
-    } while (c != '\n' && command_size < (COMMAND_DIM-1)/zoom - 1);
+    } while (c != '\n' && command_size < (COMMAND_DIM-1)/zoom_user - 1);
     command[command_size-1] = '\0';
 }
 
@@ -79,36 +94,38 @@ void doCommand() {
             programTime(response);
             getContextBack();
         }else if (strCaseCmp(command, "rec")==0){
+            cleanScreen();
             programRectangle(actualColor);
             getContextBack();
             strCpy("Rectangle exited", response);
         } else if (strCaseCmp(command, "help")==0) {
+            cleanScreen();
             programHelp();
             getContextBack();
             strCpy("Help exited", response);
         } else if (strCaseCmp(command, "zoom in") == 0) {
-            if (zoom < max_zoom) { 
+            if (zoom_user < max_zoom) { 
                 cleanScreen();
                 strCpy("Zoomed in", response);
-                setZoom(++zoom);
+                setZoom(++zoom_user);
                 getContextBack();
             } else {
                 strCpy("Max zoom possible", response);
             }
         } else if (strCaseCmp(command, "zoom out") == 0) {
-            if (zoom > min_zoom) { 
+            if (zoom_user > min_zoom) { 
                 cleanScreen();
                 strCpy("Zoomed out", response);
-                setZoom(--zoom);
+                setZoom(--zoom_user);
                 getContextBack();
             } else {
                 strCpy("Min zoom possible", response);
             }
         } else if (strCaseCmp(command, "snake")==0) {
+            cleanScreen();
             snake();
             getContextBack();
             strCpy("Snake exited", response);
-            cleanScreen();
         } else if (strCaseCmp(command, "exit")==0) {
             strCpy("Exit", response);
             exit = 1;
@@ -146,4 +163,8 @@ void inicializeShell() {
     setFontColor(white);
     print("> ");
     setFontColor(actualColor);
+}
+
+void cleanScreen() {
+    drawRectangle((Point){1, COMMAND_LINE_Y-4*zoom_user*CHAR_HEIGHT}, (Point){DIM_X, DIM_Y}, 0x000000);
 }
