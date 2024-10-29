@@ -108,11 +108,11 @@ void printOptions(){
     setZoom(2);
     setFontColor(FONT_COLOR);
     setBackGroundColor(MENU_BACKGROUND_COLOR);
-    setCharCursor(2,5);
+    setCursor(80,75);
     print("1P");
-    setCharCursor(2,8);
+    setCursor(80,120);
     print("2P");
-    setCharCursor(2,11);
+    setCursor(64,165);
     print("EXIT");    
 }
 
@@ -127,16 +127,16 @@ void startCount(){
     char c='3';
     for (int i = 3; 0 < i; i--)
     {
-        setCharCursor(31,1);
+        setCursor((DIM_X/2)-CHAR_WIDTH,CHAR_HEIGHT);
         putChar(c);
         sleep(18);
         c--;
         //doSound(a);
     }
-    setCharCursor(30,1);
+    setCursor((DIM_X/2)-(3*CHAR_WIDTH),CHAR_HEIGHT);
     print("GO!");
     sleep(9);
-    setCharCursor(30,1);
+    setCursor((DIM_X/2)-(3*CHAR_WIDTH),CHAR_HEIGHT);
     print("   ");
 }
 
@@ -283,9 +283,9 @@ void setWinner(){
     setZoom(2);
     setFontColor(FONT_COLOR);
     setBackGroundColor(black);
-    setCharCursor(25,1);
+    setCursor((DIM_X/2)-(14*CHAR_WIDTH),CHAR_HEIGHT);
     if (!noColisionsP1 && !noColisionsP2){
-        setCharCursor(28,1);
+        setCursor((DIM_X/2)-(5*CHAR_WIDTH),CHAR_HEIGHT);
         print("Draw!");
     }else if (!noColisionsP1){
         print("Player 2 wins!");
@@ -297,11 +297,12 @@ void gameOverOrWinner(){
     setZoom(2);
     setFontColor(FONT_COLOR);
     setBackGroundColor(black);
-    setCharCursor(25,1);
     if (!noWinner){
+                setCursor((DIM_X/2)-(7*CHAR_WIDTH),CHAR_HEIGHT);
                 print("Winner!");
                 return;
     }
+    setCursor((DIM_X/2)-(10*CHAR_WIDTH),CHAR_HEIGHT);
     print("Game Over!");
 }
 
@@ -328,15 +329,15 @@ void selector(){
         }else if (option==1){
             gameOverOrWinner();
         }
-        setCharCursor(18,45);
+        setCursor((DIM_X/2)-(23*CHAR_WIDTH),DIM_Y-CHAR_HEIGHT*3);
         print ("Press enter to continue");
         c=getChar();
         while(c!='\n'){
             c=getChar();
         }
-        setCharCursor(18,45);
+        setCursor((DIM_X/2)-(25*CHAR_WIDTH),DIM_Y-CHAR_HEIGHT*3);
         print ("                         ");
-        setCharCursor(25,1);
+        setCursor((DIM_X/2)-(16*CHAR_WIDTH),CHAR_HEIGHT);
         print("                ");
         fondo();
     }else if (option==3){
