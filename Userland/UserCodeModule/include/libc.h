@@ -41,6 +41,8 @@ void setBackGroundColor(uint32_t hexColor);
 
 void drawRectangle(Point topLeft, Point downRigth, uint32_t color) ;
 
+void drawSpray(uint32_t size_x, uint32_t size_y, uint32_t spray[][size_y], uint8_t mirror);
+
 void setFontColor(uint32_t hexColor);
 
 void print(char * buf);

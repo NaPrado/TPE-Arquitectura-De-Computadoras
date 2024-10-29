@@ -136,15 +136,21 @@ uint64_t sysCallDispatcher(uint64_t rax, ...) {
     } else if (rax == 8) {
         uint64_t new_zoom = va_arg(args, uint64_t);
         sys_setZoom(new_zoom);
-    }else if (rax == 9) {
+    } else if (rax == 9) {
         Point* p1 = va_arg(args, Point*);
         Point* p2 = va_arg(args, Point*);
         uint32_t c = va_arg(args, uint32_t);
         drawRectangle(p1,p2,c);
         ret = 0;
-    }else if (rax == 10) {
+    } else if (rax == 10) {
         uint32_t hexColor = va_arg(args, uint32_t);
         changeBackgroundColor(hexColor);
+    } else if (rax == 11) {
+        uint64_t spray = va_arg(args, uint64_t);
+        uint64_t size_x = va_arg(args, uint64_t);
+        uint64_t size_y = va_arg(args, uint64_t);
+        uint64_t mirror = va_arg(args, uint64_t);
+        drawSpray(size_x, size_y, spray, cursorX, cursorY, mirror);
     } else if (rax == 35) {
         int seconds = va_arg(args, int);
         sys_sleep(seconds);    
