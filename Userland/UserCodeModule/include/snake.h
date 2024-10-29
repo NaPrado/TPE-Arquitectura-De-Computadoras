@@ -12,12 +12,13 @@ typedef enum {
 
 // Structure to represent the snake
 typedef struct {
-    int body[400];  // Array of blocks representing the snake's body
-    int head;        // Index of the head of the snake in the body array
-    int tail;        // Index of the tail of the snake in the body array
-    int length;       // Current length of the snake
-    Direction dir;    // Current direction of the snake
-    uint32_t color;
+    int body[400];      // Array of blocks representing the snake's body
+    int head;           //index of the head
+    int tail;           //index of the tail
+    int length;         // Current length of the snake
+    int player;         // Player number
+    Direction dir;      // Current direction of the snake
+    uint32_t color;     // Color of the snake
 } Snake;
 
 #define CHAR_WIDTH 8
