@@ -7,6 +7,7 @@
 #ifndef _LIBC_H_
 #define _LIBC_H_
 #include<libasm.h>
+#include <random.h>
 
 #define DIM_X 1024          // Ancho de pantalla [EN PIXELES]
 #define DIM_Y 768           // Alto de pantalla [EN PIXELES]
@@ -22,7 +23,7 @@ typedef struct {
 	int y;
 }Point;
 
-typedef struct time {
+typedef struct {
     char day;
     char month;
     char year;

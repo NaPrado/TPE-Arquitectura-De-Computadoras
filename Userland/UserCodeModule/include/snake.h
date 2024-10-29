@@ -21,6 +21,8 @@ typedef struct {
     uint32_t color;     // Color of the snake
 } Snake;
 
+void snake();
+
 #define CHAR_WIDTH 8
 #define CHAR_HEIGHT 16
 

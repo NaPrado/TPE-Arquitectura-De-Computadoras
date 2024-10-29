@@ -20,8 +20,6 @@
 #define SECOND_PLAYER 2
 #define EXIT 3
 
-#define CHAR_HEIGHT 16
-#define CHAR_WIDTH 8
 #define TOTAL_OF_BLOCKS (BLOCKS_DIM*BLOCKS_DIM)
 
 typedef struct {
@@ -34,6 +32,9 @@ static int lastOption=0;
 static char noColisionsP1=1;
 static char noColisionsP2=1;
 static char map[TOTAL_OF_BLOCKS];
+
+
+
 
 void margen(){
     drawRectangle((Point){0,0},(Point){DIM_LEFT_MARGIN,DIM_Y},black);
@@ -144,6 +145,16 @@ int setColisions(Snake* snake){
     }
 }
 
+drawApple(){
+    int apple=randInt(0,TOTAL_OF_BLOCKS-1);
+    while (map[apple]!=0)
+    {
+        apple=randInt(0,TOTAL_OF_BLOCKS-1);
+    }
+    map[apple]=2;
+    drawBlock(apple,0xFF0000,0);
+}
+
 void actualizeSnakeAndCheckColisions(Snake* snake){
     int nextHeadIndex=snake->head+1;
     nextHeadIndex=nextHeadIndex%TOTAL_OF_BLOCKS;
@@ -181,6 +192,7 @@ void actualizeSnakeAndCheckColisions(Snake* snake){
     if (map[snake->body[snake->head]]==2){
         snake->length++;
         map[snake->body[snake->head]]=1;
+        drawApple();
         drawSnakeHead(snake);
     }else{
         map[snake->body[snake->head]]=1;
@@ -249,6 +261,7 @@ void startGame(){
         drawFullSnakeAtFirst(&p2);
     }
     startCount();//contador de inicio para la partida
+    drawApple();
     do{
         sleep(9);
         controls(&p1,&p2);
