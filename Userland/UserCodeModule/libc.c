@@ -33,7 +33,7 @@ time * getTime() {
 	return sys_call(GET_TIME, 0, 0, 0, 0);
 }
 
-void programTime(char * buf){ 
+void programTime(char * buf) { 
     time * t = getTime();
     strCpy("dd/mm/yy 00:00:00", buf);
     char aux[3] = {0x00};
@@ -51,8 +51,7 @@ void programTime(char * buf){
     strNCpy(aux, buf+15, 2);
 }
 
-
-programRectangle(uint32_t color){
+void programRectangle(uint32_t color) {
     static const Point rec_msg_point1 = {392, 712};
     static const Point rec_msg_point2 = {412, 744};
     static const char * rec_msg1 = "Rectangle drawn";
@@ -77,6 +76,15 @@ programRectangle(uint32_t color){
     setZoom(1);
     setCursor(rec_msg_point2.x, rec_msg_point2.y);
     print(rec_msg2);
+}
+
+void programHelp() {
+    cleanScreen();
+    setCursor(COMMAND_LINE_X, BASE_CHAR_HEIGHT*4);
+    print("Commands:\n\t1-color\n\t2-date\n\t3-rec\n\t4-zoom in\n\t5-zoom out\n\t6-snake");
+    while (getKey() == '\0') {
+        _hlt();
+    }
 }
 
 char getKey(){
@@ -216,6 +224,14 @@ int strCaseCmp(const char * s1, const char * s2) {
 
 void setZoom(char zoom) {
     sys_call(SET_ZOOM, (uint64_t)zoom, 0, 0, 0);
+}
+
+void cleanScreen() {
+    drawRectangle((Point){1, (COMMAND_LINE_Y-4*zoom)*CHAR_HEIGHT}, (Point){DIM_X, DIM_Y}, 0x000000);
+}
+
+void cleanFullScreen() {
+    drawRectangle((Point){0, 0}, (Point){DIM_X, DIM_Y}, 0x000000);
 }
 
 // int strStartsWith(const char * str, const char * start) {

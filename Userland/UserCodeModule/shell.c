@@ -3,27 +3,11 @@
 #include <stdint.h>
 #include <snake.h>
 
-static int zoom = 1;
-static const int min_zoom = 1;
-static const int max_zoom = 4;
-
-#define CHAR_WIDTH (BASE_CHAR_WIDTH*zoom)       // Ancho de un char actual [EN PIXELES]
-#define CHAR_HEIGHT (BASE_CHAR_HEIGHT*zoom)     // Alto de un char actual [EN PIXELES]
-
-#define DIM_CHAR_Y (DIM_Y/CHAR_HEIGHT)      // Ancho de pantalla [EN CHARS ACTUALES]
-#define DIM_CHAR_X (DIM_X/CHAR_WIDTH)       // Alto de pantalla [EN CHARS ACTUALES]
-
-#define COMMAND_LINE_X (2*BASE_CHAR_WIDTH)            // Pos de x de la linea de comandos [EN PIXELES]
-#define COMMAND_LINE_Y (DIM_Y-(2*CHAR_HEIGHT))        // Pos de y de la linea de comandos [EN PIXELES]
-
-#define COMMAND_DIM ((BASE_DIM_CHAR_X-4)*2)  // maximo tamaño de comando, sacando margenes [EN CHARS BASE]
-
 static void inicializeShell();
 static void getCommand();
 static void doCommand();
 static void cleanCommand();
 static void printCommands();
-static void cleanScreen();
 
 
 static char exit = 0;
@@ -39,6 +23,8 @@ static int actualBackgroundFont=black;
 
 static int fullLines = 0;
 
+static Point command_cursor;
+static Point response_cursor;
 
 void getContextBack(){
     setZoom(zoom);
@@ -97,8 +83,9 @@ void doCommand() {
             getContextBack();
             strCpy("Rectangle exited", response);
         } else if (strCaseCmp(command, "help")==0) {
-            // strCpy("Help", response);
-            itoa(123, response, 10, 5);
+            programHelp();
+            getContextBack();
+            strCpy("Help exited", response);
         } else if (strCaseCmp(command, "zoom in") == 0) {
             if (zoom < max_zoom) { 
                 cleanScreen();
@@ -159,8 +146,4 @@ void inicializeShell() {
     setFontColor(white);
     print("> ");
     setFontColor(actualColor);
-}
-
-void cleanScreen() {
-    drawRectangle((Point){1, (COMMAND_LINE_Y-4*zoom)*CHAR_HEIGHT}, (Point){DIM_X, DIM_X}, 0x000000);
 }
