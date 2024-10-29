@@ -100,11 +100,11 @@ void printOptions(){
     setZoom(2);
     setFontColor(0xFF0000);
     setBackGroundColor(0xD0B000);
-    setCursor(2,5);
+    setCharCursor(2,5);
     print("1P");
-    setCursor(2,8);
+    setCharCursor(2,8);
     print("2P");
-    setCursor(2,11);
+    setCharCursor(2,11);
     print("EXIT");    
 }
 
@@ -123,16 +123,16 @@ void startCount(){
     char c='3';
     for (int i = 3; 0 < i; i--)
     {
-        setCursor(31,1);
+        setCharCursor(31,1);
         putChar(c);
         sleep(18);
         c--;
         //doSound(a);
     }
-    setCursor(30,1);
+    setCharCursor(30,1);
     print("GO!");
     sleep(9);
-    setCursor(30,1);
+    setCharCursor(30,1);
     print("   ");
 }
 
@@ -263,9 +263,9 @@ void setWinner(){
     setZoom(2);
     setFontColor(0xFF0000);
     setBackGroundColor(0x000000);
-    setCursor(25,1);
+    setCharCursor(25,1);
     if (!noColisionsP1 && !noColisionsP2){
-        setCursor(28,1);
+        setCharCursor(28,1);
         print("Draw!");
     }else if (!noColisionsP1){
         print("Player 2 wins!");
@@ -277,7 +277,7 @@ void gameOver(){
     setZoom(2);
     setFontColor(0xFF0000);
     setBackGroundColor(0x000000);
-    setCursor(25,1);
+    setCharCursor(25,1);
     print("Game Over!");
 }
 
@@ -304,12 +304,12 @@ void selector(){
         }else if (option==1){
             gameOver();
         }
-        setCursor(18,45);
+        setCharCursor(18,45);
         print ("Press any key to continue");
         getChar();
-        setCursor(18,45);
+        setCharCursor(18,45);
         print ("                         ");
-        setCursor(25,1);
+        setCharCursor(25,1);
         print("                ");
         fondo();
     }else if (option==3){
