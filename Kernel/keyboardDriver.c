@@ -284,18 +284,19 @@ char hasNextKey() {
     return charsAtBuffer > 0;
 }
 
-waitKey() {
-    while (!hasNextKey()) {
-        picMasterMask(PIC_MASTER_MASK_ONLY_KEYBOARD);
-        _hlt();
-        picMasterMask(PIC_MASTER_MASK_ALL); 
-    }
-}
+// waitKey() {
+//     while (!hasNextKey()) {
+//         picMasterMask(PIC_MASTER_MASK_ONLY_KEYBOARD);
+//         _hlt();
+//         picMasterMask(PIC_MASTER_MASK_ALL); 
+//     }
+// }
 
 char nextKey() {
     char ret;
     if (!hasNextKey()) {
-        waitKey();
+        return -2;
+        // waitKey();
     }
     charsAtBuffer--;
     ret = charBuffer[getterIndex];

@@ -174,38 +174,51 @@ void actualizeSnakeAndCheckColisions(Snake* snake){
         snake->body[nextHeadIndex]=snake->body[snake->head]+1;
     }
     snake->head=nextHeadIndex;
-    if (map[snake->body[snake->head]]!=0){
+    if (map[snake->body[snake->head]]==1){
         setColisions(snake);
         return;
     }
-    map[snake->body[snake->head]]=snake->player;
-    map[snake->body[snake->tail]]=0;
-    drawSnakeHead(snake);
-    cleanSnakeTail(snake);
-    snake->tail++;
-    snake->tail=snake->tail%TOTAL_OF_BLOCKS;
+    if (map[snake->body[snake->head]]==2){
+        snake->length++;
+        map[snake->body[snake->head]]=1;
+        drawSnakeHead(snake);
+    }else{
+        map[snake->body[snake->head]]=1;
+        map[snake->body[snake->tail]]=0;
+        drawSnakeHead(snake);
+        cleanSnakeTail(snake);
+        snake->tail++;
+        snake->tail=snake->tail%TOTAL_OF_BLOCKS;
+    }
 }
 
-// void controls(Snake snake1,Snake snake2,char c){
-//     if ((c=='W' || c=='w')&& snake1.dir!=DOWN){
-//         snake1.dir=UP;
-//     }else if ((c=='S' || c=='s')&& snake1.dir!=UP){
-//         snake1.dir=DOWN;
-//     }else if ((c=='A' || c=='a')&& snake1.dir!=RIGHT){
-//         snake1.dir=LEFT;
-//     }else if ((c=='D' || c=='d')&& snake1.dir!=LEFT){
-//         snake1.dir=RIGHT;
-//     }  
-//     if (c=='I' || c=='i'){
-//         snake2.dir=UP;
-//     }else if (c=='K' || c=='k'){
-//         snake2.dir=DOWN;
-//     }else if (c=='J' || c=='j'){
-//         snake2.dir=LEFT;
-//     }else if (c=='L' || c=='l'){
-//         snake2.dir=RIGHT;
-//     }    
-// }
+void controls(Snake* snake1,Snake* snake2){
+    char c=getKey();
+    Direction dir1=snake1->dir;
+    Direction dir2=snake2->dir;
+    while (c!=-2){
+        if ((c=='W' || c=='w') && dir1!=DOWN){
+            snake1->dir=UP;
+        }else if ((c=='S' || c=='s') && dir1!=UP){
+            snake1->dir=DOWN;
+        }else if ((c=='A' || c=='a') && dir1!=RIGHT){
+            snake1->dir=LEFT;
+        }else if ((c=='D' || c=='d') && dir1!=LEFT){
+            snake1->dir=RIGHT;
+        }  
+        if ((c=='I' || c=='i') && dir2!=DOWN){
+            snake2->dir=UP;
+        }else if ((c=='K' || c=='k') && dir2!=UP){
+            snake2->dir=DOWN;
+        }else if ((c=='J' || c=='j') && dir2!=RIGHT){
+            snake2->dir=LEFT;
+        }else if ((c=='L' || c=='l') && dir2!=LEFT){
+            snake2->dir=RIGHT;
+        }
+        c=getKey();
+    }
+}
+
 void drawFullSnakeAtFirst(Snake* snake){
     drawBlock(snake->body[snake->head],snake->color,0);
     drawBlock(snake->body[snake->tail],snake->color,0);
@@ -235,8 +248,10 @@ void startGame(){
         snakeSetter(&p2,215,216);
         drawFullSnakeAtFirst(&p2);
     }
+    startCount();//contador de inicio para la partida
     do{
         sleep(9);
+        controls(&p1,&p2);
         actualizeSnakeAndCheckColisions(&p1);
         if (option==2){
             actualizeSnakeAndCheckColisions(&p2);
@@ -283,7 +298,6 @@ void selector(){
     } while (c!='\n');
     if (option==1 || option==2){
         cleanOptions(); //limpia el menu
-        startCount();//contador de inicio para la partida
         startGame();//inicia la partida
         if (option==2){
             setWinner();
@@ -296,7 +310,7 @@ void selector(){
         setCursor(18,45);
         print ("                         ");
         setCursor(25,1);
-        print("            ");
+        print("                ");
         fondo();
     }else if (option==3){
         cleanScreen();//en caso de seleccionar EXIT limpia la pantalla

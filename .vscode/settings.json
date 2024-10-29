@@ -2,6 +2,7 @@
     "files.associations": {
         "libc.h": "c",
         "syscalldispatcher.h": "c",
-        "videodriver.h": "c"
+        "videodriver.h": "c",
+        "compare": "cpp"
     }
 }

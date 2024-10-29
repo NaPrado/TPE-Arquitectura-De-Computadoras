@@ -1,35 +1,76 @@
 #include <libc.h>
-
-extern uint64_t sys_call(uint64_t rax, uint64_t rdi, uint64_t rsi, uint64_t r10, uint64_t r8);
+#define READ 0
+#define WRITE 1
+#define GET_TIME 4
+#define SET_CURSOR 5
+#define SET_FONT_COLOR 7
+#define SET_ZOOM 8
+#define DRAW_RECTANGLE 9
+#define SET_BACKGROUND_FONT_COLOR 10
+#define SLEEP 35
 
 void drawRectangle(Point topLeft, Point downRigth, uint32_t color) {
-	sys_call(9, (uint64_t)&topLeft, (uint64_t)&downRigth, (uint64_t)color,0);
+	sys_call(DRAW_RECTANGLE, (uint64_t)&topLeft, (uint64_t)&downRigth, (uint64_t)color,0);
 }
 
 void setFontColor(uint32_t hexColor) {
-	sys_call(7, hexColor, 0, 0, 0);
+	sys_call(SET_FONT_COLOR, hexColor, 0, 0, 0);
 }
 void setBackGroundColor(uint32_t hexColor) {
-    sys_call(10, hexColor, 0, 0, 0);
+    sys_call(SET_BACKGROUND_FONT_COLOR, hexColor, 0, 0, 0);
 }
 
 void nprint(char * buf, uint64_t lenght) {
-	sys_call(1, 1, (uint64_t) buf, lenght, 0);
+	sys_call(WRITE, 1, (uint64_t) buf, lenght, 0);
 }
 
 void print(char * buf) {
-
-    sys_call(1, 1, (uint64_t) buf, strlen(buf), 0);
-
+    sys_call(WRITE, 1, (uint64_t) buf, strlen(buf), 0);
 }
 
+//time * getTime(){
 char * getTime(){
-	sys_call(4, 0, 0, 0, 0);
+	return sys_call(GET_TIME, 0, 0, 0, 0);
 }
 
+// void programTime(){ 
+//     char c = -2;
+//     while (c==-2){
+//         setCursor(20,20);
+//         time * t = getTime();
+//         char buf[20]="dd/mm/yy 00:00:00";
+//         buf[0] = (t->day / 10) + '0';
+//         buf[1] = (t->day % 10) + '0';
+//         buf[3] = (t->month / 10) + '0';
+//         buf[4] = (t->month % 10) + '0';
+//         buf[6] = (t->year / 10) + '0';
+//         buf[7] = (t->year % 10) + '0';
+//         buf[9] = (t->hour / 10) + '0';
+//         buf[10] = (t->hour % 10) + '0';
+//         buf[12] = (t->min / 10) + '0';
+//         buf[13] = (t->min % 10) + '0';
+//         buf[15] = (t->sec / 10) + '0';
+//         buf[16] = (t->sec % 10) + '0';
+//         print(buf);
+//         _hlt();
+//         c = getKey();
+//     }
+// }
+
+char getKey(){
+    sys_call(READ, 0, 0, 0, 0);
+}
 
 void scan(char * buf, uint32_t count) {
-    sys_call(0, 0, (uint64_t) buf, count, 0);
+    for (int i = 0; i < count; i++) {
+        char c=sys_call(READ, 0, 0, 0, 0);
+        if (c == -1 || c == -2){
+            _hlt();
+            i--;
+        } else {
+            buf[i] = c;
+        }
+    }
 }
 
 int itoa(uint64_t value, char * buffer, int base) {
@@ -84,11 +125,11 @@ int strlen(const char * str) {
 }
 
 void setCursor(uint32_t x, uint32_t y) {
-    sys_call(5, x, y, 0, 0);
+    sys_call(SET_CURSOR, x, y, 0, 0);
 }
 
 void sleep(uint64_t seconds){
-	sys_call(35, seconds, 0, 0, 0);
+	sys_call(SLEEP, seconds, 0, 0, 0);
 }
 
 void strCpy(char * source, char * dest) {
@@ -142,7 +183,7 @@ int strCaseCmp(const char * s1, const char * s2) {
 }
 
 void setZoom(char zoom) {
-    sys_call(8, (uint64_t)zoom, 0, 0, 0);
+    sys_call(SET_ZOOM, (uint64_t)zoom, 0, 0, 0);
 }
 
 // int strStartsWith(const char * str, const char * start) {

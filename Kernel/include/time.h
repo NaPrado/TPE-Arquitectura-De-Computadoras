@@ -1,5 +1,15 @@
 #ifndef _TIME_H_
 #define _TIME_H_
+#include <stdint.h>
+
+typedef struct {
+    char day;
+    char month;
+    uint32_t year;
+    char hour;
+    char min;
+    char sec;
+}time;
 
 /**
  * @brief Timer interrupt handler.
@@ -38,13 +48,12 @@ int seconds_elapsed();
 void sleep(int ticks);
 
 /**
- * @brief Retrieves the current system time as a string.
+ * @brief Retrieves the current system time.
  *
- * This function returns the current system time formatted as a string.
- * The format of the returned time string is "dd/mm/yy-HH:MM:SS".
+ * This function returns the current system time as a time structure.
  *
- * @return A pointer to a character array containing the current system time.
+ * @return A time structure containing the current system time.
  */
+//time * getTime();
 char * getTime();
-
 #endif

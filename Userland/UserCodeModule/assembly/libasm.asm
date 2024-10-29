@@ -1,16 +1,7 @@
 GLOBAL sys_call
-
-GLOBAL random
-
-random:
-    mov rax, 1
-    mov rdi, 1
-    mov rsi, msg
-    mov rdx, 11
-
-    int 80h
-
-    ret
+GLOBAL _hlt
+GLOBAL _cli
+GLOBAL _sti
 
 sys_call:
 
@@ -24,13 +15,20 @@ sys_call:
 
     ret
 
-sys_Write:
-	mov rax, 1
-	mov rdi, 1
-	mov rsi, msg
-	mov rdx, 13
-	int 80h
-    ret
+;espera a que ocurra una interrupcion 
+_hlt:
+	sti
+	hlt
+	ret
+;desabilita interrupciones de Hardware
+_cli:
+	cli
+	ret
+
+;habilita interrupciones de Hardware
+_sti:
+	sti
+	ret
 
 section .rodata
 msg db "Hello world", 0

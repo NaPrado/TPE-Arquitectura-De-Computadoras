@@ -10,7 +10,7 @@ static void setFontColor(uint32_t hexColor);
 static void sys_write(FDS fd, const char *buf, size_t count);
 static void readFiles(fd, buf, count);
 static void readChars(char *buf, size_t count);
-static size_t sys_read(FDS fd, const char *buf, size_t count);
+static size_t sys_read();//FDS fd, const char *buf, size_t count);
 static void sys_sleep(int seconds);
 static void sys_putPixel(uint32_t hexColor,uint64_t x,uint64_t y);
 static void sys_setZoom(int new_zoom);
@@ -63,24 +63,20 @@ static void readFiles(fd, buf, count){
     // TODO
 }
 
-static void readChars(char *buf, size_t count) {
-    for (size_t i = 0; i < count; i++) {
-        char c=nextKey();
-        if (c == -1) {
-            i--;
-        } else {
-            buf[i] = c;
-        }
-    }
-}
+// static void readChars(char *buf, size_t count) {
+//     for (size_t i = 0; i < count; i++) {
+//         char c=nextKey();
+//         if (c == -1) {
+//             i--;
+//         } else {
+//             buf[i] = c;
+//         }
+//     }
+// }
 
-static size_t sys_read(FDS fd, const char *buf, size_t count) {
-    if (fd == STDIN) {
-        readChars(buf, count);
-    } else {
-        readFiles(fd, buf, count);
-    }
-    return count;
+static size_t sys_read(){//FDS fd, const char *buf, size_t count) {
+    //readChars(buf, count);
+    return nextKey();
 }
 
 static void sys_sleep(int seconds){
@@ -99,7 +95,7 @@ uint64_t sysCallDispatcher(uint64_t rax, ...) {
         FDS fd = va_arg(args, FDS);
         const char* buf = va_arg(args, const char*);
         size_t count = va_arg(args, size_t);
-        ret = sys_read(fd, buf, count);
+        ret = sys_read();//fd, buf, count);
     } else if (rax == 1) {
         FDS fd = va_arg(args, FDS);
         const char * buf = va_arg(args, const char*);

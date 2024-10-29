@@ -3,6 +3,7 @@
 
 static unsigned long ticks = 0;
 
+
 void timer_handler() {
 	ticks++;
 }
@@ -22,7 +23,24 @@ void sleep(int ticksToWait) {
     };
 }
 
-char* getTime(){
+static char getDecimalFrom(char hex){
+    char high = (hex >> 4) & 0x0F; // Parte alta (decenas)
+    char low = hex & 0x0F;          // Parte baja (unidades)
+    return (high * 10) + low;
+}
+
+static time t;
+
+//time * getTime(){
+    // t.day = getDecimalFrom(getSystemDayOfMonth());
+    // t.month = getDecimalFrom(getSystemMonth());
+    // t.year = getDecimalFrom(getSystemYear());
+    // t.hour =getDecimalFrom(getSystemHour()); 
+    // t.min = getDecimalFrom(getSystemMin());
+    // t.sec = getDecimalFrom(getSystemSec());
+    //return &t;
+//}
+char * getTime(){
     char* time = "DD/MM/YY-00:00:00";
     char aux = getSystemDayOfMonth();
     char aux2 = aux>>4;

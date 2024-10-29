@@ -78,8 +78,9 @@ void doCommand() {
             color_index = (color_index+1)%21;
             strCpy("New color setted", response);
         } else if (strCaseCmp(command, "date")==0) {
-            char * time = getTime();
-            strCpy(time, response);
+            //time * t = getTime();
+            //programTime();
+            strCpy(getTime(), response);
         }else if (strCaseCmp(command, "rec")==0){
             Point p1 = {100, 100};
             Point p2 = {200, 200};

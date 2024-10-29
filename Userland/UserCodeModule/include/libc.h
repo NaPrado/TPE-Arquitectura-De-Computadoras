@@ -6,12 +6,28 @@
 
 #ifndef _LIBC_H_
 #define _LIBC_H_
-
+#include<libasm.h>
 
 typedef struct {
 	int x;
 	int y;
 }Point;
+
+typedef struct {
+    char day;
+    char month;
+    char year;
+    char hour;
+    char min;
+    char sec;
+}time;
+
+//time * getTime();
+char * getTime();
+
+void programTime();
+
+char getKey();
 
 void setBackGroundColor(uint32_t hexColor);
 
