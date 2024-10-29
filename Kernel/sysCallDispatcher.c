@@ -46,15 +46,27 @@ static changeBackgroundColor(uint32_t hexColor) {
     backgroundColor = hexColor;
 }
 
+static void drawtab() {
+    for (int i = 0; i < 4 && (cursorX+CHAR_WIDTH*zoom) < DIM_X; i++) {
+        drawchar(' ', cursorX, cursorY, 0x000000, 0x000000, zoom);
+        cursorX += CHAR_WIDTH*zoom;
+    }
+    
+}
+
 static void sys_write(FDS fd, const char *buf, size_t count) {
     if(fd == STDOUT || fd == STDERR) {
         int i = 0;
         char increase[] = {0, 1, 3};
         while (i < count) {
             while (i < count && (cursorX+CHAR_WIDTH*zoom) < DIM_X && buf[i] != '\n') {
-                drawchar(buf[i], cursorX, cursorY, (fd==STDOUT)?color:0xFF0000, backgroundColor, zoom);
+                if (buf[i] == '\t') {
+                    drawtab();
+                } else {
+                    drawchar(buf[i], cursorX, cursorY, (fd==STDOUT)?color:0xFF0000, backgroundColor, zoom);
+                    cursorX += CHAR_WIDTH*zoom;
+                }
                 i++;
-                cursorX += CHAR_WIDTH*zoom;
             }
             i += (buf[i] == '\n');  // si tengo un salto de linea, salteo
             cursorX = 0;
