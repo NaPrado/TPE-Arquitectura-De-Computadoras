@@ -39,7 +39,27 @@ static char noColisionsP2=1;
 static char noWinner=1;
 static char map[TOTAL_OF_BLOCKS];
 
-
+void points(Snake* s1,Snake* s2){
+    setZoom(2);
+    setFontColor(FONT_COLOR);
+    setBackGroundColor(black);
+    setCursor(DIM_X-(CHAR_WIDTH*10*2),75);
+    char * points="P1: 000";
+    itoa(s1->length,points+4,10,3);
+    print(points);
+    char * points2="P2: 000";
+    if (option==2){
+        setCursor(DIM_X-(CHAR_WIDTH*10*2),120);
+        itoa(s2->length,points2+4,10,3);
+        print(points2);
+    }
+}
+void cleanPoints(){
+    setCursor(DIM_X-(CHAR_WIDTH*10*2),75);
+    print("       ");
+    setCursor(DIM_X-(CHAR_WIDTH*10*2),120);
+    print("       ");
+}
 
 
 void margen(){
@@ -270,7 +290,8 @@ void startGame(){
     startCount();//contador de inicio para la partida
     drawApple();
     do{
-        sleep(9);
+        points(&p1,&p2);
+        sleep(5);
         controls(&p1,&p2);
         actualizeSnakeAndCheckColisions(&p1);
         if (option==2){
@@ -339,6 +360,7 @@ void selector(){
         print ("                         ");
         setCursor((DIM_X/2)-(16*CHAR_WIDTH),CHAR_HEIGHT);
         print("                ");
+        cleanPoints();
         fondo();
     }else if (option==3){
         cleanFullScreen();//en caso de seleccionar EXIT limpia la pantalla
