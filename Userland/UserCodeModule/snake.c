@@ -22,7 +22,7 @@
 
 #define CHAR_HEIGHT 16
 #define CHAR_WIDTH 8
-#define TOTAL_OF_BLOCKS BLOCKS_DIM*BLOCKS_DIM
+#define TOTAL_OF_BLOCKS (BLOCKS_DIM*BLOCKS_DIM)
 
 typedef struct {
     int x;
@@ -59,7 +59,7 @@ void drawBlock(int blockNumber,int color,int defaultColor){//color if needed, de
 void fondo(){
     int color=0;
     int fills=0;
-    for (int i = 0; i < BLOCKS_DIM*BLOCKS_DIM; i++,color++){
+    for (int i = 0; i < TOTAL_OF_BLOCKS; i++,color++){
         drawBlock(i,0,1);
     }
 }
@@ -181,10 +181,9 @@ void actualizeSnakeAndCheckColisions(Snake* snake){
     map[snake->body[snake->head]]=snake->player;
     map[snake->body[snake->tail]]=0;
     drawSnakeHead(snake);
-    sleep(16);
     cleanSnakeTail(snake);
     snake->tail++;
-    //snake->tail=snake->tail%TOTAL_OF_BLOCKS;
+    snake->tail=snake->tail%TOTAL_OF_BLOCKS;
 }
 
 // void controls(Snake snake1,Snake snake2,char c){
@@ -217,7 +216,7 @@ void drawSnakeHead(Snake *snake){
 }
 
 void cleanSnakeTail(Snake* snake){
-    drawBlock(snake->body[snake->tail],0x5F005F,0);
+    drawBlock(snake->body[snake->tail],0,1);
 }
 
 void snakeSetter(Snake* snake,int headBlock, int tailBlock){
@@ -237,12 +236,40 @@ void startGame(){
         drawFullSnakeAtFirst(&p2);
     }
     do{
-        sleep(20);
+        sleep(10);
         actualizeSnakeAndCheckColisions(&p1);
         if (option==2){
             actualizeSnakeAndCheckColisions(&p2);
         }
     } while (noColisionsP1 && noColisionsP2);
+}
+
+void setWinner(){
+    setZoom(2);
+    setFontColor(0xFF0000);
+    setBackGroundColor(0x000000);
+    setCursor(25,1);
+    if (!noColisionsP1 && !noColisionsP2){
+        setCursor(28,1);
+        print("Draw!");
+    }else if (!noColisionsP1){
+        print("Player 2 wins!");
+    }else if (!noColisionsP2){
+        print("Player 1 wins!");
+    }
+    sleep(9);
+    setCursor(25,1);
+    print("            ");
+}
+gameOver(){
+    setZoom(2);
+    setFontColor(0xFF0000);
+    setBackGroundColor(0x000000);
+    setCursor(25,1);
+    print("Game Over!");
+    sleep(9);
+    setCursor(25,1);
+    print("          ");
 }
 
 void selector(){
@@ -262,8 +289,15 @@ void selector(){
     } while (c!='\n');
     if (option==1 || option==2){
         cleanOptions(); //limpia el menu
-        //startCount();//contador de inicio para la partida
+        startCount();//contador de inicio para la partida
         startGame();//inicia la partida
+        if (option==2){
+            setWinner();
+        }else if (option==1){
+            gameOver();
+        }
+        
+        fondo();
     }else if (option==3){
         cleanScreen();//en caso de seleccionar EXIT limpia la pantalla
     }
