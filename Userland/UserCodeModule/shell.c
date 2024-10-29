@@ -95,7 +95,7 @@ void doCommand() {
         }else if (strCaseCmp(command, "rec")==0){
             programRectangle(actualColor);
             getContextBack();
-            strCpy("Rectangle drawn", response);
+            strCpy("Rectangle exited", response);
         } else if (strCaseCmp(command, "help")==0) {
             // strCpy("Help", response);
             itoa(123, response, 10, 5);
