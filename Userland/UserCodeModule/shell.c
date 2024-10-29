@@ -38,9 +38,6 @@ static int actualBackgroundFont=black;
 
 static int fullLines = 0;
 
-static Point command_cursor;
-static Point response_cursor;
-
 void getContextBack(){
     setZoom(zoom_user);
     setBackGroundColor(actualBackgroundFont);

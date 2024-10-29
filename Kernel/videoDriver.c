@@ -1852,3 +1852,13 @@ void drawRectangle(Point* topLeft, Point* downRigth, uint32_t c) {
         }
     }
 }
+
+void drawSpray(int size_x, int size_y, uint32_t spray[][size_x], int cursorX, int cursorY, char mirror) {
+    for (int i = 0; i < size_x; i++) {
+        for (int j = 0; j < size_y; j++) {
+            if (spray[i][j] != 0x00) {
+                putPixel(spray[i][j], cursorX + (mirror ? size_x-i : i) , cursorY + j);
+            }
+        }
+    }
+}
