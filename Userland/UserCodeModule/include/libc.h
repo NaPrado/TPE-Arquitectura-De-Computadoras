@@ -8,24 +8,33 @@
 #define _LIBC_H_
 #include<libasm.h>
 
+#define DIM_X 1024          // Ancho de pantalla [EN PIXELES]
+#define DIM_Y 768           // Alto de pantalla [EN PIXELES]
+
+#define BASE_CHAR_WIDTH 8           // Ancho de un char base [EN PIXELES]
+#define BASE_CHAR_HEIGHT 16         // Ancho de un char base [EN PIXELES]
+
+#define BASE_DIM_CHAR_Y (DIM_Y/BASE_CHAR_HEIGHT)      // Ancho de pantalla [EN CHARS BASE]
+#define BASE_DIM_CHAR_X (DIM_X/BASE_CHAR_WIDTH)       // Alto de pantalla [EN CHARS BASE]
+
 typedef struct {
 	int x;
 	int y;
 }Point;
 
-typedef struct {
+typedef struct time {
     char day;
     char month;
     char year;
     char hour;
     char min;
     char sec;
-}time;
+} time;
 
-//time * getTime();
-char * getTime();
+time * getTime();
+// char * getTime();
 
-void programTime();
+void programTime(char * buf);
 
 char getKey();
 
@@ -41,7 +50,7 @@ void nprint(char * buf, uint64_t lenght);
 
 void scan(char * buf, uint32_t count);
 
-int itos(uint64_t value, char * buffer, int base);
+int itoa(uint64_t value, char * buffer, int base, int n);
 
 char getChar();
 
@@ -50,6 +59,8 @@ void putChar(char c);
 int strlen(const char * str);
 
 void setCursor(uint32_t x, uint32_t y);
+
+void setCharCursor(uint32_t x, uint32_t y);
 
 void sleep(uint64_t seconds);
 

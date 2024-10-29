@@ -108,7 +108,7 @@ uint64_t sysCallDispatcher(uint64_t rax, ...) {
         sys_write(fd, buf, count);
         ret = 0;
     } else if (rax == 4) {
-        ret=getTime();
+        ret = getTime();
     } else if (rax == 5) {
         int x = (int)va_arg(args, uint64_t);
         int y = (int)va_arg(args, uint64_t);

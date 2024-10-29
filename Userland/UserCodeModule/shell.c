@@ -3,15 +3,6 @@
 #include <stdint.h>
 #include <snake.h>
 
-#define DIM_X 1024          // Ancho de pantalla [EN PIXELES]
-#define DIM_Y 768           // Alto de pantalla [EN PIXELES]
-
-#define BASE_CHAR_WIDTH 8           // Ancho de un char base [EN PIXELES]
-#define BASE_CHAR_HEIGHT 16         // Ancho de un char base [EN PIXELES]
-
-#define BASE_DIM_CHAR_Y (DIM_Y/BASE_CHAR_HEIGHT)      // Ancho de pantalla [EN CHARS BASE]
-#define BASE_DIM_CHAR_X (DIM_X/BASE_CHAR_WIDTH)       // Alto de pantalla [EN CHARS BASE]
-
 static int zoom = 1;
 static const int min_zoom = 1;
 static const int max_zoom = 4;
@@ -22,7 +13,7 @@ static const int max_zoom = 4;
 #define DIM_CHAR_Y (DIM_Y/CHAR_HEIGHT)      // Ancho de pantalla [EN CHARS ACTUALES]
 #define DIM_CHAR_X (DIM_X/CHAR_WIDTH)       // Alto de pantalla [EN CHARS ACTUALES]
 
-#define COMMAND_LINE_X (2*BASE_CHAR_WIDTH)                 // Pos de x de la linea de comandos [EN PIXELES]
+#define COMMAND_LINE_X (2*BASE_CHAR_WIDTH)            // Pos de x de la linea de comandos [EN PIXELES]
 #define COMMAND_LINE_Y (DIM_Y-(2*CHAR_HEIGHT))        // Pos de y de la linea de comandos [EN PIXELES]
 
 #define COMMAND_DIM ((BASE_DIM_CHAR_X-4)*2)  // maximo tamaño de comando, sacando margenes [EN CHARS BASE]
@@ -99,16 +90,15 @@ void doCommand() {
             colorIndex = (colorIndex+1)%21;
             strCpy("New color setted", response);
         } else if (strCaseCmp(command, "date")==0) {
-            //time * t = getTime();
-            //programTime();
+            programTime(response);
             getContextBack();
-            strCpy(getTime(), response);
         }else if (strCaseCmp(command, "rec")==0){
             programRectangle(actualColor);
             getContextBack();
             strCpy("Rectangle drawn", response);
         } else if (strCaseCmp(command, "help")==0) {
-            strCpy("Help", response);
+            // strCpy("Help", response);
+            itoa(123, response, 10, 5);
         } else if (strCaseCmp(command, "zoom in") == 0) {
             if (zoom < max_zoom) { 
                 cleanScreen();

@@ -2,10 +2,10 @@
 #define _TIME_H_
 #include <stdint.h>
 
-typedef struct {
+typedef struct time{
     char day;
     char month;
-    uint32_t year;
+    char year;
     char hour;
     char min;
     char sec;
@@ -54,6 +54,6 @@ void sleep(int ticks);
  *
  * @return A time structure containing the current system time.
  */
-//time * getTime();
-char * getTime();
+time * getTime();
+// char * getTime();
 #endif

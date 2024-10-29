@@ -28,34 +28,28 @@ void print(char * buf) {
     sys_call(WRITE, 1, (uint64_t) buf, strlen(buf), 0);
 }
 
-//time * getTime(){
-char * getTime(){
+time * getTime() {
+// char * getTime(){
 	return sys_call(GET_TIME, 0, 0, 0, 0);
 }
 
-// void programTime(){ 
-//     char c = -2;
-//     while (c==-2){
-//         setCursor(20,20);
-//         time * t = getTime();
-//         char buf[20]="dd/mm/yy 00:00:00";
-//         buf[0] = (t->day / 10) + '0';
-//         buf[1] = (t->day % 10) + '0';
-//         buf[3] = (t->month / 10) + '0';
-//         buf[4] = (t->month % 10) + '0';
-//         buf[6] = (t->year / 10) + '0';
-//         buf[7] = (t->year % 10) + '0';
-//         buf[9] = (t->hour / 10) + '0';
-//         buf[10] = (t->hour % 10) + '0';
-//         buf[12] = (t->min / 10) + '0';
-//         buf[13] = (t->min % 10) + '0';
-//         buf[15] = (t->sec / 10) + '0';
-//         buf[16] = (t->sec % 10) + '0';
-//         print(buf);
-//         _hlt();
-//         c = getKey();
-//     }
-// }
+void programTime(char * buf){ 
+    time * t = getTime();
+    strCpy("dd/mm/yy 00:00:00", buf);
+    char aux[3] = {0x00};
+    itoa(t->day, aux, 16, 2);
+    strNCpy(aux, buf, 2);
+    itoa(t->month, aux, 16, 2);
+    strNCpy(aux, buf+3, 2);
+    itoa(t->year, aux, 16, 2);
+    strNCpy(aux, buf+6, 2);
+    itoa(t->hour, aux, 16, 2);
+    strNCpy(aux, buf+9, 2);
+    itoa(t->min, aux, 16, 2);
+    strNCpy(aux, buf+12, 2);
+    itoa(t->sec, aux, 16, 2);
+    strNCpy(aux, buf+15, 2);
+}
 
 programRectangle(uint32_t color){
     cleanScreen();
@@ -80,7 +74,7 @@ programRectangle(uint32_t color){
 }
 
 char getKey(){
-    sys_call(READ, 0, 0, 0, 0);
+    return sys_call(READ, 0, 0, 0, 0);
 }
 
 void scan(char * buf, uint32_t count) {
@@ -95,28 +89,34 @@ void scan(char * buf, uint32_t count) {
     }
 }
 
-int itoa(uint64_t value, char * buffer, int base) {
+int itoa(uint64_t value, char * buffer, int base, int n) {
     char *p = buffer;
 	char *p1, *p2;
 	uint32_t digits = 0;
 
+    char end = 0;
+
 	//Calculate characters for each digit
-	do
-	{
+	do {
 		uint32_t remainder = value % base;
 		*p++ = (remainder < 10) ? remainder + '0' : remainder + 'A' - 10;
 		digits++;
-	}
-	while (value /= base);
+    } while (value /= base);
 
 	// Terminate string in buffer.
-	*p = 0;
+    n -= digits;
+    while (n > 0) {
+        *p++ = '0';
+        n--;
+    }
+
+    *p = 0x00;
+    
 
 	//Reverse string in buffer.
 	p1 = buffer;
 	p2 = p - 1;
-	while (p1 < p2)
-	{
+	while (p1 < p2) {
 		char tmp = *p1;
 		*p1 = *p2;
 		*p2 = tmp;
@@ -148,6 +148,10 @@ int strlen(const char * str) {
 
 void setCursor(uint32_t x, uint32_t y) {
     sys_call(SET_CURSOR, x, y, 0, 0);
+}
+
+void setCharCursor(uint32_t x, uint32_t y) {
+    setCursor(x*BASE_CHAR_WIDTH, y*BASE_CHAR_HEIGHT);
 }
 
 void sleep(uint64_t seconds){
