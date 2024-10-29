@@ -32,8 +32,9 @@ typedef struct {
     char sec;
 } time;
 
+uint64_t * getRegisters();
+
 time * getTime();
-// char * getTime();
 
 char getKey();
 
@@ -86,6 +87,8 @@ void programTime(char * buf);
 void programRectangle(uint32_t color);
 
 void programHelp();
+
+void programRegisters();
 
 void cleanFullScreen();
 

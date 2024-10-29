@@ -2,8 +2,10 @@
 #include <libasm.h>
 #define READ 0
 #define WRITE 1
+#define REGISTERS 2
 #define GET_TIME 4
 #define SET_CURSOR 5
+#define PUT_PIXEL 6
 #define SET_FONT_COLOR 7
 #define SET_ZOOM 8
 #define DRAW_RECTANGLE 9
@@ -19,6 +21,10 @@ void drawSpray(uint32_t size_x, uint32_t size_y, uint32_t spray[][size_y], uint8
     sys_call(DRAW_SPRAY, (uint64_t) spray, (uint64_t) size_x, (uint64_t) size_y, (uint64_t) mirror);
 }
 
+uint64_t * getRegisters() {
+    return sys_call(REGISTERS, 0, 0, 0, 0);
+}
+
 void setFontColor(uint32_t hexColor) {
 	sys_call(SET_FONT_COLOR, hexColor, 0, 0, 0);
 }
@@ -27,7 +33,7 @@ void setBackGroundColor(uint32_t hexColor) {
 }
 
 void nprint(char * buf, uint64_t lenght) {
-	sys_call(WRITE, 1, (uint64_t) buf, lenght, 0);
+	sys_call(WRITE, 1, (uint64_t) buf, (uint64_t) lenght, 0);
 }
 
 void print(char * buf) {
@@ -87,7 +93,30 @@ void programRectangle(uint32_t color) {
 void programHelp() {
     setCursor(BASE_CHAR_WIDTH*4, BASE_CHAR_HEIGHT*2);
     print("Commands:\n\t1-color\n\t2-date\n\t3-rec\n\t4-zoom in\n\t5-zoom out\n\t6-snake");
-    while (getChar() == 0) {
+    setZoom(2);
+    setCursor(376, 696);
+    print("Press 'Q' to quit");
+    while (getChar() != 'q') {
+        _hlt();
+    }
+    cleanFullScreen();
+}
+
+void programRegisters() {
+    setZoom(2);
+    setCursor(0, BASE_CHAR_HEIGHT*2);
+    uint64_t * reg = getRegisters();
+    char ** strs = {"rax", "rbx", "rcx", "rdx", "rdi", "rsi", "rsp", "rbp", "r8 ", "r9 ", "r10", "r11", "r12", "r13", "r14", "r15"};
+    char * buf = "\tRRR: 0xHHHHHHHHHHHHHHHH\n";
+    for (int i = 0; i < 16; i++) {
+        // strNCpy(strs[i], buf+1, 3);
+        itoa(reg[i], buf+8, 16, 16);
+        buf[24] = '\n';
+        nprint(buf, 25);
+    }
+    setCursor(376, 696);
+    print("Press 'Q' to quit");
+    while (getChar() != 'q') {
         _hlt();
     }
     cleanFullScreen();
@@ -185,7 +214,7 @@ void strCpy(char * source, char * dest) {
 }
 
 void strNCpy(char * source, char * dest, int n) {
-    while (n-- > 0) {
+    while (--n > 0) {
         (*(dest++) = *(source++));
     }
 }

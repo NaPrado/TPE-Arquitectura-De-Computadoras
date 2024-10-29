@@ -45,7 +45,6 @@ void getContextBack(){
 }
 
 void shell() {
-
     while (!exit) {
         inicializeShell();
         getCommand();
@@ -123,6 +122,10 @@ void doCommand() {
             snake();
             getContextBack();
             strCpy("Snake exited", response);
+        } else if (strCaseCmp(command, "registers")==0) {
+            cleanScreen();
+            programRegisters();
+            getContextBack();
         } else if (strCaseCmp(command, "exit")==0) {
             strCpy("Exit", response);
             exit = 1;

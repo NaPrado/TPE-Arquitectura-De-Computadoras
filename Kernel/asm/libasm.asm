@@ -1,5 +1,6 @@
 GLOBAL cpuVendor
 GLOBAL testSysCall
+GLOBAL getRegisters
 
 section .text
 	
@@ -72,3 +73,26 @@ cpuVendor:
 ; 	int 80h
 ; 	ret
 ; msg db "Hello, World!", 0
+
+getRegisters:
+    mov qword [registers], rax
+    mov rax, registers
+    mov qword [rax+8], rbx
+    mov qword [rax+16], rcx
+    mov qword [rax+24], rdx
+    mov qword [rax+32], rdi
+    mov qword [rax+40], rsi
+    mov qword [rax+48], rsp
+    mov qword [rax+56], rbp
+    mov qword [rax+72], r8
+    mov qword [rax+80], r9
+    mov qword [rax+88], r10
+    mov qword [rax+96], r11
+    mov qword [rax+104], r12
+    mov qword [rax+112], r13
+    mov qword [rax+120], r14
+    mov qword [rax+128], r15
+    ret
+
+section .bss
+registers resq 17

@@ -14,6 +14,7 @@ static size_t sys_read();//FDS fd, const char *buf, size_t count);
 static void sys_sleep(int seconds);
 static void sys_putPixel(uint32_t hexColor,uint64_t x,uint64_t y);
 static void sys_setZoom(int new_zoom);
+extern uint64_t * getRegisters();
 
 uint64_t sysCallDispatcher(uint64_t rax, ...);
 
@@ -116,9 +117,11 @@ uint64_t sysCallDispatcher(uint64_t rax, ...) {
     } else if (rax == 1) {
         FDS fd = va_arg(args, FDS);
         const char * buf = va_arg(args, const char*);
-        size_t count = va_arg(args, size_t);
+        uint64_t count = va_arg(args, uint64_t);
         sys_write(fd, buf, count);
         ret = 0;
+    } else if (rax == 2) {
+        ret = getRegisters();
     } else if (rax == 4) {
         ret = getTime();
     } else if (rax == 5) {
