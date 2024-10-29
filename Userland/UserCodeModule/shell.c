@@ -166,5 +166,5 @@ void inicializeShell() {
 }
 
 void cleanScreen() {
-    drawRectangle((Point){1, COMMAND_LINE_Y-4*zoom_user*CHAR_HEIGHT}, (Point){DIM_X, DIM_Y}, 0x000000);
+    drawRectangle((Point){1, COMMAND_LINE_Y-4*CHAR_HEIGHT}, (Point){DIM_X, DIM_Y}, 0x000000);
 }
