@@ -3,17 +3,29 @@
 #include <stdint.h>
 #include <snake.h>
 
-#define DIM_X 1024
-#define DIM_Y 768
+#define DIM_X 1024          // Ancho de pantalla [EN PIXELES]
+#define DIM_Y 768           // Alto de pantalla [EN PIXELES]
 
-#define CHAR_WIDTH 8
-#define CHAR_HEIGHT 16
+#define BASE_CHAR_WIDTH 8           // Ancho de un char base [EN PIXELES]
+#define BASE_CHAR_HEIGHT 16         // Ancho de un char base [EN PIXELES]
 
-#define DIM_CHAR_Y (DIM_Y/CHAR_HEIGHT)
-#define DIM_CHAR_X (DIM_X/CHAR_WIDTH)
+#define BASE_DIM_CHAR_Y (DIM_Y/BASE_CHAR_HEIGHT)      // Ancho de pantalla [EN CHARS BASE]
+#define BASE_DIM_CHAR_X (DIM_X/BASE_CHAR_WIDTH)       // Alto de pantalla [EN CHARS BASE]
 
-#define COMMAND_LINE_X (4-(zoom/3))                 // Pos de x de la linea de comandos en base al zoom
-#define COMMAND_LINE_Y (DIM_CHAR_Y-(4*zoom))        // Pos de y de la linea de comandos en base al zoom
+static int zoom = 1;
+static const int min_zoom = 1;
+static const int max_zoom = 4;
+
+#define CHAR_WIDTH (BASE_CHAR_WIDTH*zoom)       // Ancho de un char actual [EN PIXELES]
+#define CHAR_HEIGHT (BASE_CHAR_HEIGHT*zoom)     // Alto de un char actual [EN PIXELES]
+
+#define DIM_CHAR_Y (DIM_Y/CHAR_HEIGHT)      // Ancho de pantalla [EN CHARS ACTUALES]
+#define DIM_CHAR_X (DIM_X/CHAR_WIDTH)       // Alto de pantalla [EN CHARS ACTUALES]
+
+#define COMMAND_LINE_X (2*BASE_CHAR_WIDTH)                 // Pos de x de la linea de comandos [EN PIXELES]
+#define COMMAND_LINE_Y (DIM_Y-(2*CHAR_HEIGHT))        // Pos de y de la linea de comandos [EN PIXELES]
+
+#define COMMAND_DIM ((BASE_DIM_CHAR_X-4)*2)  // maximo tamaño de comando, sacando margenes [EN CHARS BASE]
 
 static void inicializeShell();
 static void getCommand();
@@ -22,18 +34,16 @@ static void cleanCommand();
 static void printCommands();
 static void cleanScreen();
 
-static int zoom = 1;
 
 static char exit = 0;
-static const int command_dim = DIM_CHAR_X*2 - 8;  // maximo tamaño de comando, sacando margenes 
 static int command_size = 0;
-static char command[(DIM_CHAR_X-4)*2];              // buffer de commando escrito
-static char response[DIM_CHAR_X*2];                 // buffer de respuesta de commando
+static char command[COMMAND_DIM];              // buffer de commando escrito
+static char response[COMMAND_DIM];                 // buffer de respuesta de commando
 static char commandDone = 0;                        // flag para checkear si un comando se realizo (no prints de mas)
 
 static uint32_t color[] = { blue, green, red, yellow, purple, cyan, orange, pink, brown, lightGrey, lightBlue, lightGreen, lightRed, lightPink, lightBrown, darkBlue, darkGreen, darkRed, darkYellow, darkPurple,white};
 static int colorIndex = 0;
-static int actualColor=white;
+static int actualColor = white;
 static int actualBackgroundFont=black;
 
 static int fullLines = 0;
@@ -57,23 +67,26 @@ void shell() {
         cleanCommand();
 	}
     cleanScreen();
-    setCursor(COMMAND_LINE_X, COMMAND_LINE_Y);
+    setCursor(COMMAND_LINE_X+2*CHAR_WIDTH, COMMAND_LINE_Y);
     print("exited");
 }
 
 void getCommand() {
     char c;
     do {
+        _hlt();
         c = getChar();
-        if (c != '\b') {
-            command[command_size++] = c;
-        } else {
-            command_size -= command_size>0 ? 1 : 0;  // le resto solo si es mayor a 0
-            command[command_size] = ' ';
+        if (c != '\0') {
+            if (c != '\b') {
+                command[command_size++] = c;
+            } else {
+                command_size -= (command_size > 0);  // le resto solo si es mayor a 0
+                command[command_size] = ' ';
+            }
+            setCursor(COMMAND_LINE_X+2*CHAR_WIDTH, COMMAND_LINE_Y);
+            print(command);
         }
-        setCursor(COMMAND_LINE_X, COMMAND_LINE_Y);
-        print(command);
-    } while (c != '\n' && command_size < (command_dim-1)/zoom - 1);
+    } while (c != '\n' && command_size < (COMMAND_DIM-1)/zoom - 1);
     command[command_size-1] = '\0';
 }
 
@@ -97,7 +110,7 @@ void doCommand() {
         } else if (strCaseCmp(command, "help")==0) {
             strCpy("Help", response);
         } else if (strCaseCmp(command, "zoom in") == 0) {
-            if (zoom <= 3) { 
+            if (zoom < max_zoom) { 
                 cleanScreen();
                 strCpy("Zoomed in", response);
                 setZoom(++zoom);
@@ -106,7 +119,7 @@ void doCommand() {
                 strCpy("Max zoom possible", response);
             }
         } else if (strCaseCmp(command, "zoom out") == 0) {
-            if (zoom > 1) { 
+            if (zoom > min_zoom) { 
                 cleanScreen();
                 strCpy("Zoomed out", response);
                 setZoom(--zoom);
@@ -135,26 +148,27 @@ void cleanCommand() {
         command[i] = '\0';
     }
     command_size = 0;
-    setCursor(COMMAND_LINE_X-2, COMMAND_LINE_Y);
+    setCursor(COMMAND_LINE_X, COMMAND_LINE_Y);
 }
 
 void printCommands() {
 
-    drawRectangle((Point){1, (COMMAND_LINE_Y-4*zoom)*CHAR_HEIGHT}, (Point){DIM_X, DIM_Y-2*zoom*CHAR_HEIGHT}, 0x000000);
+    drawRectangle((Point){1, COMMAND_LINE_Y-4*CHAR_HEIGHT}, (Point){DIM_X, COMMAND_LINE_Y+2*CHAR_HEIGHT}, 0x000000);
     
-    setCursor(COMMAND_LINE_X, COMMAND_LINE_Y-4*zoom);
+    setCursor(COMMAND_LINE_X+2*CHAR_WIDTH, COMMAND_LINE_Y-4*CHAR_HEIGHT);
     print(command);
 
-    setCursor(COMMAND_LINE_X, COMMAND_LINE_Y-2*zoom);
+    setCursor(COMMAND_LINE_X+2*CHAR_WIDTH, COMMAND_LINE_Y-2*CHAR_HEIGHT);
     print(response);
 
 }
 
 
 void inicializeShell() {
-    setCursor(COMMAND_LINE_X-2, COMMAND_LINE_Y);
+    setCursor(COMMAND_LINE_X, COMMAND_LINE_Y);
     setFontColor(white);
     print("> ");
+    setFontColor(actualColor);
 }
 
 void cleanScreen() {

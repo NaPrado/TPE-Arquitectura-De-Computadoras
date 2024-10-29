@@ -1807,11 +1807,12 @@ void drawchar(unsigned char c, int x, int y, int fgcolor, int bgcolor, int mult)
 	unsigned char * glyph=font_bitmap+(int)c*16;
 
 	for (int cy = 0; cy < CHAR_HEIGHT*mult; cy+=mult) {
-		for (int cx = 0; cx < CHAR_WIDTH; cx++) {
-			putMultPixel(glyph[cy/mult] & mask[cx] ? fgcolor : bgcolor, (x + cx)*mult, (y + cy), mult);
+		for (int cx = 0; cx < CHAR_WIDTH*mult; cx+=mult) {
+			putMultPixel(glyph[cy/mult] & mask[cx/mult] ? fgcolor : bgcolor, (x + cx), (y + cy), mult);
 		}
 	}
 }
+
 int itoa(uint64_t value, char * buffer, int base) {
     char *p = buffer;
 	char *p1, *p2;

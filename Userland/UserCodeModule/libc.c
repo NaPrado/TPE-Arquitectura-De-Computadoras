@@ -85,7 +85,7 @@ char getKey(){
 
 void scan(char * buf, uint32_t count) {
     for (int i = 0; i < count; i++) {
-        char c=sys_call(READ, 0, 0, 0, 0);
+        char c = sys_call(READ, 0, 0, 0, 0);
         if (c == -1 || c == -2){
             _hlt();
             i--;
