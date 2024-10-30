@@ -3,17 +3,7 @@
 
 #include <stdint.h>
 
-class PcSpeakerDriver {
-public:
-    PcSpeakerDriver();
-    ~PcSpeakerDriver();
-
-    void playSound(uint32_t frequency);
-    void stopSound();
-
-private:
-    void enableSpeaker();
-    void disableSpeaker();
-};
+void playSound(uint32_t nFrequence);
+void stopSound();
 
 #endif // PC_SPEAKER_DRIVER_H

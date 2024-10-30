@@ -3,6 +3,7 @@
 #include <time.h>
 #include <videoDriver.h>
 #include <keyboardDriver.h>
+#include <pcSpeakerDriver.h>
 
 extern uint64_t * getRegisters();
 
@@ -131,6 +132,11 @@ uint64_t sysCallDispatcher(uint64_t rax, ...) {
         uint64_t size_x = va_arg(args, uint64_t);
         uint64_t size_y = va_arg(args, uint64_t);
         drawSpray(size_x, size_y, spray, cursorX, cursorY);
+    } else if (rax == 12) {
+        uint64_t frecuency = va_arg(args, uint64_t);
+        playSound(frecuency);
+    } else if (rax == 13) {
+        stopSound();
     } else if (rax == 35) {
         int seconds = va_arg(args, int);
         sys_sleep(seconds);    

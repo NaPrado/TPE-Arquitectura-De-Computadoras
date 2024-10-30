@@ -1,9 +1,22 @@
+GLOBAL outb
+GLOBAL inb
 GLOBAL cpuVendor
 GLOBAL testSysCall
 GLOBAL getRegisters
 
 section .text
 	
+inb:
+    mov rdx, rdi
+	in al, dx
+	ret
+
+outb:
+    mov rdx,rdi
+    mov rax,rsi
+    out dx,al
+    ret
+
 cpuVendor:
 	push rbp
 	mov rbp, rsp
@@ -27,53 +40,6 @@ cpuVendor:
 	mov rsp, rbp
 	pop rbp
 	ret
-; testSysCall:
-; 	mov rax,6
-; 	mov rdi, 0xFF0000
-; 	mov rsi, 70
-; 	mov rdx,70
-; 	int 80h
-; 	mov rax,6
-; 	mov rdi, 0x00FF00
-; 	mov rsi, 80
-; 	mov rdx,70
-; 	int 80h
-	
-
-; 	mov rax, 35
-; 	mov rdi, 3
-; 	int 80h
-
-; 	mov rax, 1
-; 	mov rdi, 1
-; 	mov rsi, msg
-; 	mov rdx, 13
-; 	int 80h
-
-; 	mov rax, 5
-; 	mov rdi, 20
-; 	mov rsi, 20 
-; 	int 80h
-	
-; 	mov rax, 1
-; 	mov rdi, 2
-; 	mov rsi, msg
-; 	mov rdx, 13
-; 	int 80h
-
-; 	mov rax, 5
-; 	mov rdi, 20
-; 	mov rsi, 30 
-; 	int 80h
-
-; 	mov rax, 1
-; 	mov rdi, 1
-; 	mov rsi, msg
-; 	mov rdx, 13
-; 	int 80h
-; 	ret
-; msg db "Hello, World!", 0
-
 getRegisters:
     mov qword [registers], rax
     mov rax, registers
@@ -92,7 +58,6 @@ getRegisters:
     mov qword [rax+112], r13
     mov qword [rax+120], r14
     mov qword [rax+128], r15
-    ; mov qword [rax+136], rip
     ret
 
 section .bss

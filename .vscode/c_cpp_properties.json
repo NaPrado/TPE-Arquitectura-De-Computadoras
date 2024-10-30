@@ -5,7 +5,8 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/Userland/UserCodeModule/include",
-                "${workspaceFolder}/Kernel/include"
+                "${workspaceFolder}/Kernel/include",
+                "/usr/include/linux"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",

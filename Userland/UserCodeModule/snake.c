@@ -1,6 +1,8 @@
 #include <snake.h>
 #include <libc.h>
 #include <stdint.h>
+#include <sounds.h>
+
 #define DIM_X 1024
 #define DIM_Y 768
 #define COLOR1 0x2474FF
