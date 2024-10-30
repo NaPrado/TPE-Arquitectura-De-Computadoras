@@ -68,7 +68,7 @@ void sleep(uint64_t seconds);
 
 void strCpy(char * source, char * dest);
 
-void strNCpy(char * source, char * dest, int n);
+void strNCpy(const char * source, char * dest, int n);
 
 int strCmp(const char * s1,const char * s2);
 
