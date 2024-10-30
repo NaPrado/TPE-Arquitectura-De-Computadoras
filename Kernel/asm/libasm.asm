@@ -92,6 +92,7 @@ getRegisters:
     mov qword [rax+112], r13
     mov qword [rax+120], r14
     mov qword [rax+128], r15
+    ; mov qword [rax+136], rip
     ret
 
 section .bss

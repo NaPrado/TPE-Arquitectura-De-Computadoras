@@ -20,6 +20,7 @@ GLOBAL _exception0Handler
 EXTERN irqDispatcher
 EXTERN sysCallDispatcher
 EXTERN exceptionDispatcher
+EXTERN getStackBase
 
 SECTION .text
 
@@ -82,7 +83,11 @@ SECTION .text
 	call exceptionDispatcher
 
 	popState
-	iretq
+
+    call getStackBase
+
+    mov rsp, rax
+    jmp userland
 %endmacro
 
 
@@ -113,7 +118,7 @@ picSlaveMask:
 	push    rbp
     mov     rbp, rsp
     mov     ax, di  ; ax = mascara de 16 bits
-    out	0A1h,al
+    out	    0A1h,al
     pop     rbp
     retn
 
@@ -164,7 +169,9 @@ haltcpu:
 	hlt
 	ret
 
+section .rodata
+    userland equ 0x400000
 
-
-SECTION .bss
+section .bss
 	aux resq 1
+    regs_backup resq 18
