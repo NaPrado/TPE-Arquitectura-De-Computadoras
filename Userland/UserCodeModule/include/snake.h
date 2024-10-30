@@ -26,11 +26,4 @@ void snake();
 #define CHAR_WIDTH 8
 #define CHAR_HEIGHT 16
 
-// // Function prototypes
-// void init_snake(Snake *snake, int initial_length, Point start_position);
-// void move_snake(Snake *snake);
-// char check_collision(Snake *snake, int grid_width, int grid_height);
-// void change_direction(Snake *snake, Direction new_direction);
-// void grow_snake(Snake *snake);
-
 #endif // SNAKE_H
