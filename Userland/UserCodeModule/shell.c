@@ -90,7 +90,9 @@ void doCommand() {
             colorIndex = (colorIndex+1)%21;
             strCpy("New color setted", response);
         } else if (strCaseCmp(command, "date")==0) {
-            programTime(response);
+            cleanScreen();
+            programTime();
+            timeToStr(response);
             getContextBack();
         }else if (strCaseCmp(command, "rec")==0){
             cleanScreen();

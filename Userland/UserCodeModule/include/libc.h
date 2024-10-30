@@ -82,7 +82,7 @@ int tolower(int c);
 
 void setZoom(char zoom);
 
-void programTime(char * buf);
+void timeToStr(char * buf);
 
 void programRectangle(uint32_t color);
 

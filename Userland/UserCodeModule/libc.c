@@ -45,7 +45,7 @@ time * getTime() {
 	return sys_call(GET_TIME, 0, 0, 0, 0);
 }
 
-void programTime(char * buf) { 
+void timeToStr(char * buf) { 
     time * t = getTime();
     strCpy("dd/mm/yy 00:00:00", buf);
     char aux[3] = {0x00};
@@ -61,6 +61,21 @@ void programTime(char * buf) {
     strNCpy(aux, buf+12, 2);
     itoa(t->sec, aux, 16, 2);
     strNCpy(aux, buf+15, 2);
+}
+
+void programTime(){
+    char buf[17] = {0};
+    setZoom(1);
+    setCursor((DIM_X/2)-9*BASE_CHAR_WIDTH, DIM_Y-(4*BASE_CHAR_HEIGHT));
+    print("Press 'Q' to quit");
+    setZoom(2);
+    while (getKey() != 'q') {
+        setCursor((DIM_X/2)-9*BASE_CHAR_WIDTH*2, DIM_Y/2);
+        timeToStr(buf);
+        print(buf);
+        _hlt();
+    }
+    cleanFullScreen();
 }
 
 void programRectangle(uint32_t color) {
