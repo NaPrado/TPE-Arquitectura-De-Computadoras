@@ -101,6 +101,8 @@ uint64_t sysCallDispatcher(uint64_t rax, ...) {
         ret = 0;
     } else if (rax == 2) {
         ret = getRegisters();
+    } else if (rax == 3) {
+        ret = nextKey();
     } else if (rax == 4) {
         ret = getTime();
     } else if (rax == 5) {
@@ -137,6 +139,8 @@ uint64_t sysCallDispatcher(uint64_t rax, ...) {
         playSound(frecuency);
     } else if (rax == 13) {
         stopSound();
+    } else if (rax == 14) {
+        ret=getTicks();
     } else if (rax == 35) {
         int seconds = va_arg(args, int);
         sys_sleep(seconds);    

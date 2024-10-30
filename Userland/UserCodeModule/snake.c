@@ -246,17 +246,16 @@ static void startCount(){
     setFontColor(FONT_COLOR);
     setBackGroundColor(black);
     char c='3';
-    for (int i = 3; 0 < i; i--)
-    {
+    for (int i = 3; 0 < i; i--){
         setCursor((DIM_X/2)-CHAR_WIDTH,CHAR_HEIGHT);
         putChar(c);
-        sleep(18);
+        playSoundForTicks(A4,5);
+        sleep(9);
         c--;
-        //doSound(a);
     }
     setCursor((DIM_X/2)-(3*CHAR_WIDTH),CHAR_HEIGHT);
     print("GO!");
-    sleep(9);
+    playSoundForTicks(A4,9);
     setCursor((DIM_X/2)-(3*CHAR_WIDTH),CHAR_HEIGHT);
     print("   ");
 }
@@ -280,6 +279,7 @@ static void drawApple(){
         actualApple=APPLE_GOLD_STATUS;
     }
     map[apple]=actualApple;
+    playSoundForTicks(440,1);
     
     int y=apple?(apple/BLOCKS_DIM):0;
     setCursor(DIM_LEFT_MARGIN+(apple%BLOCKS_DIM)*PIXEL_PER_BLOCK,DIM_TOP_MARGIN+y*PIXEL_PER_BLOCK);
@@ -453,28 +453,57 @@ static void gameOverOrWinner(){
     print("Game Over!");
 }
 
+static uint64_t ticks=0;
+static uint64_t initialTicks=0;
+static uint64_t initialTicks2=0;
+static char flagSound=0;
+
+
+startSelectSound(){
+    flagSound=1;
+    playSound(F4);
+    initialTicks=getTicks();
+}
+stopAndChangeSound(){
+    if(ticks-initialTicks>2 && flagSound==1){
+        playSound(G4);
+        flagSound=2;
+        initialTicks=getTicks();
+    }
+    if (ticks-initialTicks>2 && flagSound==2){
+        initialTicks=0;
+        stopSound();
+    }      
+}
+
 static void selector(){
     drawselection();
-    char c=0;
+    char c=getKey();
     do
     {
+        ticks=getTicks();
         if ((c == 'W' || c == 'w' || c == 'I' || c == 'i')&& option>ONE_PLAYER){
             option--;
+            startSelectSound();
             drawselection();
         }else if ((c == 'S' || c == 's' || c == 'K' || c == 'k')&& option<EXIT){
             option++;
+            startSelectSound();
             drawselection();
         }
         if (option==GAPPLE && c=='\n'){
+            startSelectSound();
             gappleMode=(!gappleMode);
             setFontColor(FONT_COLOR);
             setBackGroundColor(MENU_BACKGROUND_COLOR);
             setCursor(50,165);
             print(gappleMode?"GAPPLE":"NORMAL");
         }
-        c=getChar();
-        //doSound(a);
+        stopAndChangeSound();  
+        _hlt();
+        c=getKey();
     } while (c!='\n'||option==GAPPLE);
+    stopSound();
     if (option==ONE_PLAYER || option==TWO_PLAYERS){
         cleanOptions(); //limpia el menu
         startGame();//inicia la partida

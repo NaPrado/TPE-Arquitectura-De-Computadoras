@@ -16,6 +16,10 @@ int seconds_elapsed() {
 	return ticks / 18;
 }
 
+unsigned long getTicks(){
+    return ticks;
+}
+
 void sleep(int ticksToWait) {
     unsigned long start = ticks;
     while (ticks - start < ticksToWait){

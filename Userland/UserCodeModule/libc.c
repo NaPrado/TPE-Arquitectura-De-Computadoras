@@ -143,7 +143,7 @@ void programRegisters() {
 }
 
 char getKey(){
-    return sys_call(READ, 1, 0, 0, 0);
+    return sys_call(3, 0, 0, 0, 0);
 }
 
 int scan(char * buf, uint32_t count) {
@@ -189,8 +189,12 @@ int itoa(uint64_t value, char * buffer, int base, int n) {
 }
 
 char getChar() {
-    char c;
-    scan(&c, 1);
+    char c=-2;
+    while (c == -2){
+        _hlt();
+        scan(&c, 1);
+    }
+    
     return c;
 }
 
@@ -282,6 +286,11 @@ void setZoom(char zoom) {
 void cleanFullScreen() {
     drawRectangle((Point){0, 0}, (Point){DIM_X, DIM_Y}, 0x000000);
 }
+
+void getTicks(){
+    return sys_call(14, 0, 0, 0, 0);
+}
+
 
 // int strStartsWith(const char * str, const char * start) {
 // 	int length=strlen(start);
