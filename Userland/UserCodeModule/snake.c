@@ -12,6 +12,7 @@
 #define COLOR_SNAKE_2 0x9F009F
 #define MENU_BACKGROUND_COLOR 0xD0B000
 #define FONT_COLOR 0xFF0000
+#define EDGE_COLOR 0x505050
 
 #define PIXEL_PER_BLOCK 32
 #define BLOCKS_DIM 20
@@ -23,6 +24,8 @@
 #define MENU_RIGHT_MARGIN MENU_LEFT_MARGIN*7
 #define MENU_TOP_MARGIN DIM_TOP_MARGIN
 #define MENU_BOTTOM_MARGIN DIM_BOTTOM_MARGIN
+#define APPLE_RED_STATUS 2
+#define APPLE_GOLD_STATUS 3
 
 #define FIRST_PLAYER 1
 #define SECOND_PLAYER 2
@@ -41,8 +44,11 @@ static char noColisionsP1=1;
 static char noColisionsP2=1;
 static char noWinner=1;
 static char appleMirror=1;
-static char actualApple=0;
+static char actualApple=2;
 static char map[TOTAL_OF_BLOCKS];
+static char goldAppleInit=0;
+static char toGrowP1=0;
+static char toGrowP2=0;
 
 static uint32_t appleSpray[PIXEL_PER_BLOCK][PIXEL_PER_BLOCK]={
     TRANSPARENT,TRANSPARENT,TRANSPARENT,TRANSPARENT     ,TRANSPARENT,TRANSPARENT,TRANSPARENT,TRANSPARENT    ,TRANSPARENT,TRANSPARENT,TRANSPARENT,TRANSPARENT    ,TRANSPARENT,TRANSPARENT,TRANSPARENT,TRANSPARENT    ,LEAF__COLOR,TRANSPARENT,TRANSPARENT,TRANSPARENT    ,TRANSPARENT,TRANSPARENT,TRANSPARENT,TRANSPARENT ,TRANSPARENT,TRANSPARENT,TRANSPARENT,TRANSPARENT   ,TRANSPARENT,TRANSPARENT,TRANSPARENT,TRANSPARENT,//1
@@ -85,6 +91,7 @@ static uint32_t appleSpray[PIXEL_PER_BLOCK][PIXEL_PER_BLOCK]={
     TRANSPARENT,TRANSPARENT,TRANSPARENT,TRANSPARENT     ,TRANSPARENT,APPLE_COLOR,APPLE_COLOR,APPLE_COLOR    ,APPLE_COLOR,APPLE_COLOR,APPLE_COLOR,APPLE_COLOR    ,APPLE_COLOR,APPLE_COLOR,TRANSPARENT,TRANSPARENT    ,TRANSPARENT,TRANSPARENT,APPLE_COLOR,APPLE_COLOR    ,APPLE_COLOR,APPLE_COLOR,APPLE_COLOR,APPLE_COLOR ,APPLE_COLOR,APPLE_COLOR,APPLE_COLOR,TRANSPARENT   ,TRANSPARENT,TRANSPARENT,TRANSPARENT,TRANSPARENT,//31
     TRANSPARENT,TRANSPARENT,TRANSPARENT,TRANSPARENT     ,TRANSPARENT,TRANSPARENT,APPLE_COLOR,APPLE_COLOR    ,APPLE_COLOR,APPLE_COLOR,APPLE_COLOR,APPLE_COLOR    ,APPLE_COLOR,TRANSPARENT,TRANSPARENT,TRANSPARENT    ,TRANSPARENT,TRANSPARENT,TRANSPARENT,APPLE_COLOR    ,APPLE_COLOR,APPLE_COLOR,APPLE_COLOR,APPLE_COLOR ,APPLE_COLOR,APPLE_COLOR,TRANSPARENT,TRANSPARENT   ,TRANSPARENT,TRANSPARENT,TRANSPARENT,TRANSPARENT,//32
 };
+static uint32_t appleGoldSpray[PIXEL_PER_BLOCK][PIXEL_PER_BLOCK]={0};
 
 static void points(Snake* s1,Snake* s2){
     setZoom(2);
@@ -130,6 +137,13 @@ static void drawBlock(int blockNumber,int color,int defaultColor){//color if nee
             );
 }
 
+
+static void drawVoidRectangle(Point topLeft,Point bottomRigth,uint32_t hexcolor,int width){
+    drawRectangle(topLeft,(Point){bottomRigth.x,topLeft.y+width},hexcolor);
+    drawRectangle((Point){topLeft.x,bottomRigth.y-width},bottomRigth,hexcolor);
+    drawRectangle((Point){topLeft.x,topLeft.y+width},(Point){topLeft.x+width,bottomRigth.y-width},hexcolor);
+    drawRectangle((Point){bottomRigth.x-width,topLeft.y+width},(Point){bottomRigth.x,bottomRigth.y-width},hexcolor);
+}
 static void fondo(){
     int color=0;
     int fills=0;
@@ -137,12 +151,10 @@ static void fondo(){
         drawBlock(i,0,1);
     }
 }
-
-static void drawVoidRectangle(Point topLeft,Point bottomRigth,uint32_t hexcolor,int width){
-    drawRectangle(topLeft,(Point){bottomRigth.x,topLeft.y+width},hexcolor);
-    drawRectangle((Point){topLeft.x,bottomRigth.y-width},bottomRigth,hexcolor);
-    drawRectangle((Point){topLeft.x,topLeft.y+width},(Point){topLeft.x+width,bottomRigth.y-width},hexcolor);
-    drawRectangle((Point){bottomRigth.x-width,topLeft.y+width},(Point){bottomRigth.x,bottomRigth.y-width},hexcolor);
+makeAppleGolden(){
+    for (int i = 0; i < PIXEL_PER_BLOCK; i++)
+        for (int j = 0; j < PIXEL_PER_BLOCK; j++)
+            appleGoldSpray[i][j]=appleSpray[i][j]==APPLE_COLOR?0xFFFF00:appleSpray[i][j];
 }
 
 static void setDefaults(){
@@ -171,6 +183,31 @@ static Block getBlockPosition(int blockNumber){
     return (Block){x,y};
 }
 
+static void printControls(){
+    setZoom(2);
+
+    setCursor(DIM_X-(CHAR_WIDTH*10*2),MENU_BOTTOM_MARGIN-CHAR_HEIGHT*2*7);
+    setBackGroundColor(black);
+    setFontColor(FONT_COLOR);
+    print("Controls:");
+    
+    setFontColor(COLOR_SNAKE_1);
+    setCursor(DIM_X-(CHAR_WIDTH*10*2),MENU_BOTTOM_MARGIN-CHAR_HEIGHT*2*6);
+    print("Player 1:");
+    setCursor(DIM_X-(CHAR_WIDTH*6*2),MENU_BOTTOM_MARGIN-CHAR_HEIGHT*2*5);
+    print("W");
+    setCursor(DIM_X-(CHAR_WIDTH*8*2),MENU_BOTTOM_MARGIN-CHAR_HEIGHT*2*4);
+    print("A S D");
+
+    setFontColor(COLOR_SNAKE_2);
+    setCursor(DIM_X-(CHAR_WIDTH*10*2),MENU_BOTTOM_MARGIN-CHAR_HEIGHT*2*3);
+    print("Player 2:");
+    setCursor(DIM_X-(CHAR_WIDTH*6*2),MENU_BOTTOM_MARGIN-CHAR_HEIGHT*2*2);
+    print("I");
+    setCursor(DIM_X-(CHAR_WIDTH*8*2),MENU_BOTTOM_MARGIN-CHAR_HEIGHT*2);
+    print("J K L");
+}
+
 static void printOptions(){
     setZoom(2);
     setFontColor(FONT_COLOR);
@@ -180,11 +217,16 @@ static void printOptions(){
     setCursor(80,120);
     print("2P");
     setCursor(64,165);
-    print("EXIT");    
+    print("EXIT");
+    setCursor((DIM_X/2)-(32*CHAR_WIDTH),DIM_Y-CHAR_HEIGHT*3);
+    setBackGroundColor(black);
+    print ("Press enter to select an option");
 }
 
 static void cleanOptions(){
     drawRectangle((Point){MENU_LEFT_MARGIN,MENU_TOP_MARGIN},(Point){MENU_RIGHT_MARGIN,MENU_BOTTOM_MARGIN},0x000000);
+    setCursor((DIM_X/2)-(32*CHAR_WIDTH),DIM_Y-CHAR_HEIGHT*3);
+    print ("                               ");
 }
 
 static void startCount(){
@@ -221,11 +263,15 @@ static void drawApple(){
     {
         apple=randInt(0,TOTAL_OF_BLOCKS-1);
     }
-    map[apple]=2;
-    actualApple=apple;
+    actualApple=APPLE_RED_STATUS;
+    if (randInt(0,TOTAL_OF_BLOCKS-1)%50==0){
+        actualApple=APPLE_GOLD_STATUS;
+    }
+    map[apple]=actualApple;
+    
     int y=apple?(apple/BLOCKS_DIM):0;
     setCursor(DIM_LEFT_MARGIN+(apple%BLOCKS_DIM)*PIXEL_PER_BLOCK,DIM_TOP_MARGIN+y*PIXEL_PER_BLOCK);
-    drawSpray(PIXEL_PER_BLOCK,PIXEL_PER_BLOCK,appleSpray,appleMirror);
+    drawSpray(PIXEL_PER_BLOCK,PIXEL_PER_BLOCK,actualApple==APPLE_RED_STATUS?appleSpray:appleGoldSpray,appleMirror);
     appleMirror!=appleMirror;
 }
 
@@ -308,10 +354,36 @@ static void actualizeSnakeAndCheckColisions(Snake* snake){
     }
     snake->head=nextHeadIndex;
     if (map[snake->body[snake->head]]==1){
-        setColisions(snake);
+        setColisions(snake); 
         return;
     }
-    if (map[snake->body[snake->head]]==2){
+    char flag=0;
+    if (toGrowP1>0 && snake->player==1){
+        
+        toGrowP1--;
+        snake->length++;
+        map[snake->body[snake->head]]=1;
+        drawSnakeHead(snake);
+        flag=1;
+    }else if (toGrowP2>0 && snake->player==2){
+        map[snake->body[snake->head]]=1;
+        toGrowP2--;
+        snake->length++;
+        drawSnakeHead(snake);
+        flag=1;
+    }
+    if (snake->length==TOTAL_OF_BLOCKS){
+            noWinner=0;
+            return;
+    }
+    if (map[snake->body[snake->head]]==2||map[snake->body[snake->head]]==3){
+        if (map[snake->body[snake->head]]==3){
+            if (snake->player==1){
+                toGrowP1+=4;
+            }else{
+                toGrowP2+=4;
+            }
+        }
         snake->length++;
         map[snake->body[snake->head]]=1;
         drawApple();
@@ -320,7 +392,7 @@ static void actualizeSnakeAndCheckColisions(Snake* snake){
             noWinner=0;
             return;
         }
-    }else{
+    }else if (!flag){
         map[snake->body[snake->head]]=1;
         map[snake->body[snake->tail]]=0;
         drawSnakeHead(snake);
@@ -430,6 +502,12 @@ static int chooseOptions(){
 void snake(){
     margen();//dibuja un marco negro para limpiar la pantalla
     fondo();//dibuja el mantel
+    drawVoidRectangle((Point){DIM_LEFT_MARGIN-3,DIM_TOP_MARGIN-3},(Point){DIM_RIGHT_MARGIN+3,DIM_BOTTOM_MARGIN+3},EDGE_COLOR,3);
+    printControls();
+    if (!goldAppleInit){
+        makeAppleGolden();
+    }
+    
     while (option!=3){//reinicia las partidas
         chooseOptions();//selector de opciones P1|P2|EXIT
     }
