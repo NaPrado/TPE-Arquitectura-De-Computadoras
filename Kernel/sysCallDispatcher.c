@@ -4,11 +4,9 @@
 #include <time.h>
 #include <videoDriver.h>
 
-static void writeFiles(FDS fd, const char *buf, size_t count);
 static size_t sys_setCursor(int x, int y);
 static void setFontColor(uint32_t hexColor);
 static void sys_write(FDS fd, const char *buf, size_t count);
-static void readFiles(fd, buf, count);
 static void readChars(char *buf, size_t count);
 static size_t sys_read();//FDS fd, const char *buf, size_t count);
 static void sys_sleep(int seconds);
@@ -16,18 +14,11 @@ static void sys_putPixel(uint32_t hexColor,uint64_t x,uint64_t y);
 static void sys_setZoom(int new_zoom);
 extern uint64_t * getRegisters();
 
-uint64_t sysCallDispatcher(uint64_t rax, ...);
-
 
 static uint32_t color = 0xFFFFFF;
 static uint32_t backgroundColor = 0x000000;
 static int cursorX=0, cursorY=0;
 static uint8_t zoom = 1;
-
-static void writeFiles(FDS fd, const char *buf, size_t count) {
-    // TODO
-}
-
 
 // Se setea el cursor [EN PIXELES]
 static size_t sys_setCursor(int x, int y) {
@@ -152,12 +143,63 @@ uint64_t sysCallDispatcher(uint64_t rax, ...) {
         uint64_t spray = va_arg(args, uint64_t);
         uint64_t size_x = va_arg(args, uint64_t);
         uint64_t size_y = va_arg(args, uint64_t);
-        uint64_t mirror = va_arg(args, uint64_t);
-        drawSpray(size_x, size_y, spray, cursorX, cursorY, mirror);
+        drawSpray(size_x, size_y, spray, cursorX, cursorY);
     } else if (rax == 35) {
         int seconds = va_arg(args, int);
         sys_sleep(seconds);    
     }
     va_end(args);
     return ret;
+}
+
+static int itoa(uint64_t value, char * buffer, int base, int n) {
+    char *p = buffer;
+	char *p1, *p2;
+	uint32_t digits = 0;
+	do {
+		uint32_t remainder = value % base;
+		*p++ = (remainder < 10) ? remainder + '0' : remainder + 'A' - 10;
+		digits++;
+    } while (value /= base);
+    n -= digits;
+    while (n-- > 0) {
+        *p++ = '0';
+    }
+    *p = 0x00;
+	p1 = buffer;
+	p2 = p - 1;
+	while (p1 < p2) {
+		char tmp = *p1;
+		*p1 = *p2;
+		*p2 = tmp;
+		p1++;
+		p2--;
+	}
+	return digits;
+}
+
+static void strNCpy(const char *src, char *dest, int n) {
+    int i;
+    for (i = 0; i < n && src[i] != '\0'; i++) {
+        dest[i] = src[i];
+    }
+    for (; i < n; i++) {
+        dest[i] = '\0';
+    }
+    return dest;
+}
+
+void showRegisters() {
+    drawRectangle(&((Point){0,0}), &((Point){DIM_X, DIM_Y}), 0x000000);
+    sys_setZoom(1);
+    sys_setCursor(16, 16);
+    uint64_t * reg = getRegisters();
+    char  strs[][4] = {"rax:", "rbx:", "rcx:", "rdx:", "rdi:", "rsi:", "rsp:", "rbp:", "r8: ", "r9: ", "r10:", "r11:", "r12:", "r13:", "r14:", "r15:"};
+    char * buf = "\tRRRR 0xHHHHHHHHHHHHHHHH\n";
+    for (int i = 0; i < 16; i++) {
+        strNCpy(strs[i], buf+1, 4);
+        itoa(reg[i], buf+8, 16, 16);
+        buf[24] = '\n';
+        sys_write(STDERR, buf, 25);
+    }
 }

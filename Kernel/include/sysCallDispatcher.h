@@ -10,9 +10,8 @@ typedef enum{
     STDERR,
 } FDS;
 
+uint64_t sysCallDispatcher(uint64_t rax, ...);
 
-
-
-void syscallDispatcher(uint64_t rax, ...);
+void showRegisters();
 
 #endif

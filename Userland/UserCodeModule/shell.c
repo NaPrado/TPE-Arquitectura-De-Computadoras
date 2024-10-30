@@ -99,6 +99,7 @@ void doCommand() {
             programHelp();
             getContextBack();
             strCpy("Help exited", response);
+            int a = 1 / 0;
         } else if (strCaseCmp(command, "zoom in") == 0) {
             if (zoom_user < max_zoom) { 
                 cleanScreen();

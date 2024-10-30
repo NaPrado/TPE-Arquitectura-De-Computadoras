@@ -106,10 +106,10 @@ void programRegisters() {
     setZoom(2);
     setCursor(0, BASE_CHAR_HEIGHT*2);
     uint64_t * reg = getRegisters();
-    char  strs[][4] = {"rax", "rbx", "rcx", "rdx", "rdi", "rsi", "rsp", "rbp", "r8 ", "r9 ", "r10", "r11", "r12", "r13", "r14", "r15"};
-    char * buf = "\tRRR: 0xHHHHHHHHHHHHHHHH\n";
+    char  strs[][4] = {"rax:", "rbx:", "rcx:", "rdx:", "rdi:", "rsi:", "rsp:", "rbp:", "r8: ", "r9: ", "r10:", "r11:", "r12:", "r13:", "r14:", "r15:"};
+    char * buf = "\tRRRR 0xHHHHHHHHHHHHHHHH\n";
     for (int i = 0; i < 16; i++) {
-        strNCpy(strs[i], buf+1, 3);
+        strNCpy(strs[i], buf+1, 4);
         itoa(reg[i], buf+8, 16, 16);
         buf[24] = '\n';
         nprint(buf, 25);
