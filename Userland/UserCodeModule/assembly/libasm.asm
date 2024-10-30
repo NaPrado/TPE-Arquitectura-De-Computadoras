@@ -1,4 +1,6 @@
 GLOBAL sys_call
+GLOBAL _div
+GLOBAL _ioe
 GLOBAL _hlt
 GLOBAL _cli
 GLOBAL _sti
@@ -13,6 +15,16 @@ sys_call:
 
     int 80h
 
+    ret
+;test division by zero exeption
+_div:
+    mov rax, 0
+    mov rdx, 0
+    div rax
+    ret
+;test invalid opcode exeption
+_ioe:
+    ud2
     ret
 
 ;espera a que ocurra una interrupcion 

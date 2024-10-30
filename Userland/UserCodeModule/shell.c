@@ -2,6 +2,7 @@
 #include <libc.h>
 #include <stdint.h>
 #include <snake.h>
+#include <libasm.h>
 
 int zoom_user = 1;
 const int min_zoom = 1;
@@ -95,15 +96,14 @@ void doCommand() {
             getContextBack();
             strCpy("Rectangle exited", response);
         } else if (strCaseCmp(command, "div0")==0) {
-            
+            _div();
         } else if (strCaseCmp(command, "invOp")==0) {
-            
+            _ioe();
         } else if (strCaseCmp(command, "help")==0) {
             cleanScreen();
             programHelp();
             getContextBack();
             strCpy("Help exited", response);
-            int a = 1 / 0;
         } else if (strCaseCmp(command, "zoom in") == 0) {
             if (zoom_user < max_zoom) { 
                 cleanScreen();
