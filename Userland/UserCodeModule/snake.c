@@ -27,9 +27,10 @@
 #define APPLE_RED_STATUS 2
 #define APPLE_GOLD_STATUS 3
 
-#define FIRST_PLAYER 1
-#define SECOND_PLAYER 2
-#define EXIT 3
+#define ONE_PLAYER 1
+#define TWO_PLAYERS 2
+#define GAPPLE 3
+#define EXIT 4
 
 #define TOTAL_OF_BLOCKS (BLOCKS_DIM*BLOCKS_DIM)
 
@@ -47,8 +48,7 @@ static char appleMirror=1;
 static char actualApple=2;
 static char map[TOTAL_OF_BLOCKS];
 static char goldAppleInit=0;
-static char toGrowP1=0;
-static char toGrowP2=0;
+static char gappleMode=0;
 
 static uint32_t appleSpray[PIXEL_PER_BLOCK][PIXEL_PER_BLOCK]={
     TRANSPARENT,TRANSPARENT,TRANSPARENT,TRANSPARENT     ,TRANSPARENT,TRANSPARENT,TRANSPARENT,TRANSPARENT    ,TRANSPARENT,TRANSPARENT,TRANSPARENT,TRANSPARENT    ,TRANSPARENT,TRANSPARENT,TRANSPARENT,TRANSPARENT    ,LEAF__COLOR,TRANSPARENT,TRANSPARENT,TRANSPARENT    ,TRANSPARENT,TRANSPARENT,TRANSPARENT,TRANSPARENT ,TRANSPARENT,TRANSPARENT,TRANSPARENT,TRANSPARENT   ,TRANSPARENT,TRANSPARENT,TRANSPARENT,TRANSPARENT,//1
@@ -98,6 +98,7 @@ static void points(Snake* s1,Snake* s2){
     setFontColor(FONT_COLOR);
     setBackGroundColor(black);
     setCursor(DIM_X-(CHAR_WIDTH*10*2),75);
+    //print("Scoreboard:");
     char * points="P1: 000";
     itoa(s1->length-2,points+4,10,3);
     print(points);
@@ -167,6 +168,7 @@ static void setDefaults(){
     {
         map[i]=0;
     }
+    gappleMode=0;
 }
 
 static void drawselection(){
@@ -216,15 +218,19 @@ static void printOptions(){
     print("1P");
     setCursor(80,120);
     print("2P");
-    setCursor(64,165);
+    setCursor(50,165);
+    print("NORMAL");
+    setCursor(64,215);
     print("EXIT");
     setCursor((DIM_X/2)-(32*CHAR_WIDTH),DIM_Y-CHAR_HEIGHT*3);
     setBackGroundColor(black);
+    setFontColor(FONT_COLOR);
     print ("Press enter to select an option");
 }
 
 static void cleanOptions(){
     drawRectangle((Point){MENU_LEFT_MARGIN,MENU_TOP_MARGIN},(Point){MENU_RIGHT_MARGIN,MENU_BOTTOM_MARGIN},0x000000);
+    setBackGroundColor(black);
     setCursor((DIM_X/2)-(32*CHAR_WIDTH),DIM_Y-CHAR_HEIGHT*3);
     print ("                               ");
 }
@@ -259,12 +265,12 @@ static int setColisions(Snake* snake){
 
 static void drawApple(){
     int apple=randInt(0,TOTAL_OF_BLOCKS-1);
-    while (map[apple]!=0)
-    {
+    while (map[apple]!=0){
         apple=randInt(0,TOTAL_OF_BLOCKS-1);
     }
     actualApple=APPLE_RED_STATUS;
-    if (randInt(0,TOTAL_OF_BLOCKS-1)%50==0){
+    //Gold apple generation
+    if (randInt(0,TOTAL_OF_BLOCKS-1)%20==0 || gappleMode){
         actualApple=APPLE_GOLD_STATUS;
     }
     map[apple]=actualApple;
@@ -318,8 +324,8 @@ static void cleanSnakeTail(Snake* snake){
 static void snakeSetter(Snake* snake,int headBlock, int tailBlock){
     snake->body[1]=headBlock;
     snake->body[0]=tailBlock;
-    map[snake->body[snake->head]]=snake->player;
-    map[snake->body[snake->tail]]=snake->player;
+    map[snake->body[snake->head]]=1;
+    map[snake->body[snake->tail]]=1;
     
 }
 
@@ -358,31 +364,21 @@ static void actualizeSnakeAndCheckColisions(Snake* snake){
         return;
     }
     char flag=0;
-    if (toGrowP1>0 && snake->player==1){
-        
-        toGrowP1--;
+    if (snake->toGrow>0){
+        snake->toGrow--;
         snake->length++;
         map[snake->body[snake->head]]=1;
-        drawSnakeHead(snake);
-        flag=1;
-    }else if (toGrowP2>0 && snake->player==2){
-        map[snake->body[snake->head]]=1;
-        toGrowP2--;
-        snake->length++;
         drawSnakeHead(snake);
         flag=1;
     }
+    
     if (snake->length==TOTAL_OF_BLOCKS){
             noWinner=0;
             return;
     }
     if (map[snake->body[snake->head]]==2||map[snake->body[snake->head]]==3){
         if (map[snake->body[snake->head]]==3){
-            if (snake->player==1){
-                toGrowP1+=4;
-            }else{
-                toGrowP2+=4;
-            }
+            snake->toGrow+=4;
         }
         snake->length++;
         map[snake->body[snake->head]]=1;
@@ -456,25 +452,34 @@ static void selector(){
     char c=0;
     do
     {
-        if ((c == 'W' || c == 'w' || c == 'I' || c == 'i')&& option>1){
+        if ((c == 'W' || c == 'w' || c == 'I' || c == 'i')&& option>ONE_PLAYER){
             option--;
             drawselection();
-        }else if ((c == 'S' || c == 's' || c == 'K' || c == 'k')&& option<3){
+        }else if ((c == 'S' || c == 's' || c == 'K' || c == 'k')&& option<EXIT){
             option++;
             drawselection();
         }
+        if (option==GAPPLE && c=='\n'){
+            gappleMode=(!gappleMode);
+            setFontColor(FONT_COLOR);
+            setBackGroundColor(MENU_BACKGROUND_COLOR);
+            setCursor(50,165);
+            print(gappleMode?"GAPPLE":"NORMAL");
+        }
         c=getChar();
         //doSound(a);
-    } while (c!='\n');
-    if (option==1 || option==2){
+    } while (c!='\n'||option==GAPPLE);
+    if (option==ONE_PLAYER || option==TWO_PLAYERS){
         cleanOptions(); //limpia el menu
         startGame();//inicia la partida
-        if (option==2){
+        if (option==TWO_PLAYERS){
             setWinner();
-        }else if (option==1){
+        }else if (option==ONE_PLAYER){
             gameOverOrWinner();
         }
         setCursor((DIM_X/2)-(23*CHAR_WIDTH),DIM_Y-CHAR_HEIGHT*3);
+        setBackGroundColor(black);
+        setFontColor(FONT_COLOR);
         print ("Press enter to continue");
         c=getChar();
         while(c!='\n'){
@@ -507,8 +512,7 @@ void snake(){
     if (!goldAppleInit){
         makeAppleGolden();
     }
-    
-    while (option!=3){//reinicia las partidas
+    while (option!=EXIT){//reinicia las partidas
         chooseOptions();//selector de opciones P1|P2|EXIT
     }
     setDefaults();
