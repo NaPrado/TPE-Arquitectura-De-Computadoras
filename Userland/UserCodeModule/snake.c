@@ -13,6 +13,7 @@
 #define MENU_BACKGROUND_COLOR 0xD0B000
 #define FONT_COLOR 0xFF0000
 #define EDGE_COLOR 0x505050
+#define GAPPLE_COLOR 0xFFFF00
 
 #define PIXEL_PER_BLOCK 32
 #define BLOCKS_DIM 20
@@ -97,22 +98,25 @@ static void points(Snake* s1,Snake* s2){
     setZoom(2);
     setFontColor(FONT_COLOR);
     setBackGroundColor(black);
-    setCursor(DIM_X-(CHAR_WIDTH*10*2),75);
-    //print("Scoreboard:");
+    setCursor(DIM_X-(CHAR_WIDTH*11*2),75);
+    print("Scoreboard");
+    setCursor(DIM_X-(CHAR_WIDTH*10*2),120);
     char * points="P1: 000";
     itoa(s1->length-2,points+4,10,3);
     print(points);
     char * points2="P2: 000";
     if (option==2){
-        setCursor(DIM_X-(CHAR_WIDTH*10*2),120);
+        setCursor(DIM_X-(CHAR_WIDTH*10*2),165);
         itoa(s2->length-2,points2+4,10,3);
         print(points2);
     }
 }
 static void cleanPoints(){
-    setCursor(DIM_X-(CHAR_WIDTH*10*2),75);
-    print("       ");
+    setCursor(DIM_X-(CHAR_WIDTH*11*2),75);
+    print("          ");
     setCursor(DIM_X-(CHAR_WIDTH*10*2),120);
+    print("       ");
+    setCursor(DIM_X-(CHAR_WIDTH*10*2),165);
     print("       ");
 }
 
@@ -155,7 +159,7 @@ static void fondo(){
 makeAppleGolden(){
     for (int i = 0; i < PIXEL_PER_BLOCK; i++)
         for (int j = 0; j < PIXEL_PER_BLOCK; j++)
-            appleGoldSpray[i][j]=appleSpray[i][j]==APPLE_COLOR?0xFFFF00:appleSpray[i][j];
+            appleGoldSpray[i][j]=appleSpray[i][j]==APPLE_COLOR?GAPPLE_COLOR:appleSpray[i][j];
 }
 
 static void setDefaults(){

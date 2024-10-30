@@ -94,6 +94,10 @@ void doCommand() {
             programRectangle(actualColor);
             getContextBack();
             strCpy("Rectangle exited", response);
+        } else if (strCaseCmp(command, "div0")==0) {
+            
+        } else if (strCaseCmp(command, "invOp")==0) {
+            
         } else if (strCaseCmp(command, "help")==0) {
             cleanScreen();
             programHelp();
