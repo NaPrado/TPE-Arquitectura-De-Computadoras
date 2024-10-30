@@ -106,10 +106,10 @@ void programRegisters() {
     setZoom(2);
     setCursor(0, BASE_CHAR_HEIGHT*2);
     uint64_t * reg = getRegisters();
-    char ** strs = {"rax", "rbx", "rcx", "rdx", "rdi", "rsi", "rsp", "rbp", "r8 ", "r9 ", "r10", "r11", "r12", "r13", "r14", "r15"};
+    char  strs[][4] = {"rax", "rbx", "rcx", "rdx", "rdi", "rsi", "rsp", "rbp", "r8 ", "r9 ", "r10", "r11", "r12", "r13", "r14", "r15"};
     char * buf = "\tRRR: 0xHHHHHHHHHHHHHHHH\n";
     for (int i = 0; i < 16; i++) {
-        // strNCpy(strs[i], buf+1, 3);
+        strNCpy(strs[i], buf+1, 3);
         itoa(reg[i], buf+8, 16, 16);
         buf[24] = '\n';
         nprint(buf, 25);
@@ -213,11 +213,17 @@ void strCpy(char * source, char * dest) {
     }
 }
 
-void strNCpy(char * source, char * dest, int n) {
-    while (--n > 0) {
-        (*(dest++) = *(source++));
+void strNCpy(const char *src, char *dest, int n) {
+    int i;
+    for (i = 0; i < n && src[i] != '\0'; i++) {
+        dest[i] = src[i];
     }
+    for (; i < n; i++) {
+        dest[i] = '\0';
+    }
+    return dest;
 }
+
 
 int strCmp(const char * s1, const char * s2) {
     int cmp = 0;
