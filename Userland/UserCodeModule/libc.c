@@ -1,6 +1,11 @@
 #include <libc.h>
 #include <libasm.h>
 #define READ 0
+typedef enum{
+    STDIN = 0,
+    STDOUT,
+    STDERR,
+} FDS;
 #define WRITE 1
 #define REGISTERS 2
 #define GET_TIME 4
@@ -33,11 +38,11 @@ void setBackGroundColor(uint32_t hexColor) {
 }
 
 void nprint(char * buf, uint64_t lenght) {
-	sys_call(WRITE, 1, (uint64_t) buf, (uint64_t) lenght, 0);
+	sys_call(WRITE, STDOUT, (uint64_t) buf, (uint64_t) lenght, 0);
 }
 
 void print(char * buf) {
-    sys_call(WRITE, 1, (uint64_t) buf, strlen(buf), 0);
+    nprint(buf, strlen(buf));
 }
 
 time * getTime() {
@@ -138,19 +143,11 @@ void programRegisters() {
 }
 
 char getKey(){
-    return sys_call(READ, 0, 0, 0, 0);
+    return sys_call(READ, 1, 0, 0, 0);
 }
 
-void scan(char * buf, uint32_t count) {
-    for (int i = 0; i < count; i++) {
-        char c = sys_call(READ, 0, 0, 0, 0);
-        if (c == -1 || c == -2){
-            _hlt();
-            i--;
-        } else {
-            buf[i] = c;
-        }
-    }
+int scan(char * buf, uint32_t count) {
+    sys_call(READ, STDIN, buf, count, 0);
 }
 
 int itoa(uint64_t value, char * buffer, int base, int n) {
@@ -192,9 +189,9 @@ int itoa(uint64_t value, char * buffer, int base, int n) {
 }
 
 char getChar() {
-    char buf[1] = {0};
-    scan(buf, 1);
-    return buf[0];
+    char c;
+    scan(&c, 1);
+    return c;
 }
 
 void putChar(char c) {

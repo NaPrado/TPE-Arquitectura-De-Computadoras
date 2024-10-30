@@ -50,7 +50,7 @@ void print(char * buf);
 
 void nprint(char * buf, uint64_t lenght);
 
-void scan(char * buf, uint32_t count);
+int scan(char * buf, uint32_t count);
 
 int itoa(uint64_t value, char * buffer, int base, int n);
 

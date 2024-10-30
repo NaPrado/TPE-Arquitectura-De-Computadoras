@@ -292,8 +292,8 @@ char hasNextKey() {
 //     }
 // }
 
-char nextKey() {
-    char ret;
+int nextKey() {
+    int ret;
     if (!hasNextKey()) {
         return -2;
         // waitKey();

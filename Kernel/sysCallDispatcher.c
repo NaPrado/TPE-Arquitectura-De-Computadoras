@@ -1,44 +1,35 @@
 #include <sysCallDispatcher.h>
 #include <stdarg.h>
-#include <videoDriver.h>
 #include <time.h>
 #include <videoDriver.h>
+#include <keyboardDriver.h>
 
-static size_t sys_setCursor(int x, int y);
-static void setFontColor(uint32_t hexColor);
-static void sys_write(FDS fd, const char *buf, size_t count);
-static void readChars(char *buf, size_t count);
-static size_t sys_read();//FDS fd, const char *buf, size_t count);
-static void sys_sleep(int seconds);
-static void sys_putPixel(uint32_t hexColor,uint64_t x,uint64_t y);
-static void sys_setZoom(int new_zoom);
 extern uint64_t * getRegisters();
 
-
-static uint32_t color = 0xFFFFFF;
-static uint32_t backgroundColor = 0x000000;
-static int cursorX=0, cursorY=0;
-static uint8_t zoom = 1;
+uint32_t color = 0xFFFFFF;
+uint32_t backgroundColor = 0x000000;
+int cursorX=0, cursorY=0;
+uint8_t zoom = 1;
 
 // Se setea el cursor [EN PIXELES]
-static size_t sys_setCursor(int x, int y) {
+size_t sys_setCursor(int x, int y) {
     cursorX = x;
     cursorY = y;
     return 1;
 }
 
-static void setFontColor(uint32_t hexColor) {
+void setFontColor(uint32_t hexColor) {
     color = hexColor;
 }
 
-static void sys_setZoom(int new_zoom) {
+void sys_setZoom(int new_zoom) {
     zoom = new_zoom;
 }
-static changeBackgroundColor(uint32_t hexColor) {
+changeBackgroundColor(uint32_t hexColor) {
     backgroundColor = hexColor;
 }
 
-static void drawtab() {
+void drawtab() {
     for (int i = 0; i < 4 && (cursorX+CHAR_WIDTH*zoom) < DIM_X; i++) {
         drawchar(' ', cursorX, cursorY, 0x000000, 0x000000, zoom);
         cursorX += CHAR_WIDTH*zoom;
@@ -46,7 +37,7 @@ static void drawtab() {
     
 }
 
-static void sys_write(FDS fd, const char *buf, size_t count) {
+void sys_write(FDS fd, const char *buf, size_t count) {
     if(fd == STDOUT || fd == STDERR) {
         int i = 0;
         char increase[] = {0, 1, 3};
@@ -60,39 +51,35 @@ static void sys_write(FDS fd, const char *buf, size_t count) {
                 }
                 i++;
             }
+            if (buf[i] == '\n' || i < count) {
+                cursorX = 0;
+                cursorY += CHAR_HEIGHT*zoom;
+            }
             i += (buf[i] == '\n');  // si tengo un salto de linea, salteo
-            cursorX = 0;
-            cursorY += CHAR_HEIGHT*zoom;
         }
     }
     return;
 }
 
-static void readFiles(fd, buf, count){
-    // TODO
+uint32_t readChars(char *buf, size_t count) {
+    int i = 0, c;
+    while (i < count && (c = nextKey()) != -2) {
+        buf[i++] = (char) c;
+    }
+    return i;
 }
 
-// static void readChars(char *buf, size_t count) {
-//     for (size_t i = 0; i < count; i++) {
-//         char c=nextKey();
-//         if (c == -1) {
-//             i--;
-//         } else {
-//             buf[i] = c;
-//         }
-//     }
-// }
-
-static size_t sys_read(){//FDS fd, const char *buf, size_t count) {
-    //readChars(buf, count);
-    return nextKey();
+size_t sys_read(FDS fd, char *buf, size_t count) {
+    if (fd == STDIN) {
+        return readChars(buf, count);
+    }
 }
 
-static void sys_sleep(int seconds){
+void sys_sleep(int seconds){
     sleep(seconds);
 }
 
-static void sys_putPixel(uint32_t hexColor, uint64_t x,uint64_t y) {
+void sys_putPixel(uint32_t hexColor, uint64_t x,uint64_t y) {
     putPixel(hexColor, x, y);
 }
 
@@ -102,9 +89,9 @@ uint64_t sysCallDispatcher(uint64_t rax, ...) {
     uint64_t ret;
     if (rax == 0) {
         FDS fd = va_arg(args, FDS);
-        const char* buf = va_arg(args, const char*);
-        size_t count = va_arg(args, size_t);
-        ret = sys_read();//fd, buf, count);
+        char* buf = va_arg(args, char*);
+        uint64_t count = va_arg(args, uint64_t);
+        ret = sys_read(fd, buf, count);
     } else if (rax == 1) {
         FDS fd = va_arg(args, FDS);
         const char * buf = va_arg(args, const char*);
@@ -152,7 +139,7 @@ uint64_t sysCallDispatcher(uint64_t rax, ...) {
     return ret;
 }
 
-static int itoa(uint64_t value, char * buffer, int base, int n) {
+int itoa(uint64_t value, char * buffer, int base, int n) {
     char *p = buffer;
 	char *p1, *p2;
 	uint32_t digits = 0;
@@ -178,7 +165,7 @@ static int itoa(uint64_t value, char * buffer, int base, int n) {
 	return digits;
 }
 
-static void strNCpy(const char *src, char *dest, int n) {
+void strNCpy(const char *src, char *dest, int n) {
     int i;
     for (i = 0; i < n && src[i] != '\0'; i++) {
         dest[i] = src[i];
@@ -189,12 +176,18 @@ static void strNCpy(const char *src, char *dest, int n) {
     return dest;
 }
 
+int strLen(char * str) {
+    int i = 0;
+    while (str[i++] != '\0') {
+        ;
+    }
+    return i;
+}
+
 void showRegisters() {
-    drawRectangle(&((Point){0,0}), &((Point){DIM_X, DIM_Y}), 0x000000);
     sys_setZoom(1);
-    sys_setCursor(16, 16);
     uint64_t * reg = getRegisters();
-    char  strs[][4] = {"rax:", "rbx:", "rcx:", "rdx:", "rdi:", "rsi:", "rsp:", "rbp:", "r8: ", "r9: ", "r10:", "r11:", "r12:", "r13:", "r14:", "r15:"};
+    char  strs[][4] = {"rax:", "rbx:", "rcx:", "rdx:", "rdi:", "rsi:", "rsp:", "rbp:", "r8: ", "r9: ", "r10:", "r11:", "r12:", "r13:", "r14:", "r15:", "rip:"};
     char * buf = "\tRRRR 0xHHHHHHHHHHHHHHHH\n";
     for (int i = 0; i < 16; i++) {
         strNCpy(strs[i], buf+1, 4);

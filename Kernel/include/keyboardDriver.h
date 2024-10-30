@@ -32,7 +32,7 @@ char hasNextKey();
  * 
  * @return char The next key.
  */
-char nextKey();
+int nextKey();
 
 
 #endif // KEYBOARD_DRIVER_H
