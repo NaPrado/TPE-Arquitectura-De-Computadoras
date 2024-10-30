@@ -19,6 +19,7 @@ typedef struct {
     int player;         // Player number
     Direction dir;      // Current direction of the snake
     uint32_t color;     // Color of the snake
+    int toGrow;         // Number of blocks to grow
 } Snake;
 
 void snake();
