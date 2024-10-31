@@ -6,6 +6,8 @@ GLOBAL picSlaveMask
 GLOBAL haltcpu
 GLOBAL _hlt
 
+GLOBAL regs_backup
+
 GLOBAL _irq00Handler
 GLOBAL _irq01Handler
 GLOBAL _irq02Handler
@@ -16,6 +18,7 @@ GLOBAL _irq05Handler
 GLOBAL _int80Handler
 
 GLOBAL _exception0Handler
+GLOBAL _exception6Handler
 
 EXTERN irqDispatcher
 EXTERN sysCallDispatcher
@@ -74,20 +77,43 @@ SECTION .text
 	iretq
 %endmacro
 
-
+%macro catchRegisters 0
+    mov [regs_backup], rax
+    mov rax, regs_backup
+    mov [rax+8*1], rbx
+    mov [rax+8*2], rcx
+    mov [rax+8*3], rdx
+    mov [rax+8*4], rdi
+    mov [rax+8*5], rsi
+    mov [rax+8*6], rsp
+    mov [rax+8*7], rbp
+    mov [rax+8*8], r8
+    mov [rax+8*9], r9
+    mov [rax+8*10], r10
+    mov [rax+8*11], r11
+    mov [rax+8*12], r12
+    mov [rax+8*13], r13
+    mov [rax+8*14], r14
+    mov [rax+8*15], r15
+    mov rbx, [rsp]      ; rip
+    mov [rax+8*16], rbx
+    mov rbx, [rsp+8]    ; cs
+    mov [rax+8*17], rbx
+    mov rbx, [rsp+16]   ; rflags
+    mov [rax+8*18], rbx
+%endmacro
 
 %macro exceptionHandler 1
-	pushState
+    catchRegisters
 
 	mov rdi, %1 ; pasaje de parametro
 	call exceptionDispatcher
 
-	popState
-
     call getStackBase
-
-    mov rsp, rax
-    jmp userland
+    mov [rsp+8*3], rax
+    mov rax, userland
+    mov [rsp], rax
+    iretq
 %endmacro
 
 
@@ -163,6 +189,10 @@ _int80Handler:
 ;Zero Division Exception
 _exception0Handler:
 	exceptionHandler 0
+
+;Zero Division Exception
+_exception6Handler:
+	exceptionHandler 6
 
 haltcpu:
 	cli

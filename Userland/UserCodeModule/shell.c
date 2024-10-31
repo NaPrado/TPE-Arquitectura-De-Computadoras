@@ -46,6 +46,7 @@ void getContextBack(){
 }
 
 void shell() {
+    zoom_user = 1;
     setCursor(COMMAND_LINE_X+2*CHAR_WIDTH, COMMAND_LINE_Y-4*CHAR_HEIGHT);
     print("Welcome to the shell\n\n\tType 'help' to see the available commands");
     while (!exit) {

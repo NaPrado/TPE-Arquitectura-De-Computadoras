@@ -5,12 +5,12 @@
 #include <keyboardDriver.h>
 #include <pcSpeakerDriver.h>
 
-extern uint64_t * getRegisters();
-
 uint32_t color = 0xFFFFFF;
 uint32_t backgroundColor = 0x000000;
 int cursorX=0, cursorY=0;
 uint8_t zoom = 1;
+
+extern uint64_t * regs_backup;
 
 // Se setea el cursor [EN PIXELES]
 size_t sys_setCursor(int x, int y) {
@@ -194,12 +194,16 @@ int strLen(char * str) {
     return i;
 }
 
+uint64_t * getRegisters() {
+    return regs_backup;
+}
+
 void showRegisters() {
     sys_setZoom(1);
     uint64_t * reg = getRegisters();
-    char  strs[][4] = {"rax:", "rbx:", "rcx:", "rdx:", "rdi:", "rsi:", "rsp:", "rbp:", "r8: ", "r9: ", "r10:", "r11:", "r12:", "r13:", "r14:", "r15:", "rip:"};
+    char  strs[][4] = {"rax:", "rbx:", "rcx:", "rdx:", "rdi:", "rsi:", "rsp:", "rbp:", "r8: ", "r9: ", "r10:", "r11:", "r12:", "r13:", "r14:", "r15:", "rip:", "cs: ", "rfl:"};
     char * buf = "\tRRRR 0xHHHHHHHHHHHHHHHH\n";
-    for (int i = 0; i < 16; i++) {
+    for (int i = 0; i < 19; i++) {
         strNCpy(strs[i], buf+1, 4);
         itoa(reg[i], buf+8, 16, 16);
         buf[24] = '\n';

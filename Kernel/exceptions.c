@@ -1,16 +1,21 @@
 #include <sysCallDispatcher.h>
 #include <videoDriver.h>
 #define ZERO_EXCEPTION_ID 0
+#define INVALID_OPCODE 6
 
 extern void _hlt();
 extern void _sti();
 extern void _cli();
+extern uint64_t * regs_backup;
 static void zero_division();
+static void invalid_opcode();
 static void printExceptionMsg(char * e);
 
 void exceptionDispatcher(int exception) {
 	if (exception == ZERO_EXCEPTION_ID)
 		zero_division();
+    if (exception == INVALID_OPCODE)
+        invalid_opcode();
 }
 
 void waitToReturn() {
@@ -24,6 +29,11 @@ void waitToReturn() {
 static void zero_division() {
     _sti();
     printExceptionMsg("Zero Division Error");
+}
+
+static void invalid_opcode() {
+    _sti();
+    printExceptionMsg("Invalid Opcode");
 }
 
 static void printExceptionMsg(char * e) {
