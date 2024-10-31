@@ -67,6 +67,11 @@
 #define A8 7040
 #define B8 7902
 
+typedef struct{
+    uint32_t frequency;
+    uint32_t ticks;
+}Sound;
+
 // Function to play a sound
 void playSound(uint32_t frequency);
 
@@ -74,5 +79,9 @@ void playSound(uint32_t frequency);
 void stopSound(void);
 
 void playSoundForTicks(uint32_t nFrequence, uint32_t ticks);
+// add a sound to reproduce
+void setSound(Sound s);
+// reproduce the next sound or stop the current sound
+void actulizeSound();
 
 #endif // SOUNDS_H

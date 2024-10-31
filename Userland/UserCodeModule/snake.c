@@ -278,8 +278,7 @@ static void drawApple(){
     if (randInt(0,TOTAL_OF_BLOCKS-1)%20==0 || gappleMode){
         actualApple=APPLE_GOLD_STATUS;
     }
-    map[apple]=actualApple;
-    playSoundForTicks(440,1);
+    map[apple]=actualApple;    
     
     int y=apple?(apple/BLOCKS_DIM):0;
     setCursor(DIM_LEFT_MARGIN+(apple%BLOCKS_DIM)*PIXEL_PER_BLOCK,DIM_TOP_MARGIN+y*PIXEL_PER_BLOCK);
@@ -334,8 +333,13 @@ static void snakeSetter(Snake* snake,int headBlock, int tailBlock){
     map[snake->body[snake->tail]]=1;
     
 }
+static void grow(Snake* snake){
+    map[snake->body[snake->head]]=1;
+    drawSnakeHead(snake);
+}
 
 static void actualizeSnakeAndCheckColisions(Snake* snake){
+    //Check Colisions with the walls 
     int nextHeadIndex=snake->head+1;
     nextHeadIndex=nextHeadIndex%TOTAL_OF_BLOCKS;
     Block head=getBlockPosition(snake->body[snake->head]);
@@ -364,37 +368,34 @@ static void actualizeSnakeAndCheckColisions(Snake* snake){
         }
         snake->body[nextHeadIndex]=snake->body[snake->head]+1;
     }
+///////////////////////////////////////////////////////////////////////
+//Check Colisions with the snake/s
     snake->head=nextHeadIndex;
     if (map[snake->body[snake->head]]==1){
         setColisions(snake); 
         return;
     }
-    char flag=0;
+///////////////////////////////////////////////////////////////////////
+//Check Colisions with the apple
+    if (map[snake->body[snake->head]]==APPLE_RED_STATUS||map[snake->body[snake->head]]==APPLE_GOLD_STATUS){
+        Sound s1={.frequency=E4,.ticks=0};
+        setSound(s1);
+        if (map[snake->body[snake->head]]==APPLE_GOLD_STATUS){
+            snake->toGrow+=5;
+            Sound s2={.frequency=A4,.ticks=0};
+            setSound(s2);
+        }else{
+            snake->toGrow++;
+        }
+        drawApple();
+    }
+///////////////////////////////////////////////////////////////////////
+//Actualize the snake (grow or move)
     if (snake->toGrow>0){
         snake->toGrow--;
         snake->length++;
-        map[snake->body[snake->head]]=1;
-        drawSnakeHead(snake);
-        flag=1;
-    }
-    
-    if (snake->length==TOTAL_OF_BLOCKS){
-            noWinner=0;
-            return;
-    }
-    if (map[snake->body[snake->head]]==2||map[snake->body[snake->head]]==3){
-        if (map[snake->body[snake->head]]==3){
-            snake->toGrow+=4;
-        }
-        snake->length++;
-        map[snake->body[snake->head]]=1;
-        drawApple();
-        drawSnakeHead(snake);
-        if (snake->length==TOTAL_OF_BLOCKS){
-            noWinner=0;
-            return;
-        }
-    }else if (!flag){
+        grow(snake);
+    }else{
         map[snake->body[snake->head]]=1;
         map[snake->body[snake->tail]]=0;
         drawSnakeHead(snake);
@@ -402,6 +403,13 @@ static void actualizeSnakeAndCheckColisions(Snake* snake){
         snake->tail++;
         snake->tail=snake->tail%TOTAL_OF_BLOCKS;
     }
+///////////////////////////////////////////////////////////////////////
+//Check if there is a winner
+    if (snake->length==TOTAL_OF_BLOCKS){
+            noWinner=0;
+            return;
+    }
+///////////////////////////////////////////////////////////////////////
 }
 
 static void startGame(){
@@ -417,7 +425,11 @@ static void startGame(){
     drawApple();
     do{
         points(&p1,&p2);
-        sleep(5);
+        for (int i = 0; i < 5; i++){
+            sleep(1);
+            actulizeSound();
+        }
+        
         controls(&p1,&p2);
         actualizeSnakeAndCheckColisions(&p1);
         if (option==2){
@@ -469,10 +481,18 @@ stopAndChangeSound(){
         playSound(G4);
         flagSound=2;
         initialTicks=getTicks();
+        return;
     }
-    if (ticks-initialTicks>2 && flagSound==2){
+    if (ticks-initialTicks>2 && flagSound==2 && option==GAPPLE){
+        playSound(A4);
+        flagSound=3;
+        initialTicks=getTicks();
+        return;
+    }
+    if (ticks-initialTicks>2 && (flagSound==2||flagSound==3)){
         initialTicks=0;
         stopSound();
+        return;
     }      
 }
 
@@ -512,6 +532,10 @@ static void selector(){
         }else if (option==ONE_PLAYER){
             gameOverOrWinner();
         }
+        playSoundForTicks(C4,8);
+        playSoundForTicks(B3,8);
+        playSoundForTicks(207,8);//G3#
+        playSoundForTicks(G3,8);//G3
         setCursor((DIM_X/2)-(23*CHAR_WIDTH),DIM_Y-CHAR_HEIGHT*3);
         setBackGroundColor(black);
         setFontColor(FONT_COLOR);
