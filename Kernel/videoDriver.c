@@ -1821,7 +1821,7 @@ void drawRectangle(Point* topLeft, Point* downRigth, uint32_t c) {
     }
 }
 
-void drawSpray(int size_x, int size_y, uint32_t** spray, int cursorX, int cursorY) {
+void drawSpray(int size_x, int size_y, uint32_t spray[][size_x], int cursorX, int cursorY) {
     for (int i = 0; i < size_x; i++) {
         for (int j = 0; j < size_y; j++) {
             if (spray[j][i] != 0x00) {

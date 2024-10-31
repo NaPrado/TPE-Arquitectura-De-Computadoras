@@ -134,7 +134,7 @@ uint64_t sysCallDispatcher(uint64_t rax, ...) {
         uint64_t spray = va_arg(args, uint64_t);
         uint64_t size_x = va_arg(args, uint64_t);
         uint64_t size_y = va_arg(args, uint64_t);
-        drawSpray(size_x, size_y, (uint32_t**)spray, cursorX, cursorY);
+        drawSpray(size_x, size_y, spray, cursorX, cursorY);
     } else if (rax == 12) {
         uint64_t frecuency = va_arg(args, uint64_t);
         playSound(frecuency);

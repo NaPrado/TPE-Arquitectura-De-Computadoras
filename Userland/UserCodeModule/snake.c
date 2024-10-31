@@ -430,7 +430,6 @@ static void startGame(){
             sleep(1);
             actulizeSound();
         }
-        
         controls(&p1,&p2);
         actualizeSnakeAndCheckColisions(&p1);
         if (option==2){

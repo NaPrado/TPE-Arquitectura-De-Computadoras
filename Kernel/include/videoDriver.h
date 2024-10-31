@@ -30,6 +30,6 @@ void drawchar(unsigned char c, int x, int y, int fgcolor, int bgcolor, int mult)
 
 void putchar(char c, int x, int y);
 
-void drawSpray(int size_x, int size_y, uint32_t **spray, int cursorX, int cursorY);
+void drawSpray(int size_x, int size_y, uint32_t spray[][size_x], int cursorX, int cursorY);
 
 #endif // VIDEODRIVER_H
