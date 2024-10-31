@@ -6,8 +6,9 @@ GLOBAL picSlaveMask
 GLOBAL haltcpu
 GLOBAL _hlt
 
-GLOBAL regs_backup
 GLOBAL saveRegisters
+GLOBAL getRegisters
+GLOBAL setEnterFlag
 
 GLOBAL _irq00Handler
 GLOBAL _irq01Handler
@@ -25,6 +26,7 @@ EXTERN irqDispatcher
 EXTERN sysCallDispatcher
 EXTERN exceptionDispatcher
 EXTERN getStackBase
+EXTERN showRegisters
 
 SECTION .text
 
@@ -66,6 +68,7 @@ SECTION .text
 
 %macro irqHandlerMaster 1
 	pushState
+    mov byte [enter_flag], 0
 
 	mov rdi, %1 ; pasaje de parametro
 	call irqDispatcher
@@ -75,7 +78,11 @@ SECTION .text
 	out 20h, al
 
 	popState
-	iretq
+    cmp byte [enter_flag], 1
+    jne .donot_save_registers
+    catchRegisters
+    .donot_save_registers:
+    iretq
 %endmacro
 
 %macro catchRegisters 0
@@ -112,14 +119,14 @@ SECTION .text
     add rax, 8
     mov qword [rax], r15
     add rax, 8
-    mov qword rbx, [rsp]      ; rip
-    mov qword [rax], rbx
+    mov qword rdi, [rsp]      ; rip
+    mov qword [rax], rdi
     add rax, 8
-    mov qword rbx, [rsp+8]    ; cs
-    mov qword [rax], rbx
+    mov qword rdi, [rsp+8]    ; cs
+    mov qword [rax], rdi
     add rax, 8
-    mov qword rbx, [rsp+16]   ; rflags
-    mov qword [rax], rbx
+    mov qword rdi, [rsp+16]   ; rflags
+    mov qword [rax], rdi
 %endmacro
 
 %macro exceptionHandler 1
@@ -221,9 +228,16 @@ saveRegisters:
     catchRegisters
     ret
 
+getRegisters:
+    mov rax, regs_backup
+    ret
+
+setEnterFlag:
+    mov byte [enter_flag], 1
+
 section .rodata
     userland equ 0x400000
 
 section .bss
-	aux resq 1
+    enter_flag resb 1
     regs_backup resq 19

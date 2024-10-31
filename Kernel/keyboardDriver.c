@@ -323,9 +323,6 @@ void keyboard_handler() {
     char release = scancode;
     release = release >> 7;
     char key = scancode & 0x7F;
-    if (scancode == ENTER) {
-        saveRegisters();
-    }
     if (scancode == CAPSLOCK) {
         capslock =! capslock;
         return;

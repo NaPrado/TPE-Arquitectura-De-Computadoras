@@ -6,7 +6,6 @@
 extern void _hlt();
 extern void _sti();
 extern void _cli();
-extern uint64_t * regs_backup;
 static void zero_division();
 static void invalid_opcode();
 static void printExceptionMsg(char * e);

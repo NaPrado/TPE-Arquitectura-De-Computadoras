@@ -22,6 +22,5 @@ void sys_putPixel(uint32_t hexColor,uint64_t x,uint64_t y);
 void sys_setZoom(int new_zoom);
 void showRegisters();
 int strLen(char * str);
-uint64_t * getRegisters();
 
 #endif
