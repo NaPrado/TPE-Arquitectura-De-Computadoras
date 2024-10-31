@@ -2,6 +2,8 @@
 #include <libc.h>
 #include <stdint.h>
 #include <sounds.h>
+#include <libasm.h>
+#include <random.h>
 
 #define DIM_X 1024
 #define DIM_Y 768
@@ -53,7 +55,7 @@ static char map[TOTAL_OF_BLOCKS];
 static char goldAppleInit=0;
 static char gappleMode=0;
 
-static uint32_t appleSpray[PIXEL_PER_BLOCK][PIXEL_PER_BLOCK]={
+static uint32_t appleSpray[PIXEL_PER_BLOCK][PIXEL_PER_BLOCK] = {
     TRANSPARENT,TRANSPARENT,TRANSPARENT,TRANSPARENT     ,TRANSPARENT,TRANSPARENT,TRANSPARENT,TRANSPARENT    ,TRANSPARENT,TRANSPARENT,TRANSPARENT,TRANSPARENT    ,TRANSPARENT,TRANSPARENT,TRANSPARENT,TRANSPARENT    ,LEAF__COLOR,TRANSPARENT,TRANSPARENT,TRANSPARENT    ,TRANSPARENT,TRANSPARENT,TRANSPARENT,TRANSPARENT ,TRANSPARENT,TRANSPARENT,TRANSPARENT,TRANSPARENT   ,TRANSPARENT,TRANSPARENT,TRANSPARENT,TRANSPARENT,//1
     TRANSPARENT,TRANSPARENT,TRANSPARENT,TRANSPARENT     ,TRANSPARENT,TRANSPARENT,TRANSPARENT,TRANSPARENT    ,TRANSPARENT,TRANSPARENT,TRANSPARENT,TRANSPARENT    ,TRANSPARENT,TRANSPARENT,TRANSPARENT,TRANSPARENT    ,LEAF__COLOR,LEAF__COLOR,LEAF__COLOR,LEAF__COLOR    ,TRANSPARENT,TRANSPARENT,TRANSPARENT,TRANSPARENT ,TRANSPARENT,TRANSPARENT,TRANSPARENT,TRANSPARENT   ,TRANSPARENT,TRANSPARENT,TRANSPARENT,TRANSPARENT,//2
     TRANSPARENT,TRANSPARENT,TRANSPARENT,TRANSPARENT     ,TRANSPARENT,TRANSPARENT,TRANSPARENT,TRANSPARENT    ,TRANSPARENT,TRANSPARENT,TRANSPARENT,TRANSPARENT    ,TRANSPARENT,TRANSPARENT,TRANSPARENT,TRANSPARENT    ,LEAF__COLOR,LEAF__COLOR,LEAF__COLOR,LEAF__COLOR    ,LEAF__COLOR,LEAF__COLOR,LEAF__COLOR,TRANSPARENT ,TRANSPARENT,TRANSPARENT,TRANSPARENT,TRANSPARENT   ,TRANSPARENT,TRANSPARENT,TRANSPARENT,TRANSPARENT,//3
@@ -100,25 +102,25 @@ static void points(Snake* s1,Snake* s2){
     setZoom(2);
     setFontColor(FONT_COLOR);
     setBackGroundColor(black);
-    setCursor(DIM_X-(CHAR_WIDTH*11*2),75);
+    setCursor(DIM_X-(CHAR_WIDTH_*11*2),75);
     print("Scoreboard");
-    setCursor(DIM_X-(CHAR_WIDTH*10*2),120);
+    setCursor(DIM_X-(CHAR_WIDTH_*10*2),120);
     char * points="P1: 000";
     itoa(s1->length-2,points+4,10,3);
     print(points);
     char * points2="P2: 000";
     if (option==2){
-        setCursor(DIM_X-(CHAR_WIDTH*10*2),165);
+        setCursor(DIM_X-(CHAR_WIDTH_*10*2),165);
         itoa(s2->length-2,points2+4,10,3);
         print(points2);
     }
 }
 static void cleanPoints(){
-    setCursor(DIM_X-(CHAR_WIDTH*11*2),75);
+    setCursor(DIM_X-(CHAR_WIDTH_*11*2),75);
     print("          ");
-    setCursor(DIM_X-(CHAR_WIDTH*10*2),120);
+    setCursor(DIM_X-(CHAR_WIDTH_*10*2),120);
     print("       ");
-    setCursor(DIM_X-(CHAR_WIDTH*10*2),165);
+    setCursor(DIM_X-(CHAR_WIDTH_*10*2),165);
     print("       ");
 }
 
@@ -153,12 +155,11 @@ static void drawVoidRectangle(Point topLeft,Point bottomRigth,uint32_t hexcolor,
 }
 static void fondo(){
     int color=0;
-    int fills=0;
     for (int i = 0; i < TOTAL_OF_BLOCKS; i++,color++){
         drawBlock(i,0,1);
     }
 }
-makeAppleGolden(){
+static void makeAppleGolden(){
     for (int i = 0; i < PIXEL_PER_BLOCK; i++)
         for (int j = 0; j < PIXEL_PER_BLOCK; j++)
             appleGoldSpray[i][j]=appleSpray[i][j]==APPLE_COLOR?GAPPLE_COLOR:appleSpray[i][j];
@@ -178,10 +179,10 @@ static void setDefaults(){
 }
 
 static void drawselection(){
-    drawVoidRectangle((Point){MENU_LEFT_MARGIN,MENU_TOP_MARGIN+(option-1)*3*CHAR_HEIGHT},(Point){MENU_RIGHT_MARGIN,MENU_TOP_MARGIN+option*3*CHAR_HEIGHT},FONT_COLOR,3);
+    drawVoidRectangle((Point){MENU_LEFT_MARGIN,MENU_TOP_MARGIN+(option-1)*3*CHAR_HEIGHT_},(Point){MENU_RIGHT_MARGIN,MENU_TOP_MARGIN+option*3*CHAR_HEIGHT_},FONT_COLOR,3);
     if (lastOption!=0)
     {
-        drawVoidRectangle((Point){MENU_LEFT_MARGIN,MENU_TOP_MARGIN+(lastOption-1)*3*CHAR_HEIGHT},(Point){MENU_RIGHT_MARGIN,MENU_TOP_MARGIN+lastOption*3*CHAR_HEIGHT},MENU_BACKGROUND_COLOR,3);
+        drawVoidRectangle((Point){MENU_LEFT_MARGIN,MENU_TOP_MARGIN+(lastOption-1)*3*CHAR_HEIGHT_},(Point){MENU_RIGHT_MARGIN,MENU_TOP_MARGIN+lastOption*3*CHAR_HEIGHT_},MENU_BACKGROUND_COLOR,3);
     }    
     lastOption=option;
 }
@@ -194,25 +195,25 @@ static Block getBlockPosition(int blockNumber){
 static void printControls(){
     setZoom(2);
 
-    setCursor(DIM_X-(CHAR_WIDTH*10*2),MENU_BOTTOM_MARGIN-CHAR_HEIGHT*2*7);
+    setCursor(DIM_X-(CHAR_WIDTH_*10*2),MENU_BOTTOM_MARGIN-CHAR_HEIGHT_*2*7);
     setBackGroundColor(black);
     setFontColor(FONT_COLOR);
     print("Controls:");
     
     setFontColor(COLOR_SNAKE_1);
-    setCursor(DIM_X-(CHAR_WIDTH*10*2),MENU_BOTTOM_MARGIN-CHAR_HEIGHT*2*6);
+    setCursor(DIM_X-(CHAR_WIDTH_*10*2),MENU_BOTTOM_MARGIN-CHAR_HEIGHT_*2*6);
     print("Player 1:");
-    setCursor(DIM_X-(CHAR_WIDTH*6*2),MENU_BOTTOM_MARGIN-CHAR_HEIGHT*2*5);
+    setCursor(DIM_X-(CHAR_WIDTH_*6*2),MENU_BOTTOM_MARGIN-CHAR_HEIGHT_*2*5);
     print("W");
-    setCursor(DIM_X-(CHAR_WIDTH*8*2),MENU_BOTTOM_MARGIN-CHAR_HEIGHT*2*4);
+    setCursor(DIM_X-(CHAR_WIDTH_*8*2),MENU_BOTTOM_MARGIN-CHAR_HEIGHT_*2*4);
     print("A S D");
 
     setFontColor(COLOR_SNAKE_2);
-    setCursor(DIM_X-(CHAR_WIDTH*10*2),MENU_BOTTOM_MARGIN-CHAR_HEIGHT*2*3);
+    setCursor(DIM_X-(CHAR_WIDTH_*10*2),MENU_BOTTOM_MARGIN-CHAR_HEIGHT_*2*3);
     print("Player 2:");
-    setCursor(DIM_X-(CHAR_WIDTH*6*2),MENU_BOTTOM_MARGIN-CHAR_HEIGHT*2*2);
+    setCursor(DIM_X-(CHAR_WIDTH_*6*2),MENU_BOTTOM_MARGIN-CHAR_HEIGHT_*2*2);
     print("I");
-    setCursor(DIM_X-(CHAR_WIDTH*8*2),MENU_BOTTOM_MARGIN-CHAR_HEIGHT*2);
+    setCursor(DIM_X-(CHAR_WIDTH_*8*2),MENU_BOTTOM_MARGIN-CHAR_HEIGHT_*2);
     print("J K L");
 }
 
@@ -228,7 +229,7 @@ static void printOptions(){
     print("NORMAL");
     setCursor(64,215);
     print("EXIT");
-    setCursor((DIM_X/2)-(32*CHAR_WIDTH),DIM_Y-CHAR_HEIGHT*3);
+    setCursor((DIM_X/2)-(32*CHAR_WIDTH_),DIM_Y-CHAR_HEIGHT_*3);
     setBackGroundColor(black);
     setFontColor(FONT_COLOR);
     print ("Press enter to select an option");
@@ -237,7 +238,7 @@ static void printOptions(){
 static void cleanOptions(){
     drawRectangle((Point){MENU_LEFT_MARGIN,MENU_TOP_MARGIN},(Point){MENU_RIGHT_MARGIN,MENU_BOTTOM_MARGIN},0x000000);
     setBackGroundColor(black);
-    setCursor((DIM_X/2)-(32*CHAR_WIDTH),DIM_Y-CHAR_HEIGHT*3);
+    setCursor((DIM_X/2)-(32*CHAR_WIDTH_),DIM_Y-CHAR_HEIGHT_*3);
     print ("                               ");
 }
 
@@ -247,20 +248,20 @@ static void startCount(){
     setBackGroundColor(black);
     char c='3';
     for (int i = 3; 0 < i; i--){
-        setCursor((DIM_X/2)-CHAR_WIDTH,CHAR_HEIGHT);
+        setCursor((DIM_X/2)-CHAR_WIDTH_,CHAR_HEIGHT_);
         putChar(c);
         playSoundForTicks(A4,5);
         sleep(9);
         c--;
     }
-    setCursor((DIM_X/2)-(3*CHAR_WIDTH),CHAR_HEIGHT);
+    setCursor((DIM_X/2)-(3*CHAR_WIDTH_),CHAR_HEIGHT_);
     print("GO!");
     playSoundForTicks(A4,9);
-    setCursor((DIM_X/2)-(3*CHAR_WIDTH),CHAR_HEIGHT);
+    setCursor((DIM_X/2)-(3*CHAR_WIDTH_),CHAR_HEIGHT_);
     print("   ");
 }
 
-static int setColisions(Snake* snake){
+static void setColisions(Snake* snake){
     if (snake->player==1){
             noColisionsP1=0;
     }else{
@@ -283,7 +284,7 @@ static void drawApple(){
     int y=apple?(apple/BLOCKS_DIM):0;
     setCursor(DIM_LEFT_MARGIN+(apple%BLOCKS_DIM)*PIXEL_PER_BLOCK,DIM_TOP_MARGIN+y*PIXEL_PER_BLOCK);
     drawSpray(PIXEL_PER_BLOCK,PIXEL_PER_BLOCK,actualApple==APPLE_RED_STATUS?appleSpray:appleGoldSpray,appleMirror);
-    appleMirror!=appleMirror;
+    appleMirror= !appleMirror;
 }
 
 static void controls(Snake* snake1,Snake* snake2){
@@ -442,9 +443,9 @@ static void setWinner(){
     setZoom(2);
     setFontColor(FONT_COLOR);
     setBackGroundColor(black);
-    setCursor((DIM_X/2)-(14*CHAR_WIDTH),CHAR_HEIGHT);
+    setCursor((DIM_X/2)-(14*CHAR_WIDTH_),CHAR_HEIGHT_);
     if (!noColisionsP1 && !noColisionsP2){
-        setCursor((DIM_X/2)-(5*CHAR_WIDTH),CHAR_HEIGHT);
+        setCursor((DIM_X/2)-(5*CHAR_WIDTH_),CHAR_HEIGHT_);
         print("Draw!");
     }else if (!noColisionsP1){
         print("Player 2 wins!");
@@ -457,26 +458,25 @@ static void gameOverOrWinner(){
     setFontColor(FONT_COLOR);
     setBackGroundColor(black);
     if (!noWinner){
-                setCursor((DIM_X/2)-(7*CHAR_WIDTH),CHAR_HEIGHT);
+                setCursor((DIM_X/2)-(7*CHAR_WIDTH_),CHAR_HEIGHT_);
                 print("Winner!");
                 return;
     }
-    setCursor((DIM_X/2)-(10*CHAR_WIDTH),CHAR_HEIGHT);
+    setCursor((DIM_X/2)-(10*CHAR_WIDTH_),CHAR_HEIGHT_);
     print("Game Over!");
 }
 
 static uint64_t ticks=0;
 static uint64_t initialTicks=0;
-static uint64_t initialTicks2=0;
 static char flagSound=0;
 
 
-startSelectSound(){
+void startSelectSound(){
     flagSound=1;
     playSound(F4);
     initialTicks=getTicks();
 }
-stopAndChangeSound(){
+void stopAndChangeSound(){
     if(ticks-initialTicks>2 && flagSound==1){
         playSound(G4);
         flagSound=2;
@@ -536,7 +536,7 @@ static void selector(){
         playSoundForTicks(B3,8);
         playSoundForTicks(207,8);//G3#
         playSoundForTicks(G3,8);//G3
-        setCursor((DIM_X/2)-(23*CHAR_WIDTH),DIM_Y-CHAR_HEIGHT*3);
+        setCursor((DIM_X/2)-(23*CHAR_WIDTH_),DIM_Y-CHAR_HEIGHT_*3);
         setBackGroundColor(black);
         setFontColor(FONT_COLOR);
         print ("Press enter to continue");
@@ -544,9 +544,9 @@ static void selector(){
         while(c!='\n'){
             c=getChar();
         }
-        setCursor((DIM_X/2)-(25*CHAR_WIDTH),DIM_Y-CHAR_HEIGHT*3);
+        setCursor((DIM_X/2)-(25*CHAR_WIDTH_),DIM_Y-CHAR_HEIGHT_*3);
         print ("                         ");
-        setCursor((DIM_X/2)-(16*CHAR_WIDTH),CHAR_HEIGHT);
+        setCursor((DIM_X/2)-(16*CHAR_WIDTH_),CHAR_HEIGHT_);
         print("                ");
         cleanPoints();
         fondo();
@@ -556,7 +556,7 @@ static void selector(){
 }
 
 
-static int chooseOptions(){
+static void chooseOptions(){
     setDefaults();//reinicio de variables
     drawRectangle((Point){MENU_LEFT_MARGIN,MENU_TOP_MARGIN},(Point){MENU_RIGHT_MARGIN,MENU_BOTTOM_MARGIN},MENU_BACKGROUND_COLOR);//dibuja el marco del menu
     printOptions();//imprime las opciones P1|P2|EXIT

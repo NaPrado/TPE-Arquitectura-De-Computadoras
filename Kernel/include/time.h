@@ -18,6 +18,8 @@ typedef struct time{
  */
 void timer_handler();
 
+unsigned long getTicks();
+
 /**
  * @brief Retrieves the number of ticks elapsed since the system started.
  *

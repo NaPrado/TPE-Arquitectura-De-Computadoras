@@ -24,7 +24,7 @@ typedef struct {
 
 void snake();
 
-#define CHAR_WIDTH 8
-#define CHAR_HEIGHT 16
+#define CHAR_WIDTH_ 8
+#define CHAR_HEIGHT_ 16
 
 #endif // SNAKE_H

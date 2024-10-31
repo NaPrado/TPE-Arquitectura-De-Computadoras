@@ -37,8 +37,6 @@ static int colorIndex = 0;
 static int actualColor = white;
 static int actualBackgroundFont=black;
 
-static int fullLines = 0;
-
 void getContextBack(){
     setZoom(zoom_user);
     setBackGroundColor(actualBackgroundFont);

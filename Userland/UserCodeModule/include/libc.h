@@ -32,6 +32,10 @@ typedef struct {
     char sec;
 } time;
 
+void programTime();
+
+uint64_t getTicks();
+
 void showRegisters();
 
 time * getTime();
@@ -46,9 +50,9 @@ void drawSpray(uint32_t size_x, uint32_t size_y, uint32_t spray[][size_y], uint8
 
 void setFontColor(uint32_t hexColor);
 
-void print(char * buf);
+void print(const char * buf);
 
-void nprint(char * buf, uint64_t lenght);
+void nprint(const char * buf, uint64_t lenght);
 
 int scan(char * buf, uint32_t count);
 
@@ -68,7 +72,7 @@ void sleep(uint64_t seconds);
 
 void strCpy(char * source, char * dest);
 
-void strNCpy(const char * source, char * dest, int n);
+char* strNCpy(const char * source, char * dest, int n);
 
 int strCmp(const char * s1,const char * s2);
 

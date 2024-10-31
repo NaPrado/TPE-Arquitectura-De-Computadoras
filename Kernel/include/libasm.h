@@ -6,6 +6,10 @@
  * and perform low-level operations such as port I/O and CPU vendor identification.
  */
 
+void _hlt(void);
+
+void _sti(void);
+void _cli(void);
 /**
  * @brief Outputs a byte to the specified port.
  *

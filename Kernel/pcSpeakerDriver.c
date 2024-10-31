@@ -1,5 +1,6 @@
 #include <pcSpeakerDriver.h>
 #include <stdint.h>
+#include <libasm.h>
 
  //Play sound using built-in speaker
 void playSound(uint32_t nFrequence) {

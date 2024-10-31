@@ -37,17 +37,17 @@ void setBackGroundColor(uint32_t hexColor) {
     sys_call(SET_BACKGROUND_FONT_COLOR, hexColor, 0, 0, 0);
 }
 
-void nprint(char * buf, uint64_t lenght) {
+void nprint(const char * buf, uint64_t lenght) {
 	sys_call(WRITE, STDOUT, (uint64_t) buf, (uint64_t) lenght, 0);
 }
 
-void print(char * buf) {
+void print(const char * buf) {
     nprint(buf, strlen(buf));
 }
 
 time * getTime() {
-// char * getTime(){
-	return sys_call(GET_TIME, 0, 0, 0, 0);
+	time * ret=(time*)sys_call(GET_TIME, 0, 0, 0, 0);
+    return ret;
 }
 
 void timeToStr(char * buf) { 
@@ -140,15 +140,13 @@ char getKey(){
 }
 
 int scan(char * buf, uint32_t count) {
-    sys_call(READ, STDIN, buf, count, 0);
+    return sys_call(READ, STDIN,(uint64_t)buf, count, 0);
 }
 
 int itoa(uint64_t value, char * buffer, int base, int n) {
     char *p = buffer;
 	char *p1, *p2;
 	uint32_t digits = 0;
-
-    char end = 0;
 
 	//Calculate characters for each digit
 	do {
@@ -222,7 +220,7 @@ void strCpy(char * source, char * dest) {
     }
 }
 
-void strNCpy(const char *src, char *dest, int n) {
+char* strNCpy(const char *src, char *dest, int n) {
     int i;
     for (i = 0; i < n && src[i] != '\0'; i++) {
         dest[i] = src[i];
@@ -280,7 +278,7 @@ void cleanFullScreen() {
     drawRectangle((Point){0, 0}, (Point){DIM_X, DIM_Y}, 0x000000);
 }
 
-void getTicks(){
+uint64_t getTicks(){
     return sys_call(14, 0, 0, 0, 0);
 }
 

@@ -26,7 +26,7 @@ void setFontColor(uint32_t hexColor) {
 void sys_setZoom(int new_zoom) {
     zoom = new_zoom;
 }
-changeBackgroundColor(uint32_t hexColor) {
+void changeBackgroundColor(uint32_t hexColor) {
     backgroundColor = hexColor;
 }
 
@@ -41,7 +41,6 @@ void drawtab() {
 void sys_write(FDS fd, const char *buf, size_t count) {
     if(fd == STDOUT || fd == STDERR) {
         int i = 0;
-        char increase[] = {0, 1, 3};
         while (i < count) {
             while (i < count && (cursorX+CHAR_WIDTH*zoom) < DIM_X && buf[i] != '\n') {
                 if (buf[i] == '\t') {
@@ -74,6 +73,7 @@ size_t sys_read(FDS fd, char *buf, size_t count) {
     if (fd == STDIN) {
         return readChars(buf, count);
     }
+    return 0;
 }
 
 void sys_sleep(int seconds){
@@ -105,7 +105,7 @@ uint64_t sysCallDispatcher(uint64_t rax, ...) {
     } else if (rax == 3) {
         ret = nextKey();
     } else if (rax == 4) {
-        ret = getTime();
+        ret = (uint64_t)getTime();
     } else if (rax == 5) {
         int x = (int)va_arg(args, uint64_t);
         int y = (int)va_arg(args, uint64_t);
@@ -134,7 +134,7 @@ uint64_t sysCallDispatcher(uint64_t rax, ...) {
         uint64_t spray = va_arg(args, uint64_t);
         uint64_t size_x = va_arg(args, uint64_t);
         uint64_t size_y = va_arg(args, uint64_t);
-        drawSpray(size_x, size_y, spray, cursorX, cursorY);
+        drawSpray(size_x, size_y, (uint32_t**)spray, cursorX, cursorY);
     } else if (rax == 12) {
         uint64_t frecuency = va_arg(args, uint64_t);
         playSound(frecuency);
@@ -176,7 +176,7 @@ int itoa(uint64_t value, char * buffer, int base, int n) {
 	return digits;
 }
 
-void strNCpy(const char *src, char *dest, int n) {
+char* strNCpy(const char *src, char *dest, int n) {
     int i;
     for (i = 0; i < n && src[i] != '\0'; i++) {
         dest[i] = src[i];

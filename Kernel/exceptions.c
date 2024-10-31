@@ -19,7 +19,7 @@ void exceptionDispatcher(int exception) {
 }
 
 void waitToReturn() {
-    int c;
+    char c;
     do {
         _hlt();
         sys_read(STDIN, &c, 1);
