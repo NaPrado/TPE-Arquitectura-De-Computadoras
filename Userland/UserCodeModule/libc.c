@@ -26,8 +26,8 @@ void drawSpray(uint32_t size_x, uint32_t size_y, uint32_t spray[][size_y], uint8
     sys_call(DRAW_SPRAY, (uint64_t) spray, (uint64_t) size_x, (uint64_t) size_y, (uint64_t) mirror);
 }
 
-uint64_t * getRegisters() {
-    return sys_call(REGISTERS, 0, 0, 0, 0);
+void showRegisters() {
+    sys_call(REGISTERS, 0, 0, 0, 0);
 }
 
 void setFontColor(uint32_t hexColor) {
@@ -126,15 +126,7 @@ void programHelp() {
 void programRegisters() {
     setZoom(2);
     setCursor(0, BASE_CHAR_HEIGHT*2);
-    uint64_t * reg = getRegisters();
-    char  strs[][4] = {"rax:", "rbx:", "rcx:", "rdx:", "rdi:", "rsi:", "rsp:", "rbp:", "r8: ", "r9: ", "r10:", "r11:", "r12:", "r13:", "r14:", "r15:"};
-    char * buf = "\tRRRR 0xHHHHHHHHHHHHHHHH\n";
-    for (int i = 0; i < 16; i++) {
-        strNCpy(strs[i], buf+1, 4);
-        itoa(reg[i], buf+8, 16, 16);
-        buf[24] = '\n';
-        nprint(buf, 25);
-    }
+    showRegisters();
     setCursor(376, 696);
     print("Press 'Q' to quit");
     while (getChar() != 'q') {

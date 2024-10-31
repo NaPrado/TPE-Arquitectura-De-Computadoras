@@ -1,6 +1,7 @@
 #include <keyboardDriver.h>
 #include <interrupts.h>
 
+#define ENTER 0x01
 #define CAPSLOCK 0x3A
 #define LSHIFT 0x36
 #define RSHIFT 0x2A
@@ -19,6 +20,8 @@ static char capslock=0;
 static char shift=0;
 static char ctrl=0;
 static char alt=0;
+
+extern void saveRegisters();
 
 static int notShiftedAscii[] = {
     [0x01] = -1, //Esc   
@@ -320,6 +323,9 @@ void keyboard_handler() {
     char release = scancode;
     release = release >> 7;
     char key = scancode & 0x7F;
+    if (scancode == ENTER) {
+        saveRegisters();
+    }
     if (scancode == CAPSLOCK) {
         capslock =! capslock;
         return;

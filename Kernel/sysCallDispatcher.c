@@ -100,7 +100,8 @@ uint64_t sysCallDispatcher(uint64_t rax, ...) {
         sys_write(fd, buf, count);
         ret = 0;
     } else if (rax == 2) {
-        ret = getRegisters();
+        showRegisters();
+        ret = 0;
     } else if (rax == 3) {
         ret = nextKey();
     } else if (rax == 4) {

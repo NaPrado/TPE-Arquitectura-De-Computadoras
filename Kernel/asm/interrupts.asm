@@ -7,6 +7,7 @@ GLOBAL haltcpu
 GLOBAL _hlt
 
 GLOBAL regs_backup
+GLOBAL saveRegisters
 
 GLOBAL _irq00Handler
 GLOBAL _irq01Handler
@@ -134,7 +135,6 @@ SECTION .text
     iretq
 %endmacro
 
-
 ;espera a que ocurra una interrupcion 
 _hlt:
 	sti
@@ -216,6 +216,10 @@ haltcpu:
 	cli
 	hlt
 	ret
+
+saveRegisters:
+    catchRegisters
+    ret
 
 section .rodata
     userland equ 0x400000

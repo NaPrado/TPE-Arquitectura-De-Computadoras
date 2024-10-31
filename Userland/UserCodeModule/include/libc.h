@@ -32,7 +32,7 @@ typedef struct {
     char sec;
 } time;
 
-uint64_t * getRegisters();
+void showRegisters();
 
 time * getTime();
 
