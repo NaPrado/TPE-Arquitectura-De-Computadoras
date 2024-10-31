@@ -78,29 +78,47 @@ SECTION .text
 %endmacro
 
 %macro catchRegisters 0
-    mov [regs_backup], rax
+    mov qword [regs_backup], rax
     mov rax, regs_backup
-    mov [rax+8*1], rbx
-    mov [rax+8*2], rcx
-    mov [rax+8*3], rdx
-    mov [rax+8*4], rdi
-    mov [rax+8*5], rsi
-    mov [rax+8*6], rsp
-    mov [rax+8*7], rbp
-    mov [rax+8*8], r8
-    mov [rax+8*9], r9
-    mov [rax+8*10], r10
-    mov [rax+8*11], r11
-    mov [rax+8*12], r12
-    mov [rax+8*13], r13
-    mov [rax+8*14], r14
-    mov [rax+8*15], r15
-    mov rbx, [rsp]      ; rip
-    mov [rax+8*16], rbx
-    mov rbx, [rsp+8]    ; cs
-    mov [rax+8*17], rbx
-    mov rbx, [rsp+16]   ; rflags
-    mov [rax+8*18], rbx
+    add rax, 8
+    mov qword [rax], rbx
+    add rax, 8
+    mov qword [rax], rcx
+    add rax, 8
+    mov qword [rax], rdx
+    add rax, 8
+    mov qword [rax], rdi
+    add rax, 8
+    mov qword [rax], rsi
+    add rax, 8
+    mov qword [rax], rsp
+    add rax, 8
+    mov qword [rax], rbp
+    add rax, 8
+    mov qword [rax], r8
+    add rax, 8
+    mov qword [rax], r9
+    add rax, 8
+    mov qword [rax], r10
+    add rax, 8
+    mov qword [rax], r11
+    add rax, 8
+    mov qword [rax], r12
+    add rax, 8
+    mov qword [rax], r13
+    add rax, 8
+    mov qword [rax], r14
+    add rax, 8
+    mov qword [rax], r15
+    add rax, 8
+    mov qword rbx, [rsp]      ; rip
+    mov qword [rax], rbx
+    add rax, 8
+    mov qword rbx, [rsp+8]    ; cs
+    mov qword [rax], rbx
+    add rax, 8
+    mov qword rbx, [rsp+16]   ; rflags
+    mov qword [rax], rbx
 %endmacro
 
 %macro exceptionHandler 1
@@ -204,4 +222,4 @@ section .rodata
 
 section .bss
 	aux resq 1
-    regs_backup resq 18
+    regs_backup resq 19

@@ -111,6 +111,7 @@ void programRectangle(uint32_t color) {
 }
 
 void programHelp() {
+    setZoom(2);
     setCursor(BASE_CHAR_WIDTH*4, BASE_CHAR_HEIGHT*2);
     print("Commands:\n\t1-color (Change color)\n\t2-date (Show date and hour)\n\t3-rec (Draw a rectangle)\n\t4-zoom in (Increase font size)\n\t5-zoom out (Decrease font size)\n\t6-snake (A funny game)\n\t7-div0 (A tester for division by 0)\n\t8-invOp (A tester for invalid operation)\n\t9-registers (Show registers)\n\t10-exit (Exit the shell)\n\t11-help (Show this help)");
     setZoom(2);
