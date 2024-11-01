@@ -134,6 +134,7 @@ void doCommand() {
             cleanScreen();
             programRegisters();
             getContextBack();
+            strCpy("Registers exited", response);
         } else if (strCaseCmp(command, "exit")==0) {
             strCpy("Exit", response);
             exit = 1;
