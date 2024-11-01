@@ -423,7 +423,7 @@ static void startGame(){
         drawFullSnakeAtFirst(&p2);
     }
     startCount();//contador de inicio para la partida
-    drawApple();
+        drawApple();
     do{
         points(&p1,&p2);
         for (int i = 0; i < 5; i++){
@@ -531,10 +531,20 @@ static void selector(){
         }else if (option==ONE_PLAYER){
             gameOverOrWinner();
         }
-        playSoundForTicks(C4,8);
-        playSoundForTicks(B3,8);
-        playSoundForTicks(207,8);//G3#
-        playSoundForTicks(G3,8);//G3
+        if (noWinner){
+            playSoundForTicks(C4,8);
+            playSoundForTicks(B3,8);
+            playSoundForTicks(207,8);//G3#
+            playSoundForTicks(G3,8);
+        }else{
+            playSoundForTicks(F4,8);
+            playSoundForTicks(A4,8);
+            playSoundForTicks(G4,8);
+            playSoundForTicks(D5,8);
+
+        }
+        
+        
         setCursor((DIM_X/2)-(23*CHAR_WIDTH_),DIM_Y-CHAR_HEIGHT_*3);
         setBackGroundColor(black);
         setFontColor(FONT_COLOR);
