@@ -1,5 +1,6 @@
 #include <sysCallDispatcher.h>
 #include <videoDriver.h>
+#include <pcSpeakerDriver.h>
 #define ZERO_EXCEPTION_ID 0
 #define INVALID_OPCODE 6
 
@@ -36,6 +37,7 @@ static void invalid_opcode() {
 }
 
 static void printExceptionMsg(char * e) {
+
     drawRectangle(&((Point){0,0}), &((Point){DIM_X, DIM_Y}), 0x000000);
     sys_setZoom(1);
     sys_setCursor(8, 16);
@@ -43,7 +45,15 @@ static void printExceptionMsg(char * e) {
     sys_write(STDERR, e, strLen(e));
     sys_write(STDERR, "\n\n", 2);
     showRegisters();
-    sys_sleep(20);
+    playSound(277);
+    sys_sleep(2);
+    stopSound();
+    sys_sleep(2);
+    playSound(277);
+    sys_sleep(2);
+    stopSound();
+    sys_sleep(14);
+    sys_write(STDERR, "\nPress enter to return to the shell\n", 36);
     waitToReturn();
     drawRectangle(&((Point){0,0}), &((Point){DIM_X, DIM_Y}), 0x000000);
 }

@@ -423,7 +423,7 @@ static void startGame(){
         drawFullSnakeAtFirst(&p2);
     }
     startCount();//contador de inicio para la partida
-        drawApple();
+    drawApple();
     do{
         points(&p1,&p2);
         for (int i = 0; i < 5; i++){
