@@ -218,7 +218,6 @@ _exception0Handler:
 ;Zero Division Exception
 _exception6Handler:
 	exceptionHandler 6
-
 haltcpu:
 	cli
 	hlt

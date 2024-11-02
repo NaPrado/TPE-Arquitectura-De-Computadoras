@@ -4,6 +4,7 @@ GLOBAL _ioe
 GLOBAL _hlt
 GLOBAL _cli
 GLOBAL _sti
+GLOBAL _cliHlt
 
 sys_call:
 

@@ -48,4 +48,9 @@ extern void _cli();
  */
 extern void _sti();
 
+/**
+ * @brief Halts the CPU and disable interrupts, similar to do while(1).
+ */
+extern void _cliHlt();
+
 #endif // LIBASM_H

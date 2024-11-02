@@ -85,9 +85,7 @@ void * initializeKernelBinary()
 
 int main() {	
 	load_idt();
-    
-    
     ((EntryPoint)userCodeModuleAddress)();
-
+	haltcpu();
     return 0;
 }
