@@ -22,6 +22,12 @@ typedef struct {
     int toGrow;         // Number of blocks to grow
 } Snake;
 
+/**
+ * @brief Starts and runs the Snake game.
+ *
+ * This function initializes and manages the game loop for the Snake game.
+ * It handles the game state, user input, and rendering of the game.
+ */
 void snake();
 
 #define CHAR_WIDTH_ 8

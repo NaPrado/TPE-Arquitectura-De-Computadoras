@@ -32,68 +32,244 @@ typedef struct {
     char sec;
 } time;
 
+/**
+ * @brief Displays the current program time.
+ */
 void programTime();
 
+/**
+ * @brief Retrieves the number of ticks since the system started.
+ * 
+ * @return uint64_t Number of ticks.
+ */
 uint64_t getTicks();
 
+/**
+ * @brief Displays the current values of the CPU registers.
+ */
 void showRegisters();
 
+/**
+ * @brief Retrieves the current system time.
+ * 
+ * @return time* Pointer to a time structure containing the current time.
+ */
 time * getTime();
 
+/**
+ * @brief Waits for and returns a key press from the user.
+ * 
+ * @return char The key pressed by the user.
+ */
 char getKey();
 
+/**
+ * @brief Sets the background color of the display.
+ * 
+ * @param hexColor The color to set as the background, in hexadecimal format.
+ */
 void setBackGroundColor(uint32_t hexColor);
 
-void drawRectangle(Point topLeft, Point downRigth, uint32_t color) ;
+/**
+ * @brief Draws a rectangle on the display.
+ * 
+ * @param topLeft The top-left corner of the rectangle.
+ * @param downRigth The bottom-right corner of the rectangle.
+ * @param color The color of the rectangle, in hexadecimal format.
+ */
+void drawRectangle(Point topLeft, Point downRigth, uint32_t color);
 
+/**
+ * @brief Draws a spray pattern on the display.
+ * 
+ * @param size_x The width of the spray pattern.
+ * @param size_y The height of the spray pattern.
+ * @param spray The spray pattern data.
+ * @param mirror Whether to mirror the spray pattern.
+ */
 void drawSpray(uint32_t size_x, uint32_t size_y, uint32_t spray[][size_y], uint8_t mirror);
 
+/**
+ * @brief Sets the font color for text display.
+ * 
+ * @param hexColor The color to set for the font, in hexadecimal format.
+ */
 void setFontColor(uint32_t hexColor);
 
+/**
+ * @brief Prints a string to the display.
+ * 
+ * @param buf The string to print.
+ */
 void print(const char * buf);
 
+/**
+ * @brief Prints a string to the display with a specified length.
+ * 
+ * @param buf The string to print.
+ * @param lenght The length of the string.
+ */
 void nprint(const char * buf, uint64_t lenght);
 
+/**
+ * @brief Reads input from the user into a buffer.
+ * 
+ * @param buf The buffer to store the input.
+ * @param count The maximum number of characters to read.
+ * @return int The number of characters read.
+ */
 int scan(char * buf, uint32_t count);
 
+/**
+ * @brief Converts an integer to a string.
+ * 
+ * @param value The integer value to convert.
+ * @param buffer The buffer to store the resulting string.
+ * @param base The numerical base for the conversion.
+ * @param n The minimum number of digits to output.
+ * @return int The length of the resulting string.
+ */
 int itoa(uint64_t value, char * buffer, int base, int n);
 
+/**
+ * @brief Waits for and returns a character input from the user.
+ * 
+ * @return char The character input by the user.
+ */
 char getChar();
 
+/**
+ * @brief Outputs a character to the display.
+ * 
+ * @param c The character to output.
+ */
 void putChar(char c);
 
+/**
+ * @brief Calculates the length of a string.
+ * 
+ * @param str The string to measure.
+ * @return int The length of the string.
+ */
 int strlen(const char * str);
 
+/**
+ * @brief Sets the cursor position on the display.
+ * 
+ * @param x The x-coordinate of the cursor.
+ * @param y The y-coordinate of the cursor.
+ */
 void setCursor(uint32_t x, uint32_t y);
 
+/**
+ * @brief Sets the character cursor position on the display.
+ * 
+ * @param x The x-coordinate of the character cursor.
+ * @param y The y-coordinate of the character cursor.
+ */
 void setCharCursor(uint32_t x, uint32_t y);
 
+/**
+ * @brief Pauses execution for a specified number of seconds.
+ * 
+ * @param seconds The number of seconds to sleep.
+ */
 void sleep(uint64_t seconds);
 
+/**
+ * @brief Copies a string from source to destination.
+ * 
+ * @param source The source string.
+ * @param dest The destination buffer.
+ */
 void strCpy(char * source, char * dest);
 
+/**
+ * @brief Copies up to n characters from source to destination.
+ * 
+ * @param source The source string.
+ * @param dest The destination buffer.
+ * @param n The maximum number of characters to copy.
+ * @return char* The destination buffer.
+ */
 char* strNCpy(const char * source, char * dest, int n);
 
+/**
+ * @brief Compares two strings.
+ * 
+ * @param s1 The first string.
+ * @param s2 The second string.
+ * @return int An integer less than, equal to, or greater than zero if s1 is found, respectively, to be less than, to match, or be greater than s2.
+ */
 int strCmp(const char * s1,const char * s2);
 
+/**
+ * @brief Compares two strings, ignoring case.
+ * 
+ * @param s1 The first string.
+ * @param s2 The second string.
+ * @return int An integer less than, equal to, or greater than zero if s1 is found, respectively, to be less than, to match, or be greater than s2.
+ */
 int strCaseCmp(const char * s1, const char * s2);
 
+/**
+ * @brief Checks if a character is an alphabetic letter.
+ * 
+ * @param c The character to check.
+ * @return int Non-zero if the character is an alphabetic letter, zero otherwise.
+ */
 int isalpha(int c);
 
+/**
+ * @brief Converts a character to uppercase.
+ * 
+ * @param c The character to convert.
+ * @return int The uppercase equivalent of the character, if any; otherwise, the character itself.
+ */
 int toupper(int c);
 
+/**
+ * @brief Converts a character to lowercase.
+ * 
+ * @param c The character to convert.
+ * @return int The lowercase equivalent of the character, if any; otherwise, the character itself.
+ */
 int tolower(int c);
 
+/**
+ * @brief Sets the zoom level for the display.
+ * 
+ * @param zoom The zoom level to set.
+ */
 void setZoom(char zoom);
 
+/**
+ * @brief Converts the current time to a string.
+ * 
+ * @param buf The buffer to store the resulting string.
+ */
 void timeToStr(char * buf);
 
+/**
+ * @brief Displays a rectangle with a specified color.
+ * 
+ * @param color The color of the rectangle, in hexadecimal format.
+ */
 void programRectangle(uint32_t color);
 
+/**
+ * @brief Displays help information for the program.
+ */
 void programHelp();
 
+/**
+ * @brief Displays the current values of the CPU registers.
+ */
 void programRegisters();
 
+/**
+ * @brief Clears the entire display.
+ */
 void cleanFullScreen();
 
 // int strStartsWith(const char * str, const char * start);
