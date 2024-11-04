@@ -57,13 +57,6 @@ void showRegisters();
 time * getTime();
 
 /**
- * @brief Waits for and returns a key press from the user.
- * 
- * @return char The key pressed by the user.
- */
-char getKey();
-
-/**
  * @brief Sets the background color of the display.
  * 
  * @param hexColor The color to set as the background, in hexadecimal format.

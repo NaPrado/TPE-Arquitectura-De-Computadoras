@@ -39,16 +39,6 @@ void putPixel(uint32_t hexColor, uint64_t x, uint64_t y);
 void drawRectangle(Point* topLeft, Point* downRigth, uint32_t c);
 
 /**
- * @brief Draws an empty rectangle (only the border) on the screen.
- * 
- * @param topLeft Pointer to the top-left corner point of the rectangle.
- * @param downRigth Pointer to the bottom-right corner point of the rectangle.
- * @param c The color of the rectangle border in hexadecimal format.
- * @param mult The thickness of the rectangle border.
- */
-void drawVoidRectangle(Point* topLeft, Point* downRigth, uint32_t c, int mult);
-
-/**
  * @brief Draws a character on the screen with specified foreground and background colors.
  * 
  * @param c The character to be drawn.
