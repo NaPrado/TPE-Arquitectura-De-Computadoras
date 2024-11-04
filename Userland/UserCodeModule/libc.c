@@ -74,7 +74,7 @@ void programTime(){
     setCursor((DIM_X/2)-9*BASE_CHAR_WIDTH, DIM_Y-(4*BASE_CHAR_HEIGHT));
     print("Press 'Q' to quit");
     setZoom(2);
-    while (getKey() != 'q') {
+    while (getChar() != 'q') {
         setCursor((DIM_X/2)-9*BASE_CHAR_WIDTH*2, DIM_Y/2);
         timeToStr(buf);
         print(buf);
@@ -87,7 +87,7 @@ void programRectangle(uint32_t color) {
     static const Point rec_msg_point1 = {392, 712};
     static const Point rec_msg_point2 = {412, 744};
     static const char * rec_msg1 = "Rectangle drawn";
-    static const char * rec_msg2 = "Press any key to continue";
+    static const char * rec_msg2 = "Press 'Q' to quit";
 
     Point p1 = {64, 64};
     Point p2 = {960, 704};
@@ -99,15 +99,7 @@ void programRectangle(uint32_t color) {
     setZoom(1);
     setCursor(rec_msg_point2.x, rec_msg_point2.y);
     print(rec_msg2);
-    getChar();
-    drawRectangle(p1,p2,0x000000);
-    setZoom(2);
-    setCursor(rec_msg_point1.x, rec_msg_point1.y);
-    setFontColor(0x000000);
-    print(rec_msg1);
-    setZoom(1);
-    setCursor(rec_msg_point2.x, rec_msg_point2.y);
-    print(rec_msg2);
+    hltUntilQ();
 }
 
 void programHelp() {
@@ -117,10 +109,7 @@ void programHelp() {
     setZoom(2);
     setCursor(376, 696);
     print("Press 'Q' to quit");
-    while (getChar() != 'q') {
-        _hlt();
-    }
-    cleanFullScreen();
+    hltUntilQ();
 }
 
 void programRegisters() {
@@ -128,19 +117,20 @@ void programRegisters() {
     setCursor(0, BASE_CHAR_HEIGHT*2);
     showRegisters();
     setCursor(376, 696);
+    setFontColor(0xFFFFFF);
     print("Press 'Q' to quit");
+    hltUntilQ();
+}
+
+void hltUntilQ() {
     while (getChar() != 'q') {
         _hlt();
     }
     cleanFullScreen();
 }
 
-char getKey(){
-    return sys_call(3, 0, 0, 0, 0);
-}
-
 int scan(char * buf, uint32_t count) {
-    return sys_call(READ, STDIN,(uint64_t)buf, count, 0);
+    return sys_call((uint64_t) READ,(uint64_t) STDIN,(uint64_t) buf,(uint64_t) count, 0);
 }
 
 int itoa(uint64_t value, char * buffer, int base, int n) {
@@ -180,12 +170,8 @@ int itoa(uint64_t value, char * buffer, int base, int n) {
 }
 
 char getChar() {
-    char c=-2;
-    while (c == -2){
-        _hlt();
-        scan(&c, 1);
-    }
-    
+    char c;
+    scan(&c, 1);
     return c;
 }
 
@@ -281,46 +267,3 @@ void cleanFullScreen() {
 uint64_t getTicks(){
     return sys_call(14, 0, 0, 0, 0);
 }
-
-
-// int strStartsWith(const char * str, const char * start) {
-// 	int length=strlen(start);
-// 	for (int i = 0; i < length; i++){
-// 		if (str[i] != start[i] || str[i] == '\0'){
-// 			return 0;
-// 		}
-// 	}
-// 	return 1;
-// }
-
-// strStartsWithCaseInsensitive(const char * str, const char * start) {
-// 	char strLower[strlen(str)];
-// 	char startLower[strlen(start)];
-// 	strCpy(strLower, str);
-// 	strCpy(startLower, start);
-// 	toLower(strLower);
-// 	toLower(startLower);
-// 	return strStartsWith(strLower, startLower);
-// }
-
-
-// int toUpper(char* str){
-// 	int i = 0;
-// 	while(str[i] != '\0'){
-// 		if(str[i] >= 'a' && str[i] <= 'z'){
-// 			str[i] = str[i] - 32;
-// 		}
-// 		i++;
-// 	}
-// 	return 0;
-// }
-// int toLower(char* str){
-// 	int i = 0;
-// 	while(str[i] != '\0'){
-// 		if(str[i] >= 'A' && str[i] <= 'Z'){
-// 			str[i] = str[i] + 32;
-// 		}
-// 		i++;
-// 	}
-// 	return 0;
-// }

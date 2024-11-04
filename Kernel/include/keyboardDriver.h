@@ -18,7 +18,7 @@ void keyboard_handler();
  * 
  * @return char The current key.
  */
-char getKey();
+// int getKey();
 
 /**
  * @brief Checks if there is a next key available.

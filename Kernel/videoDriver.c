@@ -1775,25 +1775,6 @@ static uint8_t font_bitmap[256 * CHAR_HEIGHT] = {
 };
 
 
-
-void putchar(char c, int x, int y) {
-    drawchar(c, x * CHAR_WIDTH, y * CHAR_HEIGHT, 0xffffffff, 0x00, 1);
-    // screen_char_ptr[y*(DIM_X/CHAR_WIDTH) + x] = c;
-    // redrawScreen();
-}
-
-
-// static void redrawScreen() {
-//     for (uint16_t j = 0; j < DIM_X / CHAR_WIDTH; j++) {
-//         for (uint16_t i = 0; i < DIM_Y / CHAR_HEIGHT; i++) {
-//             if ('!' <= screen_char[i*(DIM_X/CHAR_WIDTH) + j] && screen_char[i*(DIM_X/CHAR_WIDTH) + j] <= '~') {
-//                 drawchar(screen_char[i*(DIM_X/CHAR_WIDTH) + j], j * CHAR_WIDTH, i * CHAR_HEIGHT, 0xffffffff, 0x00);
-//             }
-//         }
-//     }
-// }
-
-
 static void putMultPixel(uint32_t hexColor, uint64_t x, uint64_t y, int mult) {
     for (int i = 0; i < mult; i++) {
         for (int j = 0; j < mult; j++) {
@@ -1813,7 +1794,7 @@ void drawchar(unsigned char c, int x, int y, int fgcolor, int bgcolor, int mult)
 	}
 }
 
-void drawRectangle(Point* topLeft, Point* downRigth, uint32_t c) {
+void drawRectangle(Point* topLeft, Point* downRigth, uint32_t c){
     for (int i = topLeft->x; i < downRigth->x; i++) {
         for (int j = topLeft->y; j < downRigth->y; j++) {
             putPixel(c, i, j);

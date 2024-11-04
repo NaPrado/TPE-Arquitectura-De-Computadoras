@@ -288,7 +288,7 @@ static void drawApple(){
 }
 
 static void controls(Snake* snake1,Snake* snake2){
-    char c=getKey();
+    int c=getChar();
     Direction dir1=snake1->dir;
     Direction dir2=snake2->dir;
     while (c!=-2){
@@ -310,7 +310,7 @@ static void controls(Snake* snake1,Snake* snake2){
         }else if ((c=='L' || c=='l') && dir2!=LEFT){
             snake2->dir=RIGHT;
         }
-        c=getKey();
+        c=getChar();
     }
 }
 
@@ -497,7 +497,7 @@ void stopAndChangeSound(){
 
 static void selector(){
     drawselection();
-    char c=getKey();
+    int c=getChar();
     do
     {
         ticks=getTicks();
@@ -520,7 +520,7 @@ static void selector(){
         }
         stopAndChangeSound();  
         _hlt();
-        c=getKey();
+        c=getChar();
     } while (c!='\n'||option==GAPPLE);
     stopSound();
     if (option==ONE_PLAYER || option==TWO_PLAYERS){

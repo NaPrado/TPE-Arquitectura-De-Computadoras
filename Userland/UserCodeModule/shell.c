@@ -177,11 +177,11 @@ void shell() {
 }
 
 void getCommand() {
-    char c;
+    int c;
     do {
         _hlt();
         c = getChar();
-        if (c != '\0') {
+        if (c != -2) {
             if (c != '\b') {
                 command[command_size++] = c;
             } else {

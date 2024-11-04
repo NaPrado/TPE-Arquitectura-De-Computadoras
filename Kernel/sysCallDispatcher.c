@@ -30,25 +30,13 @@ void changeBackgroundColor(uint32_t hexColor) {
     backgroundColor = hexColor;
 }
 
-void drawtab() {
-    for (int i = 0; i < 4 && (cursorX+CHAR_WIDTH*zoom) < DIM_X; i++) {
-        drawchar(' ', cursorX, cursorY, 0x000000, 0x000000, zoom);
-        cursorX += CHAR_WIDTH*zoom;
-    }
-    
-}
-
 void sys_write(FDS fd, const char *buf, size_t count) {
     if(fd == STDOUT || fd == STDERR) {
         int i = 0;
         while (i < count) {
-            while (i < count && (cursorX+CHAR_WIDTH*zoom) < DIM_X && buf[i] != '\n') {
-                if (buf[i] == '\t') {
-                    drawtab();
-                } else {
-                    drawchar(buf[i], cursorX, cursorY, (fd==STDOUT)?color:0xFF0000, backgroundColor, zoom);
-                    cursorX += CHAR_WIDTH*zoom;
-                }
+            while (i < count && (cursorX+CHAR_WIDTH*zoom) < DIM_X && buf[i] != '\n') {    
+                drawchar(buf[i], cursorX, cursorY, (fd==STDOUT)?color:0xFF0000, backgroundColor, zoom);
+                cursorX += CHAR_WIDTH*zoom;
                 i++;
             }
             if (buf[i] == '\n' || i < count) {
@@ -61,12 +49,15 @@ void sys_write(FDS fd, const char *buf, size_t count) {
     return;
 }
 
-uint32_t readChars(char *buf, size_t count) {
+uint32_t readChars(char * buf, size_t count) {
     int i = 0, c;
-    while (i < count && (c = nextKey()) != -2) {
+    int end = 0;
+    while (i < count && !end) {
+        c = nextKey();
         buf[i++] = (char) c;
+        end = (c == -2);
     }
-    return i;
+    return i - end;             // si end es 1, resto un caracter (que seria el -2)
 }
 
 size_t sys_read(FDS fd, char *buf, size_t count) {
@@ -89,8 +80,8 @@ uint64_t sysCallDispatcher(uint64_t rax, ...) {
     va_start(args, rax);
     uint64_t ret;
     if (rax == 0) {
-        FDS fd = va_arg(args, FDS);
-        char* buf = va_arg(args, char*);
+       uint64_t fd = va_arg(args, uint64_t);
+       uint64_t buf = va_arg(args, uint64_t);
         uint64_t count = va_arg(args, uint64_t);
         ret = sys_read(fd, buf, count);
     } else if (rax == 1) {
@@ -102,8 +93,6 @@ uint64_t sysCallDispatcher(uint64_t rax, ...) {
     } else if (rax == 2) {
         showRegisters();
         ret = 0;
-    } else if (rax == 3) {
-        ret = nextKey();
     } else if (rax == 4) {
         ret = (uint64_t)getTime();
     } else if (rax == 5) {
