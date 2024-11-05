@@ -22,8 +22,8 @@ void drawRectangle(Point topLeft, Point downRigth, uint32_t color) {
 	sys_call(DRAW_RECTANGLE, (uint64_t)&topLeft, (uint64_t)&downRigth, (uint64_t)color, 0);
 }
 
-void drawSpray(uint32_t size_x, uint32_t size_y, uint32_t spray[][size_y], uint8_t mirror) {
-    sys_call(DRAW_SPRAY, (uint64_t) spray, (uint64_t) size_x, (uint64_t) size_y, (uint64_t) mirror);
+void drawSpray(uint32_t size_x, uint32_t size_y, uint32_t spray[][size_y]) {
+    sys_call(DRAW_SPRAY, (uint64_t) spray, (uint64_t) size_x, (uint64_t) size_y, 0);
 }
 
 void showRegisters() {

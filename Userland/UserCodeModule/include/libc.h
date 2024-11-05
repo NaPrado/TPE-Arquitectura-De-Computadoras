@@ -80,7 +80,7 @@ void drawRectangle(Point topLeft, Point downRigth, uint32_t color);
  * @param spray The spray pattern data.
  * @param mirror Whether to mirror the spray pattern.
  */
-void drawSpray(uint32_t size_x, uint32_t size_y, uint32_t spray[][size_y], uint8_t mirror);
+void drawSpray(uint32_t size_x, uint32_t size_y, uint32_t spray[][size_y]);
 
 /**
  * @brief Sets the font color for text display.

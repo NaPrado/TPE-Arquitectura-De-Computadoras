@@ -117,7 +117,7 @@ void applewallpaper(){
             lastAppleColor=actualAppleColor;
             makeAppleColor(actualAppleColor);
             setCursor(i*PIXEL_PER_BLOCK,j*PIXEL_PER_BLOCK);
-            drawSpray(PIXEL_PER_BLOCK,PIXEL_PER_BLOCK,appleColorSpray,0);
+            drawSpray(PIXEL_PER_BLOCK,PIXEL_PER_BLOCK,appleColorSpray);
         }
     }
     drawRectangle((Point){(DIM_X/2)-(DIM_X/4),(DIM_Y/2)-(DIM_Y/4)},(Point){(DIM_X/2)+(DIM_X/4),(DIM_Y/2)+(DIM_Y/4)},0xFFFFFF);

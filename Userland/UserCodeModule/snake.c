@@ -49,7 +49,6 @@ static int lastOption=0;
 static char noColisionsP1=1;
 static char noColisionsP2=1;
 static char noWinner=1;
-static char appleMirror=1;
 static char actualApple=2;
 static char map[TOTAL_OF_BLOCKS];
 static char goldAppleInit=0;
@@ -283,9 +282,8 @@ static void drawApple(){
     
     int y=apple?(apple/BLOCKS_DIM):0;
     setCursor(DIM_LEFT_MARGIN+(apple%BLOCKS_DIM)*PIXEL_PER_BLOCK,DIM_TOP_MARGIN+y*PIXEL_PER_BLOCK);
-    drawSpray(PIXEL_PER_BLOCK,PIXEL_PER_BLOCK,actualApple==APPLE_RED_STATUS?appleSpray:appleGoldSpray,appleMirror);
-    appleMirror= !appleMirror;
-}
+    drawSpray(PIXEL_PER_BLOCK,PIXEL_PER_BLOCK,actualApple==APPLE_RED_STATUS?appleSpray:appleGoldSpray);
+    }
 
 static void controls(Snake* snake1,Snake* snake2){
     int c=getChar();
