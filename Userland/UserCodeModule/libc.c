@@ -26,8 +26,25 @@ void drawSpray(uint32_t size_x, uint32_t size_y, uint32_t spray[][size_y]) {
     sys_call(DRAW_SPRAY, (uint64_t) spray, (uint64_t) size_x, (uint64_t) size_y, 0);
 }
 
+uint64_t * getRegisters() {
+    return sys_call(2, 0, 0, 0, 0);
+}
+
 void showRegisters() {
-    sys_call(REGISTERS, 0, 0, 0, 0);
+    uint64_t * reg = getRegisters();
+    if (reg == NULL) {
+        print("\tRegisters not saved yet\n");
+        print("\tPress 'esc' to save them\n");
+        return;
+    }
+    char  strs[][4] = {"rax:", "rbx:", "rcx:", "rdx:", "rdi:", "rsi:", "rsp:", "rbp:", "r8: ", "r9: ", "r10:", "r11:", "r12:", "r13:", "r14:", "r15:", "rip:", "cs: ", "rfl:"};
+    char * buf = "\tRRRR 0xHHHHHHHHHHHHHHHH\n";
+    for (int i = 0; i < 19; i++) {
+        strNCpy(strs[i], buf+1, 4);
+        itoa(reg[i], buf+8, 16, 16);
+        buf[24] = '\n';
+        nprint(buf, 25);
+    }
 }
 
 void setFontColor(uint32_t hexColor) {

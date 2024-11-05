@@ -1,6 +1,6 @@
 GLOBAL getKey
 
-EXTERN setEnterFlag
+EXTERN setEscFlag
 
 section .text
 
@@ -14,5 +14,5 @@ getKey:
 .exit:
 	ret
 .save_registers:
-    call setEnterFlag
+    call setEscFlag
     ret

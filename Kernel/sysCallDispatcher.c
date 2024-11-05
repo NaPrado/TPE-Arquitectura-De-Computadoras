@@ -87,8 +87,7 @@ uint64_t sysCallDispatcher(uint64_t rax, ...) {
         sys_write(fd, buf, count);
         ret = 0;
     } else if (rax == 2) {
-        showRegisters();
-        ret = 0;
+        ret = getRegisters();
     } else if (rax == 4) {
         ret = (uint64_t)getTime();
     } else if (rax == 5) {

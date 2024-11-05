@@ -9,6 +9,8 @@
 // #include <libasm.h>
 // #include <random.h>
 
+#define NULL (void*)0
+
 #define DIM_X 1024          // Ancho de pantalla [EN PIXELES]
 #define DIM_Y 768           // Alto de pantalla [EN PIXELES]
 
@@ -48,7 +50,14 @@ void programTime();
 uint64_t getTicks();
 
 /**
- * @brief Displays the current values of the CPU registers.
+ * @brief Returns current saved values of CPU registers.
+ * 
+ * @return uint64* array with registers.
+ */
+uint64_t * getRegisters();
+
+/**
+ * @brief Displays the current saved values of the CPU registers.
  */
 void showRegisters();
 

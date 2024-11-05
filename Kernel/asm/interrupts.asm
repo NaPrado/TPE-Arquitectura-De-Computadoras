@@ -8,7 +8,7 @@ GLOBAL _hlt
 
 GLOBAL saveRegisters
 GLOBAL getRegisters
-GLOBAL setEnterFlag
+GLOBAL setEscFlag
 
 GLOBAL _irq00Handler
 GLOBAL _irq01Handler
@@ -68,7 +68,7 @@ SECTION .text
 
 %macro irqHandlerMaster 1
 	pushState
-    mov byte [enter_flag], 0
+    mov byte [esc_flag], 0
 
 	mov rdi, %1 ; pasaje de parametro
 	call irqDispatcher
@@ -78,7 +78,7 @@ SECTION .text
 	out 20h, al
 
 	popState
-    cmp byte [enter_flag], 1
+    cmp byte [esc_flag], 1
     jne .donot_save_registers
     catchRegisters
     .donot_save_registers:
@@ -228,15 +228,22 @@ saveRegisters:
     ret
 
 getRegisters:
+    mov rax, 0       ; ret null
+    cmp byte [registers_saved], 1
+    jne .not_saved
     mov rax, regs_backup
+.not_saved:
     ret
 
-setEnterFlag:
-    mov byte [enter_flag], 1
+setEscFlag:
+    mov byte [esc_flag], 1
+    mov byte [registers_saved], 1
+    ret
 
 section .rodata
     userland equ 0x400000
+    registers_saved db 0
 
 section .bss
-    enter_flag resb 1
+    esc_flag resb 1
     regs_backup resq 19

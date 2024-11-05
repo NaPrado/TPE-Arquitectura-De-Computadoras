@@ -1,7 +1,7 @@
 #include <keyboardDriver.h>
 #include <interrupts.h>
 
-#define ESC 0x00
+#define ESC 0x01
 #define CAPSLOCK 0x3A
 #define LSHIFT 0x36
 #define RSHIFT 0x2A
