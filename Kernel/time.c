@@ -28,12 +28,6 @@ void sleep(int ticksToWait) {
     };
 }
 
-// static char getDecimalFrom(char hex){
-//     char high = hex & 0xF0; // Parte alta (decenas)
-//     char low = hex & 0x0F;          // Parte baja (unidades)
-//     return (high * 10) + low;
-// }
-
 static time t;
 
 time * getTime(){
