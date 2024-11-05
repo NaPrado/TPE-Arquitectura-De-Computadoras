@@ -265,6 +265,11 @@ void programRegisters();
  */
 void cleanFullScreen();
 
+/**
+ * @brief Halts cpu until 'q' is pressed.
+ */
+void hltUntilQ();
+
 // int strStartsWith(const char * str, const char * start);
 
 enum colors{
