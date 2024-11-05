@@ -18,6 +18,9 @@
 #define BASE_DIM_CHAR_Y (DIM_Y/BASE_CHAR_HEIGHT)      // Ancho de pantalla [EN CHARS BASE]
 #define BASE_DIM_CHAR_X (DIM_X/BASE_CHAR_WIDTH)       // Alto de pantalla [EN CHARS BASE]
 
+#define NOT_DRAWBLE -1
+#define NOT_KEY -2
+
 typedef struct {
 	int x;
 	int y;

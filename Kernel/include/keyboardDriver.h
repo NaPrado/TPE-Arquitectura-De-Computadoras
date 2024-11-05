@@ -2,6 +2,9 @@
 #define KEYBOARD_DRIVER_H
 // Function declarations and macros for the Keyboard driver
 
+#define NOT_DRAWBLE -1
+#define NOT_KEY -2
+
 /**
  * @brief Handles keyboard interrupts.
  * 

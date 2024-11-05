@@ -181,7 +181,7 @@ void getCommand() {
     do {
         _hlt();
         c = getChar();
-        if (c != -2) {
+        if (c != NOT_KEY && c != NOT_DRAWBLE) {
             if (c != '\b') {
                 command[command_size++] = c;
             } else {
