@@ -24,5 +24,4 @@ int randInt(int izq, int der) {
     }
     int diff = der - izq +1;
     return (random()%diff)+izq;
-    // return random()*(der-izq+1) + izq;
 }
