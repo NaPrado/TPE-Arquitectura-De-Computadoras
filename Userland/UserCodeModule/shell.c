@@ -108,13 +108,14 @@ void makeAppleColor(uint32_t color){
 
 void applewallpaper(){
     uint32_t lastAppleColor=0;
-    uint32_t actualAppleColor=color[randInt(0,400)%20];
+    uint32_t colorIndex=randInt(0,400)%20;
+    uint32_t actualAppleColor=color[colorIndex];
     for (int i = 0; i < DIM_X/PIXEL_PER_BLOCK; i++){
         for (int j = 0; j < DIM_Y/32; j++){
-            while(lastAppleColor==actualAppleColor || actualAppleColor==black){
-                actualAppleColor=color[randInt(0,400)%20];
+            actualAppleColor=color[colorIndex++];
+            if(colorIndex==20 || color[colorIndex]==black){
+                colorIndex=0;
             }
-            lastAppleColor=actualAppleColor;
             makeAppleColor(actualAppleColor);
             setCursor(i*PIXEL_PER_BLOCK,j*PIXEL_PER_BLOCK);
             drawSpray(PIXEL_PER_BLOCK,PIXEL_PER_BLOCK,appleColorSpray);
