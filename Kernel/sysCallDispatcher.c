@@ -7,8 +7,27 @@
 
 extern uint64_t * getRegisters();
 
-uint32_t color = 0xFFFFFF;
-uint32_t backgroundColor = 0x000000;
+#define SYSNUM_READ 0
+#define SYSNUM_WRITE 1
+#define SYSNUM_REGISTERS 2
+#define SYSNUM_GET_TIME 4
+#define SYSNUM_SET_CURSOR 5
+#define SYSNUM_SET_FONT_COLOR 7
+#define SYSNUM_SET_ZOOM 8
+#define SYSNUM_DRAW_RECTANGLE 9
+#define SYSNUM_SET_BACKGROUND_FONT_COLOR 10
+#define SYSNUM_DRAW_SPRAY 11
+#define SYSNUM_PLAY_SOUND 12
+#define SYSNUM_STOP_SOUND 13
+#define SYSNUM_GET_TICKS 14
+#define SYSNUM_SLEEP 35
+
+#define COLOR_WHITE 0xFFFFFF
+#define COLOR_BLACK 0x000000
+#define COLOR_RED 0xFF0000
+
+uint32_t color = COLOR_WHITE;
+uint32_t backgroundColor = COLOR_BLACK;
 int cursorX=0, cursorY=0;
 uint8_t zoom = 1;
 
@@ -35,7 +54,7 @@ void sys_write(FDS fd, const char *buf, size_t count) {
         int i = 0;
         while (i < count) {
             while (i < count && (cursorX+CHAR_WIDTH*zoom) < DIM_X && buf[i] != '\n') {    
-                drawchar(buf[i], cursorX, cursorY, (fd==STDOUT)?color:0xFF0000, backgroundColor, zoom);
+                drawchar(buf[i], cursorX, cursorY, (fd==STDOUT)?color:COLOR_RED, backgroundColor, zoom);
                 cursorX += CHAR_WIDTH*zoom;
                 i++;
             }
@@ -75,53 +94,53 @@ uint64_t sysCallDispatcher(uint64_t rax, ...) {
     va_list args;
     va_start(args, rax);
     uint64_t ret;
-    if (rax == 0) {
+    if (rax == SYSNUM_READ) {
        uint64_t fd = va_arg(args, uint64_t);
        uint64_t buf = va_arg(args, uint64_t);
         uint64_t count = va_arg(args, uint64_t);
         ret = sys_read(fd, buf, count);
-    } else if (rax == 1) {
+    } else if (rax == SYSNUM_WRITE) {
         FDS fd = va_arg(args, FDS);
         const char * buf = va_arg(args, const char*);
         uint64_t count = va_arg(args, uint64_t);
         sys_write(fd, buf, count);
         ret = 0;
-    } else if (rax == 2) {
+    } else if (rax == SYSNUM_REGISTERS) {
         ret = getRegisters();
-    } else if (rax == 4) {
+    } else if (rax == SYSNUM_GET_TIME) {
         ret = (uint64_t)getTime();
-    } else if (rax == 5) {
+    } else if (rax == SYSNUM_SET_CURSOR) {
         int x = (int)va_arg(args, uint64_t);
         int y = (int)va_arg(args, uint64_t);
         sys_setCursor(x, y);
-    } else if (rax == 7) {
+    } else if (rax == SYSNUM_SET_FONT_COLOR) {
         uint32_t hexColor = va_arg(args, uint32_t);
         setFontColor(hexColor);
-    } else if (rax == 8) {
+    } else if (rax == SYSNUM_SET_ZOOM) {
         uint64_t new_zoom = va_arg(args, uint64_t);
         sys_setZoom(new_zoom);
-    } else if (rax == 9) {
+    } else if (rax == SYSNUM_DRAW_RECTANGLE) {
         Point* p1 = va_arg(args, Point*);
         Point* p2 = va_arg(args, Point*);
         uint32_t c = va_arg(args, uint32_t);
         drawRectangle(p1,p2,c);
         ret = 0;
-    } else if (rax == 10) {
+    } else if (rax == SYSNUM_SET_BACKGROUND_FONT_COLOR) {
         uint32_t hexColor = va_arg(args, uint32_t);
         changeBackgroundColor(hexColor);
-    } else if (rax == 11) {
+    } else if (rax == SYSNUM_DRAW_SPRAY) {
         uint64_t spray = va_arg(args, uint64_t);
         uint64_t size_x = va_arg(args, uint64_t);
         uint64_t size_y = va_arg(args, uint64_t);
         drawSpray(size_x, size_y, spray, cursorX, cursorY);
-    } else if (rax == 12) {
+    } else if (rax == SYSNUM_PLAY_SOUND) {
         uint64_t frecuency = va_arg(args, uint64_t);
         playSound(frecuency);
-    } else if (rax == 13) {
+    } else if (rax == SYSNUM_STOP_SOUND) {
         stopSound();
-    } else if (rax == 14) {
+    } else if (rax == SYSNUM_GET_TICKS) {
         ret=getTicks();
-    } else if (rax == 35) {
+    } else if (rax == SYSNUM_SLEEP) {
         int seconds = va_arg(args, int);
         sys_sleep(seconds);    
     }

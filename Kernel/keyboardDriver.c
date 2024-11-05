@@ -9,6 +9,10 @@
 #define RCTRL 0x9D
 #define LALT 0x38
 #define RALT 0xB8
+#define F_01 0x3B
+#define F_10 0x44
+#define F_11 0x57
+#define F_12 0x58
 #define CHAR_BUFFER_DIM 64
 
 static char charBuffer[CHAR_BUFFER_DIM] = {0};
@@ -304,8 +308,8 @@ char isSpecialKey(char scancode) {
     (scancode == LCTRL)     || (scancode == RCTRL)      || 
     (scancode == LALT)      || (scancode == RALT)       ||
     (scancode == CAPSLOCK)  || (scancode == ESC)        ||
-    (scancode == 0x57)      || (scancode == 0x58)       ||
-    ((scancode >= 0x3B) && (scancode <= 0x44));
+    (scancode == F_11)      || (scancode == F_12)       ||
+    ((scancode >= F_01) && (scancode <= F_10));
 }
 
 void keyboard_handler() {

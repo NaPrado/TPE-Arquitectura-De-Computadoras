@@ -1,21 +1,21 @@
 #include <libc.h>
 #include <libasm.h>
-#define READ 0
 typedef enum{
     STDIN = 0,
     STDOUT,
     STDERR,
 } FDS;
+#define READ 0
 #define WRITE 1
 #define REGISTERS 2
 #define GET_TIME 4
 #define SET_CURSOR 5
-#define PUT_PIXEL 6
 #define SET_FONT_COLOR 7
 #define SET_ZOOM 8
 #define DRAW_RECTANGLE 9
 #define SET_BACKGROUND_FONT_COLOR 10
 #define DRAW_SPRAY 11
+#define GET_TICKS 14
 #define SLEEP 35
 
 void drawRectangle(Point topLeft, Point downRigth, uint32_t color) {
@@ -27,7 +27,7 @@ void drawSpray(uint32_t size_x, uint32_t size_y, uint32_t spray[][size_y]) {
 }
 
 uint64_t * getRegisters() {
-    return sys_call(2, 0, 0, 0, 0);
+    return sys_call(REGISTERS, 0, 0, 0, 0);
 }
 
 void showRegisters() {
@@ -43,7 +43,7 @@ void showRegisters() {
         strNCpy(strs[i], buf+1, 4);
         itoa(reg[i], buf+8, 16, 16);
         buf[24] = '\n';
-        nprint(buf, 25);
+        print(buf);
     }
 }
 
@@ -88,6 +88,7 @@ void timeToStr(char * buf) {
 void programTime(){
     char buf[17] = {0};
     setZoom(1);
+    setFontColor(white);
     setCursor((DIM_X/2)-9*BASE_CHAR_WIDTH, DIM_Y-(4*BASE_CHAR_HEIGHT));
     print("Press 'Q' to quit");
     setZoom(2);
@@ -102,7 +103,7 @@ void programTime(){
 
 void programRectangle(uint32_t color) {
     static const Point rec_msg_point1 = {392, 712};
-    static const Point rec_msg_point2 = {412, 744};
+    static const Point rec_msg_point2 = {432, 744};
     static const char * rec_msg1 = "Rectangle drawn";
     static const char * rec_msg2 = "Press 'Q' to quit";
 
@@ -125,6 +126,7 @@ void programHelp() {
     print("Commands:\n\t1-color (Change color)\n\t2-date (Show date and hour)\n\t3-rec (Draw a rectangle)\n\t4-zoom in (Increase font size)\n\t5-zoom out (Decrease font size)\n\t6-snake (A funny game)\n\t7-div0 (A tester for division by 0)\n\t8-invOp (A tester for invalid operation)\n\t9-registers (Show registers)\n\t10-exit (Exit the shell)\n\t11-help (Show this help)");
     setZoom(2);
     setCursor(376, 696);
+    setFontColor(white);
     print("Press 'Q' to quit");
     hltUntilQ();
 }
@@ -134,7 +136,7 @@ void programRegisters() {
     setCursor(0, BASE_CHAR_HEIGHT*2);
     showRegisters();
     setCursor(376, 696);
-    setFontColor(0xFFFFFF);
+    setFontColor(white);
     print("Press 'Q' to quit");
     hltUntilQ();
 }
@@ -282,5 +284,5 @@ void cleanFullScreen() {
 }
 
 uint64_t getTicks(){
-    return sys_call(14, 0, 0, 0, 0);
+    return sys_call(GET_TICKS, 0, 0, 0, 0);
 }
