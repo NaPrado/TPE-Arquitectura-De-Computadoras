@@ -17,7 +17,7 @@
  */
 int random();
  /**
-  Numero entero en [izq, der]
+  * @brief Retorna un numero entero aleatorio en el rango [izq, der]
   */
  int randInt(int izq, int der);
 

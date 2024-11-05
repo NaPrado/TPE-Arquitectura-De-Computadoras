@@ -72,16 +72,35 @@ typedef struct{
     uint32_t ticks;
 }Sound;
 
-// Function to play a sound
+/**
+ * @brief Plays a sound at the specified frequency.
+ *
+ * @param frequency The frequency of the sound to be played.
+ */
 void playSound(uint32_t frequency);
 
-// Function to stop the sound
+/**
+ * @brief Stops the currently playing sound.
+ * if nothing is playing, this function does nothing.
+ */
 void stopSound(void);
-
+/**
+ * @brief Plays a sound at the specified frequency for a given number of ticks.
+ *
+ * @param nFrequence The frequency of the sound to be played.
+ * @param ticks The duration in ticks for which the sound should be played.
+ */
 void playSoundForTicks(uint32_t nFrequence, uint32_t ticks);
-// add a sound to reproduce
+
+/**
+ * @brief Adds a sound to the queue for reproduction.
+ *
+ * @param s The sound to be added.
+ */
 void setSound(Sound s);
-// reproduce the next sound or stop the current sound
+/**
+ * @brief Updates the sound system to play the next sound or stop the current sound.
+ */
 void actulizeSound();
 
 #endif // SOUNDS_H
