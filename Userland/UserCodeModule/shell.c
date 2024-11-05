@@ -130,13 +130,13 @@ void welcomeMsg(){
     setZoom(2);
     setCursor((DIM_X/2)-(DIM_X/4)+2,(DIM_Y/2)-(DIM_Y/4)+2*2);
     print("Welcome to our kernel GNA");
-    setCursor((DIM_X/2)-(DIM_X/4)+2,(DIM_Y/2)-(DIM_Y/4)+2+CHAR_HEIGHT*2*2);
+    setCursor((DIM_X/2)-(DIM_X/4)+2,(DIM_Y/2)-(DIM_Y/4)+2+BASE_CHAR_HEIGHT*2*2);
     print("GNA Not Apple");
-    setCursor((DIM_X/2)-(DIM_X/4)+2,(DIM_Y/2)-(DIM_Y/4)+2+CHAR_HEIGHT*8*2);
+    setCursor((DIM_X/2)-(DIM_X/4)+2,(DIM_Y/2)-(DIM_Y/4)+2+BASE_CHAR_HEIGHT*8*2);
     print("Disigned by:");
-    setCursor((DIM_X/2)-(DIM_X/4)+2,(DIM_Y/2)-(DIM_Y/4)+2+CHAR_HEIGHT*9*2);
+    setCursor((DIM_X/2)-(DIM_X/4)+2,(DIM_Y/2)-(DIM_Y/4)+2+BASE_CHAR_HEIGHT*9*2);
     print("Nahuel Prado and Mateo Buela");
-    setCursor((DIM_X/2)-(DIM_X/4)+2,(DIM_Y/2)-(DIM_Y/4)+2+CHAR_HEIGHT*10*2);
+    setCursor((DIM_X/2)-(DIM_X/4)+2,(DIM_Y/2)-(DIM_Y/4)+2+BASE_CHAR_HEIGHT*10*2);
     print("2024");
 }
 

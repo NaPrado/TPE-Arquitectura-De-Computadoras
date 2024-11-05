@@ -71,10 +71,6 @@ void sys_sleep(int seconds){
     sleep(seconds);
 }
 
-void sys_putPixel(uint32_t hexColor, uint64_t x,uint64_t y) {
-    putPixel(hexColor, x, y);
-}
-
 uint64_t sysCallDispatcher(uint64_t rax, ...) {
     va_list args;
     va_start(args, rax);
@@ -99,11 +95,6 @@ uint64_t sysCallDispatcher(uint64_t rax, ...) {
         int x = (int)va_arg(args, uint64_t);
         int y = (int)va_arg(args, uint64_t);
         sys_setCursor(x, y);
-    } else if (rax == 6) {
-        uint32_t hexColor = va_arg(args, uint32_t);
-        uint64_t x = va_arg(args, uint64_t);
-        uint64_t y = va_arg(args, uint64_t);
-        sys_putPixel(hexColor, x, y);
     } else if (rax == 7) {
         uint32_t hexColor = va_arg(args, uint32_t);
         setFontColor(hexColor);
