@@ -39,8 +39,8 @@ static void invalid_opcode() {
 static void printExceptionMsg(char * e) {
 
     drawRectangle(&((Point){0,0}), &((Point){DIM_X, DIM_Y}), 0x000000);
-    sys_setZoom(1);
-    sys_setCursor(8, 16);
+    sys_setZoom(2);
+    sys_setCursor(8, 8);
     sys_write(STDERR, "Exception: ", 11);
     sys_write(STDERR, e, strLen(e));
     sys_write(STDERR, "\n\n", 2);
@@ -53,7 +53,7 @@ static void printExceptionMsg(char * e) {
     sys_sleep(2);
     stopSound();
     sys_sleep(14);
-    sys_write(STDERR, "\nPress enter to return to the shell\n", 36);
+    sys_write(STDERR, "\n\tPress enter to return to the shell\n", 36);
     waitToReturn();
     drawRectangle(&((Point){0,0}), &((Point){DIM_X, DIM_Y}), 0x000000);
 }

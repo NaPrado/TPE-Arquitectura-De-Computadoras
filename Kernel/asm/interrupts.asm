@@ -127,6 +127,7 @@ SECTION .text
     add rax, 8
     mov qword rdi, [rsp+16]   ; rflags
     mov qword [rax], rdi
+    mov byte [registers_saved], 1   ; seteo flag de que se guardaron registros [ESTO ESTABA MAL]
 %endmacro
 
 %macro exceptionHandler 1
@@ -237,7 +238,6 @@ getRegisters:
 
 setEscFlag:
     mov byte [esc_flag], 1
-    mov byte [registers_saved], 1
     ret
 
 section .rodata

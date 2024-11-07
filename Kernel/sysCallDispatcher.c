@@ -194,7 +194,7 @@ int strLen(char * str) {
 }
 
 void showRegisters() {
-    sys_setZoom(1);
+    sys_setZoom(2);
     uint64_t * reg = getRegisters();
     char  strs[][4] = {"rax:", "rbx:", "rcx:", "rdx:", "rdi:", "rsi:", "rsp:", "rbp:", "r8: ", "r9: ", "r10:", "r11:", "r12:", "r13:", "r14:", "r15:", "rip:", "cs: ", "rfl:"};
     char * buf = "\tRRRR 0xHHHHHHHHHHHHHHHH\n";
