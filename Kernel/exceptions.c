@@ -45,13 +45,11 @@ static void printExceptionMsg(char * e) {
     sys_write(STDERR, e, strLen(e));
     sys_write(STDERR, "\n\n", 2);
     showRegisters();
-    playSound(277);
-    sys_sleep(2);
-    stopSound();
-    sys_sleep(2);
-    playSound(277);
-    sys_sleep(2);
-    stopSound();
+    cleanSoundBuff();
+    pauseBackgroundMusic();
+    addSoundBuff((Sound){277,1});
+    addSoundBuff((Sound){0,1});
+    addSoundBuff((Sound){277,1});
     sys_sleep(14);
     sys_write(STDERR, "\n\tPress enter to return to the shell\n", 36);
     waitToReturn();

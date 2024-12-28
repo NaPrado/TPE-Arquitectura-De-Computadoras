@@ -96,6 +96,7 @@ static uint32_t appleSpray[PIXEL_PER_BLOCK][PIXEL_PER_BLOCK] = {
     TRANSPARENT,TRANSPARENT,TRANSPARENT,TRANSPARENT     ,TRANSPARENT,TRANSPARENT,APPLE_COLOR,APPLE_COLOR    ,APPLE_COLOR,APPLE_COLOR,APPLE_COLOR,APPLE_COLOR    ,APPLE_COLOR,TRANSPARENT,TRANSPARENT,TRANSPARENT    ,TRANSPARENT,TRANSPARENT,TRANSPARENT,APPLE_COLOR    ,APPLE_COLOR,APPLE_COLOR,APPLE_COLOR,APPLE_COLOR ,APPLE_COLOR,APPLE_COLOR,TRANSPARENT,TRANSPARENT   ,TRANSPARENT,TRANSPARENT,TRANSPARENT,TRANSPARENT,//32
 };
 static uint32_t appleGoldSpray[PIXEL_PER_BLOCK][PIXEL_PER_BLOCK]={0};
+static Sound * m;
 
 static void points(Snake* s1,Snake* s2){
     setZoom(2);
@@ -249,13 +250,15 @@ static void startCount(){
     for (int i = 3; 0 < i; i--){
         setCursor((DIM_X/2)-CHAR_WIDTH_,CHAR_HEIGHT_);
         putChar(c);
-        playSoundForTicks(A4,5);
-        sleep(9);
+        playSound(A4,5);
+        playSound(0,10);
+        sleep(10+5);
         c--;
     }
     setCursor((DIM_X/2)-(3*CHAR_WIDTH_),CHAR_HEIGHT_);
     print("GO!");
-    playSoundForTicks(A4,9);
+    playSound(A4,9);
+    sleep(9);
     setCursor((DIM_X/2)-(3*CHAR_WIDTH_),CHAR_HEIGHT_);
     print("   ");
 }
@@ -377,15 +380,15 @@ static void actualizeSnakeAndCheckColisions(Snake* snake){
 ///////////////////////////////////////////////////////////////////////
 //Check Colisions with the apple
     if (map[snake->body[snake->head]]==APPLE_RED_STATUS||map[snake->body[snake->head]]==APPLE_GOLD_STATUS){
-        Sound s1={.frequency=E4,.ticks=0};
-        setSound(s1);
+        playSound(0,5);
+        playSound(E4,0);
         if (map[snake->body[snake->head]]==APPLE_GOLD_STATUS){
             snake->toGrow+=5;
-            Sound s2={.frequency=A4,.ticks=0};
-            setSound(s2);
+            playSound(A4,0);
         }else{
             snake->toGrow++;
         }
+        playSound(0,5);
         drawApple();
     }
 ///////////////////////////////////////////////////////////////////////
@@ -421,12 +424,12 @@ static void startGame(){
         drawFullSnakeAtFirst(&p2);
     }
     startCount();//contador de inicio para la partida
+    pauseResumeMusic(0);
     drawApple();
     do{
         points(&p1,&p2);
         for (int i = 0; i < 5; i++){
             sleep(1);
-            actulizeSound();
         }
         controls(&p1,&p2);
         actualizeSnakeAndCheckColisions(&p1);
@@ -434,6 +437,7 @@ static void startGame(){
             actualizeSnakeAndCheckColisions(&p2);
         }
     } while (noColisionsP1 && noColisionsP2 && noWinner);
+    pauseResumeMusic(1);
 }
 
 static void setWinner(){
@@ -463,65 +467,38 @@ static void gameOverOrWinner(){
     print("Game Over!");
 }
 
-static uint64_t ticks=0;
-static uint64_t initialTicks=0;
-static char flagSound=0;
-
-
-void startSelectSound(){
-    flagSound=1;
-    playSound(F4);
-    initialTicks=getTicks();
-}
-void stopAndChangeSound(){
-    if(ticks-initialTicks>2 && flagSound==1){
-        playSound(G4);
-        flagSound=2;
-        initialTicks=getTicks();
-        return;
-    }
-    if (ticks-initialTicks>2 && flagSound==2 && option==GAPPLE){
-        playSound(A4);
-        flagSound=3;
-        initialTicks=getTicks();
-        return;
-    }
-    if (ticks-initialTicks>2 && (flagSound==2||flagSound==3)){
-        initialTicks=0;
-        stopSound();
-        return;
-    }      
-}
-
 static void selector(){
     drawselection();
     int c=getChar();
     do
     {
-        ticks=getTicks();
         if ((c == 'W' || c == 'w' || c == 'I' || c == 'i')&& option>ONE_PLAYER){
             option--;
-            startSelectSound();
+            playSound(F4,2);
+            playSound(G4,2);
             drawselection();
         }else if ((c == 'S' || c == 's' || c == 'K' || c == 'k')&& option<EXIT){
             option++;
-            startSelectSound();
+            playSound(F4,2);
+            playSound(G4,2);
             drawselection();
         }
         if (option==GAPPLE && c=='\n'){
-            startSelectSound();
             gappleMode=(!gappleMode);
             setFontColor(FONT_COLOR);
             setBackGroundColor(MENU_BACKGROUND_COLOR);
             setCursor(50,165);
             print(gappleMode?"GAPPLE":"NORMAL");
+            playSound(F4,2);
+            playSound(G4,2);
+            playSound(A4,2);
         }
-        stopAndChangeSound();  
         _hlt();
         c=getChar();
     } while (c!='\n'||option==GAPPLE);
-    stopSound();
     if (option==ONE_PLAYER || option==TWO_PLAYERS){
+        setBackgroundMusic(m,18);
+        pauseResumeMusic(1);
         cleanOptions(); //limpia el menu
         startGame();//inicia la partida
         if (option==TWO_PLAYERS){
@@ -529,17 +506,20 @@ static void selector(){
         }else if (option==ONE_PLAYER){
             gameOverOrWinner();
         }
+        playSound(0,5);
+        sleep(5);
         if (noWinner){
-            playSoundForTicks(C4,8);
-            playSoundForTicks(B3,8);
-            playSoundForTicks(207,8);//G3#
-            playSoundForTicks(G3,8);
+            playSound(C4,8);
+            playSound(B3,8);
+            playSound(207,8);//G3#
+            playSound(G3,8);
+            sleep(8*4);
         }else{
-            playSoundForTicks(F4,8);
-            playSoundForTicks(A4,8);
-            playSoundForTicks(G4,8);
-            playSoundForTicks(D5,8);
-
+            playSound(F4,8);
+            playSound(A4,8);
+            playSound(G4,8);
+            playSound(D5,8);
+            sleep(8*4);
         }
         
         
@@ -571,6 +551,47 @@ static void chooseOptions(){
 }
 
 void snake(){
+    Sound s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15,s16,s17,s18;
+    s1.freccuency=A5;
+    s1.ticks=15;
+    s2.freccuency=D5;
+    s2.ticks=12;
+    s3.freccuency=F5;
+    s3.ticks=10;
+    s4.freccuency=A5;
+    s4.ticks=10;
+    s5.freccuency=D5;
+    s5.ticks=10;
+    s6.freccuency=F5;
+    s6.ticks=10;
+    s7.freccuency=A5;
+    s7.ticks=8;
+    s8.freccuency=C6;
+    s8.ticks=8;
+    s9.freccuency=B5;
+    s9.ticks=8;
+    s10.freccuency=G5;
+    s10.ticks=8;
+    s11.freccuency=F5;
+    s11.ticks=8;
+    s12.freccuency=G5;
+    s12.ticks=8;
+    s13.freccuency=A5;
+    s13.ticks=8;
+    s14.freccuency=D5;
+    s14.ticks=7;
+    s15.freccuency=C5;
+    s15.ticks=5;
+    s16.freccuency=E5;
+    s16.ticks=5;
+    s17.freccuency=D5;
+    s17.ticks=5;
+    s18.freccuency=0;
+    s18.ticks=5;
+    Sound m1[]={s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15,s16,s17,s18};
+    m=m1;
+    setBackgroundMusic(m,18);
+    pauseResumeMusic(1);
     margen();//dibuja un marco negro para limpiar la pantalla
     fondo();//dibuja el mantel
     drawVoidRectangle((Point){DIM_LEFT_MARGIN-3,DIM_TOP_MARGIN-3},(Point){DIM_RIGHT_MARGIN+3,DIM_BOTTOM_MARGIN+3},EDGE_COLOR,3);
@@ -581,6 +602,7 @@ void snake(){
     while (option!=EXIT){//reinicia las partidas
         chooseOptions();//selector de opciones P1|P2|EXIT
     }
+    pauseResumeMusic(1);
     setDefaults();
     cleanFullScreen();
 }

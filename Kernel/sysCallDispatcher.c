@@ -18,8 +18,8 @@ extern uint64_t * getRegisters();
 #define SYSNUM_SET_BACKGROUND_FONT_COLOR 10
 #define SYSNUM_DRAW_SPRAY 11
 #define SYSNUM_PLAY_SOUND 12
-#define SYSNUM_STOP_SOUND 13
-#define SYSNUM_GET_TICKS 14
+#define SYSNUM_SET_MUSIC 13
+#define SYSNUM_PAUSE_MUSIC 14
 #define SYSNUM_SLEEP 35
 
 #define COLOR_WHITE 0xFFFFFF
@@ -135,11 +135,19 @@ uint64_t sysCallDispatcher(uint64_t rax, ...) {
         drawSpray(size_x, size_y, spray, cursorX, cursorY);
     } else if (rax == SYSNUM_PLAY_SOUND) {
         uint64_t frecuency = va_arg(args, uint64_t);
-        playSound(frecuency);
-    } else if (rax == SYSNUM_STOP_SOUND) {
-        stopSound();
-    } else if (rax == SYSNUM_GET_TICKS) {
-        ret=getTicks();
+        uint64_t ticks = va_arg(args,uint64_t);
+        Sound s;
+        s.freccuency=frecuency;
+        s.ticks=ticks;
+        addSoundBuff(s);
+    } else if (rax == SYSNUM_SET_MUSIC) {
+        uint64_t m = va_arg(args,uint64_t);
+        uint64_t length = va_arg(args,uint64_t);
+        changeBackgroundMusic(m,length);
+    } else if (rax == SYSNUM_PAUSE_MUSIC) {
+        uint64_t pause =va_arg(args,uint64_t);
+        if (pause) pauseBackgroundMusic();
+        else resumeBackgroundMusic();
     } else if (rax == SYSNUM_SLEEP) {
         int seconds = va_arg(args, int);
         sys_sleep(seconds);    

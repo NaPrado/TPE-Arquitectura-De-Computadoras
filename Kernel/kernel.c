@@ -86,6 +86,7 @@ void * initializeKernelBinary()
 int main() {	
 	load_idt();
     ((EntryPoint)userCodeModuleAddress)();
+	playSound(0,0);
 	haltcpu();
     return 0;
 }

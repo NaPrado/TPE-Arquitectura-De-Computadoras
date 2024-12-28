@@ -1,5 +1,6 @@
 #include <keyboardDriver.h>
 #include <interrupts.h>
+#include <pcSpeakerDriver.h>
 
 #define ESC 0x01
 #define CAPSLOCK 0x3A
@@ -14,6 +15,7 @@
 #define F_11 0x57
 #define F_12 0x58
 #define CHAR_BUFFER_DIM 64
+#define SCANCODE_M 0x32
 
 static char charBuffer[CHAR_BUFFER_DIM] = {0};
 static char charsAtBuffer=0;
@@ -320,6 +322,9 @@ void keyboard_handler() {
     if (scancode == ESC) {
         return;
     }
+    if (alt && scancode==SCANCODE_M){
+        muteUnMuteAudio();
+    }
     if (scancode == CAPSLOCK) {
         capslock =! capslock;
         return;
@@ -339,4 +344,5 @@ void keyboard_handler() {
             charsAtBuffer++;
         }
     }
+    
 }

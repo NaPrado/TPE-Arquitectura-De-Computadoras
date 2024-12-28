@@ -90,12 +90,13 @@ void getContextBack(){
 }
 
 void startUpSound(){
-    playSoundForTicks(622,8);//D#5
-    playSoundForTicks(311,6);//D#4
-    playSoundForTicks(466,8);//A#4
-    playSoundForTicks(415,8);//D#5
-    playSoundForTicks(622,8);//D#5
-    playSoundForTicks(466,16);//A#4
+    playSound(622,8);//D#5
+    playSound(311,6);//D#4
+    playSound(466,8);//A#4
+    playSound(415,8);//D#5
+    playSound(622,8);//D#5
+    playSound(466,16);//A#4
+    sleep(8*4+6+16);
 }
 
 uint32_t appleColorSpray[PIXEL_PER_BLOCK][PIXEL_PER_BLOCK]={0};
@@ -169,10 +170,11 @@ void shell() {
     setZoom(2);
     setCursor((DIM_X/2)-(DIM_X/4)+2,(DIM_Y/2)-(DIM_Y/4)+2*2);
     print("Goodbye...");
-    playSoundForTicks(830,8);//G#5
-    playSoundForTicks(622,8);//D#5
-    playSoundForTicks(415,8);//G#4
-    playSoundForTicks(466,8);//A#4
+    playSound(830,8);//G#5
+    playSound(622,8);//D#5
+    playSound(415,8);//G#4
+    playSound(466,8);//A#4
+    sleep(8*4);
     cleanFullScreen();
 }
 

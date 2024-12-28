@@ -2,48 +2,16 @@
 #include<libasm.h>
 #include<libc.h>
 #define SYS_PLAY_SOUND 12
-#define SYS_STOP_SOUND 13
+#define SYSNUM_SET_MUSIC 13
+#define SYSNUM_PAUSE_MUSIC 14
 #define BUFFER_SIZE 20
 
-Sound musicBuffer[BUFFER_SIZE]={0};
-static int musicBufferIndexForAdd=0;
-static int musicBufferIndexForConsume=0;
-static int ticksStart=0;
-static int ticksNow=0;
-static int soundTicks=0;
-
-void playSound(uint32_t frequency){
-    sys_call(SYS_PLAY_SOUND, frequency, 0, 0, 0);
+void playSound(uint32_t frequency, uint32_t ticks){
+    sys_call(SYS_PLAY_SOUND, frequency, ticks, 0, 0);
 }
-void stopSound(void){
-    sys_call(SYS_STOP_SOUND, 0, 0, 0, 0);
+void setBackgroundMusic(Sound * m,uint32_t length){
+    sys_call(SYSNUM_SET_MUSIC, m, length, 0, 0);
 }
-void playSoundForTicks(uint32_t nFrequence, uint32_t ticks){
-    playSound(nFrequence);
-    sleep(ticks);
-    stopSound();
-}
-void setSound(Sound s){
-    musicBuffer[musicBufferIndexForAdd]=s;
-    musicBufferIndexForAdd++;
-    musicBufferIndexForAdd%=BUFFER_SIZE;
-}
-static int hasNextSound(){
-    return musicBufferIndexForAdd!=musicBufferIndexForConsume;
-}
-static int soundTime(){
-    return ticksNow-ticksStart<=soundTicks;
-}
-
-void actulizeSound(){
-    ticksNow=getTicks();
-    if(hasNextSound() && !soundTime()){
-        playSound(musicBuffer[musicBufferIndexForConsume].frequency);
-        soundTicks=musicBuffer[musicBufferIndexForConsume].ticks;
-        ticksStart=getTicks();
-        musicBufferIndexForConsume++;
-        musicBufferIndexForConsume%=BUFFER_SIZE;
-        return;
-    }
-    stopSound();
+void pauseResumeMusic(uint32_t pause){
+    sys_call(SYSNUM_PAUSE_MUSIC, pause, 0, 0, 0);
 }

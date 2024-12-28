@@ -43,13 +43,6 @@ typedef struct {
 void programTime();
 
 /**
- * @brief Retrieves the number of ticks since the system started.
- * 
- * @return uint64_t Number of ticks.
- */
-uint64_t getTicks();
-
-/**
  * @brief Returns current saved values of CPU registers.
  * 
  * @return uint64* array with registers.

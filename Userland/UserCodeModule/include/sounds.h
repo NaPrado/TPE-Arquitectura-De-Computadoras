@@ -67,8 +67,8 @@
 #define A8 7040
 #define B8 7902
 
-typedef struct{
-    uint32_t frequency;
+typedef struct Sound{
+    uint32_t freccuency;
     uint32_t ticks;
 }Sound;
 
@@ -77,30 +77,10 @@ typedef struct{
  *
  * @param frequency The frequency of the sound to be played.
  */
-void playSound(uint32_t frequency);
+void playSound(uint32_t frequency,uint32_t ticks);
 
-/**
- * @brief Stops the currently playing sound.
- * if nothing is playing, this function does nothing.
- */
-void stopSound(void);
-/**
- * @brief Plays a sound at the specified frequency for a given number of ticks.
- *
- * @param nFrequence The frequency of the sound to be played.
- * @param ticks The duration in ticks for which the sound should be played.
- */
-void playSoundForTicks(uint32_t nFrequence, uint32_t ticks);
+void setBackgroundMusic(Sound * m,uint32_t length);
 
-/**
- * @brief Adds a sound to the queue for reproduction.
- *
- * @param s The sound to be added.
- */
-void setSound(Sound s);
-/**
- * @brief Updates the sound system to play the next sound or stop the current sound.
- */
-void actulizeSound();
+void pauseResumeMusic(uint32_t pause);
 
 #endif // SOUNDS_H

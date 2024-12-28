@@ -1,12 +1,15 @@
 #include <time.h>
 #include <times.h>
 #include <libasm.h>
+#include <pcSpeakerDriver.h>
 
 static unsigned long ticks = 0;
 
 
+//simil Scheduler
 void timer_handler() {
 	ticks++;
+    actulizeAudio();
 }
 
 int ticks_elapsed() {

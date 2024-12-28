@@ -15,7 +15,6 @@ typedef enum{
 #define DRAW_RECTANGLE 9
 #define SET_BACKGROUND_FONT_COLOR 10
 #define DRAW_SPRAY 11
-#define GET_TICKS 14
 #define SLEEP 35
 
 void drawRectangle(Point topLeft, Point downRigth, uint32_t color) {
@@ -281,8 +280,4 @@ void setZoom(char zoom) {
 
 void cleanFullScreen() {
     drawRectangle((Point){0, 0}, (Point){DIM_X, DIM_Y}, 0x000000);
-}
-
-uint64_t getTicks(){
-    return sys_call(GET_TICKS, 0, 0, 0, 0);
 }
