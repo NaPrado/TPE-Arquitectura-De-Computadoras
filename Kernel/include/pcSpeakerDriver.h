@@ -5,7 +5,7 @@
 
 typedef struct Sound{
     uint32_t freccuency;
-    uint32_t ticks;
+    int32_t ticks;
 }Sound;
 
 

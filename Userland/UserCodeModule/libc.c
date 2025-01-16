@@ -12,14 +12,9 @@ typedef enum{
 #define SET_CURSOR 5
 #define SET_FONT_COLOR 7
 #define SET_ZOOM 8
-#define DRAW_RECTANGLE 9
 #define SET_BACKGROUND_FONT_COLOR 10
 #define DRAW_SPRAY 11
 #define SLEEP 35
-
-void drawRectangle(Point topLeft, Point downRigth, uint32_t color) {
-	sys_call(DRAW_RECTANGLE, (uint64_t)&topLeft, (uint64_t)&downRigth, (uint64_t)color, 0);
-}
 
 void drawSpray(uint32_t size_x, uint32_t size_y, uint32_t spray[][size_y]) {
     sys_call(DRAW_SPRAY, (uint64_t) spray, (uint64_t) size_x, (uint64_t) size_y, 0);

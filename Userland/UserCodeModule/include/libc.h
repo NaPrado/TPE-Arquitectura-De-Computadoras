@@ -6,6 +6,7 @@
 #ifndef _LIBC_H_
 #define _LIBC_H_
 #include <stdint.h>
+#include <gnaGL.h>
 // #include <libasm.h>
 // #include <random.h>
 
@@ -22,11 +23,6 @@
 
 #define NOT_DRAWBLE -1
 #define NOT_KEY -2
-
-typedef struct {
-	int x;
-	int y;
-}Point;
 
 typedef struct {
     char day;
@@ -68,14 +64,6 @@ time * getTime();
  */
 void setBackGroundColor(uint32_t hexColor);
 
-/**
- * @brief Draws a rectangle on the display.
- * 
- * @param topLeft The top-left corner of the rectangle.
- * @param downRigth The bottom-right corner of the rectangle.
- * @param color The color of the rectangle, in hexadecimal format.
- */
-void drawRectangle(Point topLeft, Point downRigth, uint32_t color);
 
 /**
  * @brief Draws a spray pattern on the display.

@@ -4,6 +4,7 @@
 #include <sounds.h>
 #include <libasm.h>
 #include <random.h>
+#include <gnaGL.h>
 
 #define DIM_X 1024
 #define DIM_Y 768
@@ -146,13 +147,6 @@ static void drawBlock(int blockNumber,int color,int defaultColor){//color if nee
             );
 }
 
-
-static void drawVoidRectangle(Point topLeft,Point bottomRigth,uint32_t hexcolor,int width){
-    drawRectangle(topLeft,(Point){bottomRigth.x,topLeft.y+width},hexcolor);
-    drawRectangle((Point){topLeft.x,bottomRigth.y-width},bottomRigth,hexcolor);
-    drawRectangle((Point){topLeft.x,topLeft.y+width},(Point){topLeft.x+width,bottomRigth.y-width},hexcolor);
-    drawRectangle((Point){bottomRigth.x-width,topLeft.y+width},(Point){bottomRigth.x,bottomRigth.y-width},hexcolor);
-}
 static void fondo(){
     int color=0;
     for (int i = 0; i < TOTAL_OF_BLOCKS; i++,color++){

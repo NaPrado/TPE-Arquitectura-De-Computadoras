@@ -10,6 +10,8 @@
         "snake.h": "c",
         "stdint.h": "c",
         "sounds.h": "c",
-        "pcspeakerdriver.h": "c"
-    }
+        "pcspeakerdriver.h": "c",
+        "gnagl.h": "c"
+    },
+    "C_Cpp.errorSquiggles": "enabled"
 }

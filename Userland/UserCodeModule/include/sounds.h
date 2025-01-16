@@ -69,7 +69,7 @@
 
 typedef struct Sound{
     uint32_t freccuency;
-    uint32_t ticks;
+    int32_t ticks;
 }Sound;
 
 /**
@@ -77,7 +77,7 @@ typedef struct Sound{
  *
  * @param frequency The frequency of the sound to be played.
  */
-void playSound(uint32_t frequency,uint32_t ticks);
+void playSound(uint32_t frequency,int32_t ticks);
 
 void setBackgroundMusic(Sound * m,uint32_t length);
 

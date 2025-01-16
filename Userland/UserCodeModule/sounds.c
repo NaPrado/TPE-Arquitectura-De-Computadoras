@@ -6,7 +6,7 @@
 #define SYSNUM_PAUSE_MUSIC 14
 #define BUFFER_SIZE 20
 
-void playSound(uint32_t frequency, uint32_t ticks){
+void playSound(uint32_t frequency, int32_t ticks){
     sys_call(SYS_PLAY_SOUND, frequency, ticks, 0, 0);
 }
 void setBackgroundMusic(Sound * m,uint32_t length){

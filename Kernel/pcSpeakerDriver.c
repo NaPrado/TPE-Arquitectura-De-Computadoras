@@ -71,6 +71,12 @@ playMusic(){
 		musicBufferIndexRead++;
 		musicBufferIndexRead%=musicBufferLength;
 	}
+	if(musicBuffer[musicBufferIndexRead].ticks<0){
+		musicTicks=0;
+		musicBufferIndexRead++;
+		musicBufferIndexRead%=musicBufferLength;
+	}
+	
 }
 
 

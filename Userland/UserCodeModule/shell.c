@@ -5,6 +5,8 @@
 #include <libasm.h>
 #include <sounds.h>
 #include <random.h>
+#include <tetris.h>
+
 #define TRANSPARENT 0x000000
 #define APPLE_COLOR 0xFF0000
 #define LEAF__COLOR 0x006000
@@ -252,6 +254,11 @@ void doCommand() {
             programRegisters();
             getContextBack();
             strCpy("Registers exited", response);
+        } else if (strCaseCmp(command, "tetris")==0){
+            cleanScreen();
+            tetris();
+            getContextBack();
+            strCpy("Tetris Comrade",response);
         } else if (strCaseCmp(command, "exit")==0) {
             strCpy("Exit", response);
             exit = 1;
