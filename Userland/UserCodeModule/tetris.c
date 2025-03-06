@@ -142,9 +142,9 @@ static void cleanColisionMap(){
     
 }
 
-
+//Unused
 static void drawLogo(){
-    /* drawVoidRectangle((Point){(DIM_LEFT_MARGIN/5)*1,(DIM_LEFT_MARGIN/5)*1},(Point){(DIM_LEFT_MARGIN/5)*4,(DIM_LEFT_MARGIN/5)*2},EDGE_LOGO_COLOR,5);
+    drawVoidRectangle((Point){(DIM_LEFT_MARGIN/5)*1,(DIM_LEFT_MARGIN/5)*1},(Point){(DIM_LEFT_MARGIN/5)*4,(DIM_LEFT_MARGIN/5)*2},EDGE_LOGO_COLOR,5);
     drawVoidRectangle((Point){(DIM_LEFT_MARGIN/5)*2,(DIM_LEFT_MARGIN/5)*2},(Point){(DIM_LEFT_MARGIN/5)*3,(DIM_LEFT_MARGIN/5)*3},EDGE_LOGO_COLOR,5);
     drawRectangle((Point){(DIM_LEFT_MARGIN/5)*1+5,(DIM_LEFT_MARGIN/5)*1+5},(Point){(DIM_LEFT_MARGIN/5)*4-5,(DIM_LEFT_MARGIN/5)*2-5},BACKGROUND_COLOR);
     drawRectangle((Point){(DIM_LEFT_MARGIN/5)*2+5,(DIM_LEFT_MARGIN/5)*2-5},(Point){(DIM_LEFT_MARGIN/5)*3-5,(DIM_LEFT_MARGIN/5)*3-5},BACKGROUND_COLOR);
@@ -162,7 +162,7 @@ static void drawLogo(){
     setFontColor(I_COLOR);
     print("I");
     setFontColor(T_COLOR);
-    print("S"); */
+    print("S");
 }
 
 static uint32_t darkColor(uint32_t color){
@@ -488,6 +488,11 @@ static void cleanHoldedPiece(){
     Piece aux=piece(0,holdedShape,&pos,0);
     cleanAsBlackPatern(*getPattern(aux.dir,aux.shape),*aux.pos,aux.shape);
 }
+static void drawVoidHoldedPiece(Shape shape){
+    Position pos = {-5, 1};
+    Piece aux=piece(0,shape,&pos,0);
+    cleanAsBlackPatern(*getPattern(aux.dir,aux.shape),*aux.pos,aux.shape);
+}
 static void drawHoldedPiece(Shape shape){
     Position pos = {-5, 1};
     Piece aux=piece(0,shape,&pos,0);
@@ -774,11 +779,18 @@ static void printPoints(uint32_t points){
 }
 
 static void startGame(){
-    uint32_t totalLines=0;
-    uint32_t speed=0;
-    uint32_t level=0;
-    uint32_t points=0;
-    uint8_t allowFix=1;
+    if (holdRealiced!=0){
+        drawVoidHoldedPiece(holdedShape);
+    }
+    holdRealiced=0;
+
+    //try debugging with an smaller type//////
+    uint64_t totalLines=0;////////////////////
+    uint64_t speed=0;/////////////////////////
+    uint64_t level=0;/////////////////////////
+    __uint128_t points=0;/////////////////////
+    //////////////////////////////////////////
+    uint8_t allowFix=1;                 
     drawTetrisContext();
     cleanColisionMap();
     undrawMenu();
@@ -799,8 +811,10 @@ static void startGame(){
         holdRealiced=2;
         actualizeMapColision(*actualPiece.pos,*getPattern(actualPiece.dir,actualPiece.shape),getColor(actualPiece.shape));
         int lines=checkLines();
-        totalLines+=lines;
-        printCombo(lines);
+        //could be an error here//////
+        totalLines+=lines;          //
+        printCombo(lines);          //
+        //////////////////////////////
         if(lines){
             redrawMap();
             points=setPoints(lines,points);
@@ -945,7 +959,6 @@ void tetris(){
     pauseResumeMusic(0);
     setBackgroundMusic(tetrisMusic,sizeof(tetrisMusic)/sizeof(Sound));
     drawTetrisContext();
-    drawLogo();
     startMenu();
     cleanFullScreen();
     pauseResumeMusic(1);
