@@ -27,6 +27,8 @@
 #define L_COLOR 0xFF7700
 #define T_COLOR 0X770077
 
+static uint8_t loose=0;
+
 typedef enum{
     Z=0,S,O,I,J,L,T
 }Shape;
@@ -65,6 +67,7 @@ static Shape nextPiece;
 
 static void drawNextPiece();
 static void cleanNextPiece();
+static void printWhitePiece(Piece p);
 
 static Piece setNextPiece(){
     cleanNextPiece();
@@ -77,10 +80,13 @@ static Shape holdedShape=0;
 //0 is empty, 1 is fixed, 2 is pullable
 static int holdRealiced=0;
 Position actualPos = {3, 0};
-static initActualPiece(Shape s){
+static uint8_t hasBeenAColision(Piece p);
+static void initActualPiece(Shape s){
     actualPos.y=0;
     actualPos.x=3;
     actualPiece=piece(0,s,&actualPos,0);
+    loose=hasBeenAColision(actualPiece);
+    printWhitePiece(actualPiece);
 }
 
 static void drawHoldedPiece(Shape p);
@@ -560,8 +566,6 @@ uint8_t rotatePiece(Piece *p, int clockwise) {
 
     return 0;
 }
-
-static uint8_t loose=0;
 
 static Piece holdPiece(Shape s){
     holdedShape= s;
