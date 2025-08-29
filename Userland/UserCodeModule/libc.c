@@ -150,25 +150,16 @@ int itoa(uint64_t value, char * buffer, int base, int n) {
     char *p = buffer;
 	char *p1, *p2;
 	uint32_t digits = 0;
-
-	//Calculate characters for each digit
 	do {
 		uint32_t remainder = value % base;
 		*p++ = (remainder < 10) ? remainder + '0' : remainder + 'A' - 10;
 		digits++;
     } while (value /= base);
-
-	// Terminate string in buffer.
     n -= digits;
-    while (n > 0) {
+    while (n-- > 0) {
         *p++ = '0';
-        n--;
     }
-
     *p = 0x00;
-    
-
-	//Reverse string in buffer.
 	p1 = buffer;
 	p2 = p - 1;
 	while (p1 < p2) {
@@ -178,7 +169,6 @@ int itoa(uint64_t value, char * buffer, int base, int n) {
 		p1++;
 		p2--;
 	}
-
 	return digits;
 }
 

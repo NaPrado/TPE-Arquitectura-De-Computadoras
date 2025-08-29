@@ -69,9 +69,12 @@ static void drawNextPiece();
 static void cleanNextPiece();
 static void printWhitePiece(Piece p);
 
-static Piece setNextPiece(){
+static int ignoreGhost=0;
+
+static void setNextPiece(){  // Fixed return type
+    ignoreGhost = 1;
     cleanNextPiece();
-    nextPiece=shapes[randInt(0,SHAPES_DIM-1)];
+    nextPiece = shapes[randInt(0, SHAPES_DIM-1)];
     drawNextPiece();
 }
 
@@ -114,7 +117,7 @@ Sound tetrisMusic[]={
     (Sound){A5,5},(Sound){830,10},(Sound){0,0}
 };
 
-static uint32_t colisionMap[10][20]={
+static uint32_t colisionMap[20][10]={
     {0,0,0,0,0,0,0,0,0,0},
     {0,0,0,0,0,0,0,0,0,0},
     {0,0,0,0,0,0,0,0,0,0},
@@ -136,16 +139,13 @@ static uint32_t colisionMap[10][20]={
     {0,0,0,0,0,0,0,0,0,0},
     {0,0,0,0,0,0,0,0,0,0}
 };
+
 static void cleanColisionMap(){
-    for (int i = 0; i < 10; i++)
-    {
-        for (int j = 0; j < 20; j++)
-        {
-            colisionMap[j][i]=0;
+    for (int y = 0; y < 20; y++) {        
+        for (int x = 0; x < 10; x++) {    
+            colisionMap[y][x] = 0;        
         }
-        
     }
-    
 }
 
 //Unused
@@ -223,6 +223,16 @@ static void printPatern(Dirs pat,Position pos,Shape shape){
         for (int j = 0; j < 4; j++){
             if (pat[j][i]){
                 drawBlock(pos.x+i,pos.y+j,getColor(shape));
+            }
+        }
+    }  
+}
+
+static void printPaternGhost(Dirs pat,Position pos,Shape shape){
+    for (int i = 0; i < 4; i++){
+        for (int j = 0; j < 4; j++){
+            if (pat[j][i]){
+                drawBlock(pos.x+i,pos.y+j,SHINE_COLOR);
             }
         }
     }  
@@ -432,23 +442,27 @@ static uint8_t checkVerticalColision(Piece p){
     for (int i = 0; i < 4; i++){
         for (int j = 0; j < 4; j++){
             if ((*getPattern(p.dir,p.shape))[j][i]){
-                if (p.pos->y+j>19){
+                if (p.pos->y+j > 19) return 1;
+                if (p.pos->x+i < 0 || p.pos->x+i >= 10) return 1; 
+                if (colisionMap[p.pos->y+j][p.pos->x+i]) {
                     return 1;
                 }
-                if (colisionMap[p.pos->y+j][p.pos->x+i]){
-                    return 1;
-                } 
             }
         }
     }
-    return 0;
+}  
 
-}
 static uint8_t checkHorizontalColision(Piece p){
     for (int i = 0; i < 4; i++){
         for (int j = 0; j < 4; j++){
-            if (colisionMap[p.pos->y+j][p.pos->x+i] && (*getPattern(p.dir,p.shape))[j][i]){
-                return 1;
+            if ((*getPattern(p.dir,p.shape))[j][i]) {
+                int newX = p.pos->x + i;
+                int newY = p.pos->y + j;
+                if (newX >= 0 && newX < 10 && newY >= 0 && newY < 20) {
+                    if (colisionMap[newY][newX]) {
+                        return 1;
+                    }
+                }
             }
         }
     }
@@ -459,7 +473,11 @@ static void actualizeMapColision(Position pos,Dirs pat,uint32_t color){
     for (int i = 0; i < 4; i++){
         for (int j = 0; j < 4; j++){
             if (pat[j][i]){
-                colisionMap[pos.y+j][pos.x+i]=color;
+                int newX = pos.x + i;
+                int newY = pos.y + j;
+                if (newX >= 0 && newX < 10 && newY >= 0 && newY < 20) {
+                    colisionMap[newY][newX] = color;  
+                }
             }
         }
     }
@@ -470,13 +488,17 @@ static uint8_t hasBeenAColision(Piece p){
 }
 
 
-static void abstractDrawCleanPiece(Piece p, uint8_t boolDrawOrClean){
-    void (*func[]) (Dirs,Position,Shape)={cleanPatern,printPatern};
-    func[boolDrawOrClean](*getPattern(p.dir,p.shape),*p.pos,p.shape);
+static void abstractDrawCleanPiece(Piece p, uint8_t DrawOrCleanOrGhost){
+    void (*func[]) (Dirs,Position,Shape)={cleanPatern,printPatern,printPaternGhost};
+    func[DrawOrCleanOrGhost](*getPattern(p.dir,p.shape),*p.pos,p.shape);
 }
 
 static void drawPiece(Piece p){
     abstractDrawCleanPiece(p,1);
+}
+
+static void drawPieceGhost(Piece p){
+    abstractDrawCleanPiece(p,2);
 }
 static void cleanNextPiece(){
     Position pos = {12, 1};
@@ -530,6 +552,51 @@ static uint8_t drawAndFallPiece(Piece* p){
     }
     drawPiece(*p);
     return 1;
+}
+
+static void lookForCorrectPos(Piece* p){
+    // Start from the current position and move down until collision
+    while (!checkVerticalColision(*p)) {
+        p->pos->y++;
+    }
+    // Move back one position to the last valid position
+    p->pos->y--;
+}
+static Position lastGhostPos = {0, 0};  // Actual Position struct for ghost
+static Piece lastGhost = {0, Z, &lastGhostPos, 0};  // Initialize with valid pointer
+static int lastGhostState = 0;
+
+static void drawGhostPiece(Piece p){
+    // Limpiar sombra anterior si existe
+    if(lastGhostState && !ignoreGhost){
+        cleanPiece(lastGhost);
+    }
+    ignoreGhost = 0;
+    
+    // Crear una copia independiente para la sombra
+    Position ghostPos = {p.pos->x, p.pos->y};  // Posición independiente
+    Piece ghost = {p.dir, p.shape, &ghostPos, p.fix};
+    
+    // Encontrar posición correcta para la sombra
+    while (!checkVerticalColision(ghost)) {
+        ghost.pos->y++;
+    }
+    ghost.pos->y--;
+    
+    // Solo dibujar si la posición es diferente
+    if (ghost.pos->y != p.pos->y) {
+        drawPieceGhost(ghost);
+        
+        // Guardar para limpiar en la siguiente iteración
+        lastGhost.shape = ghost.shape;
+        lastGhost.dir = ghost.dir;
+        lastGhost.fix = ghost.fix;
+        lastGhostPos.x = ghost.pos->x;
+        lastGhostPos.y = ghost.pos->y;
+        lastGhostState = 1;
+    } else {
+        lastGhostState = 0;  // No hay sombra que limpiar
+    }
 }
 
 static uint8_t colisionDir=0;
@@ -610,15 +677,16 @@ static Piece doMovement(Piece p){
                 holdPiece(newP.shape);
                 initActualPiece(nextPiece);
                 setNextPiece();
+                holdRealiced=1; 
                 return actualPiece;
             }else if (holdRealiced==2){
                 cleanPiece(newP);
                 cleanHoldedPiece();
                 Shape aux=holdedShape;
-                holdedShape=p.shape;
+                holdedShape=newP.shape; 
+                drawHoldedPiece(holdedShape);
                 initActualPiece(aux);
-                holdPiece(holdedShape);
-                holdRealiced=1;
+                holdRealiced=1;  
                 return actualPiece;
             }
             
@@ -681,16 +749,17 @@ static uint8_t checkLines(){
 }
 
 static void redrawMap(){
-    for (int i = 0; i < 20; i++){
-        for (int j = 0; j < 10; j++){
-            if (colisionMap[i][j]){
-                drawBlock(j,i,colisionMap[i][j]);
-            }else{
-                unDrawBlock(j,i);
+    for (int y = 0; y < 20; y++){
+        for (int x = 0; x < 10; x++){
+            if (colisionMap[y][x]){
+                drawBlock(x, y, colisionMap[y][x]);
+            } else {
+                unDrawBlock(x, y);
             }
         }
     }
 }
+
 static void printWhitePiece(Piece p){
     Dirs* pat=getPattern(p.dir,p.shape);
     Position pos=(*p.pos);
@@ -746,7 +815,7 @@ static void printCombo(int lines){
     }
 }
 
-static int32_t setPoints(uint32_t lines, uint32_t points){
+static __uint128_t setPoints(uint32_t lines, __uint128_t points){
     playSound(0,0);
     if (lines==1){
         points+=40;
@@ -770,7 +839,7 @@ static int32_t setPoints(uint32_t lines, uint32_t points){
     playSound(0,0);
     return points; 
 }
-static void printPoints(uint32_t points){
+static void printPoints(__uint128_t points){
     setZoom(2);
     setBackGroundColor(0x000000);
     setFontColor(0xFFFFFF);
@@ -778,7 +847,10 @@ static void printPoints(uint32_t points){
     print("Points: ");
     setCursor(DIM_RIGHT_MARGIN+PIXEL_PER_BLOCK*2.5-BASE_CHAR_WIDTH*6,DIM_TOP_MARGIN+PIXEL_PER_BLOCK*6+BASE_CHAR_HEIGHT*3);
     char buffer[10];
-    itoa(points,buffer,10,0);
+    // __uint128_t no es soportado por itoa estándar, así que mostramos solo los últimos dígitos
+    // Si necesitas mostrar más, deberías implementar una función para __uint128_t a string
+    uint64_t lower = (uint64_t)(points & 0xFFFFFFFFFFFFFFFFULL);
+    itoa(lower, buffer, 10, 0);
     print(buffer);
 }
 
@@ -787,14 +859,12 @@ static void startGame(){
         drawVoidHoldedPiece(holdedShape);
     }
     holdRealiced=0;
-
-    //try debugging with an smaller type//////
-    uint64_t totalLines=0;////////////////////
-    uint64_t speed=0;/////////////////////////
-    uint64_t level=0;/////////////////////////
-    __uint128_t points=0;/////////////////////
-    //////////////////////////////////////////
-    uint8_t allowFix=1;                 
+    
+    uint64_t totalLines=0;
+    uint64_t speed=0;
+    uint64_t level=0;
+    __uint128_t points=0;
+    uint8_t allowFix=1;
     drawTetrisContext();
     cleanColisionMap();
     undrawMenu();
@@ -802,6 +872,7 @@ static void startGame(){
     setNextPiece();
     while (!loose){
         while (actualPiece.fix<=allowFix && !loose){
+            drawGhostPiece(actualPiece);
             drawPiece(actualPiece);
             sleep(10-speed);
             actualPiece=doMovement(actualPiece);
@@ -815,10 +886,8 @@ static void startGame(){
         holdRealiced=2;
         actualizeMapColision(*actualPiece.pos,*getPattern(actualPiece.dir,actualPiece.shape),getColor(actualPiece.shape));
         int lines=checkLines();
-        //could be an error here//////
-        totalLines+=lines;          //
-        printCombo(lines);          //
-        //////////////////////////////
+        totalLines+=lines;          
+        printCombo(lines);          
         if(lines){
             redrawMap();
             points=setPoints(lines,points);
@@ -881,6 +950,7 @@ static void cleanControls(){
 static uint8_t showedControls=1;
 
 static void startMenu(){
+    cleanColisionMap();
     printPoints(0);
     setZoom(2);
     setBackGroundColor(0x000000);
